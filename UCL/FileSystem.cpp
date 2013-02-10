@@ -56,15 +56,23 @@ bool FileSystem::DeleteFile( const std::string& filemask )
 	return retVal;
 }
 
-bool FileSystem::CopyFile(const std::string& sourceFileMask, const std::string& destinationFileMas)
+bool FileSystem::CopyFile(const std::string& sourceFileMask, const std::string& destinationFileMask)
 {
 	bool retVal(false);
+	if ( !sourceFileMask.empty() && !destinationFileMask.empty() )
+	{
+		retVal = ( 0 );
+	}
 	return retVal;
 }
 
 bool FileSystem::MoveFile(const std::string& sourceFileMask, const std::string& destination)
 {
 	bool retVal(false);
+	if (!sourceFileMask.empty() && !destination.empty() )
+	{
+		retVal = ( 0 == rename ( sourceFileMask.c_str(), destination.c_str() ) );
+	}
 	return retVal;
 }
 
