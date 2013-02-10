@@ -1,0 +1,4 @@
+null::sysinit:/etc/init.d/rc
+ttyAMA0::askfirst:/sbin/getty 11520 ttyAMA0
+tty1::askfirst:/sbin/getty 38400 tty1
+
