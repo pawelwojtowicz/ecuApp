@@ -1,7 +1,13 @@
 #include "CMessenger.h"
 #include "CMessage.h"
+#include "ISubscriber.h"
 #include <fcntl.h>
 #include <sys/stat.h>
+
+#define MSG_SIZE 256
+
+namespace Runtime
+{
 
 CMessenger::CMessenger()
 :m_run(true)
@@ -15,20 +21,24 @@ CMessenger::~CMessenger()
 	//general initialization
 bool CMessenger::Initialize(const std::string& componentName)
 {
+	bool retVal(false);
 // create own message queue - R/W writes
 
 // attach to broadast queue
 
 // register broadcast queue
+	return retVal;
 }
 
 bool CMessenger::Shutdown()
 {
+	bool retVal(false);
 // unregister broadcast queue
 
 // deattach from broadcast queue
 
 // dispose own queue
+	return retVal;
 }
 
 //initialization of the transmitter
@@ -37,7 +47,7 @@ bool CMessenger::ConnectQueue(const std::string& queueName)
 	tQueueMapConstIter pCIter = m_queueName2QueueDescMap.find(queueName);
 	if ( m_queueName2QueueDescMap.end() == pCIter )
 	{
-		mqd_t queueDescriptor = mq_open( queueName.str_c() , O_WRONLY );
+		mqd_t queueDescriptor = mq_open( queueName.c_str() , O_WRONLY );
 		if ( -1 != queueDescriptor )
 		{
 			m_queueName2QueueDescMap.insert(tQueueName2QueueDescriptorMap::value_type(queueName,queueDescriptor));
@@ -55,7 +65,7 @@ bool CMessenger::DisconnectQueue(const std::string& queueName)
 	tQueueMapIter pIter = m_queueName2QueueDescMap.find( queueName );
 	if ( m_queueName2QueueDescMap.end() == pIter )
 	{
-		if ( mq_close( pIter->second )
+		if ( mq_close( pIter->second ) )
 		{
 			m_queueName2QueueDescMap.erase(pIter);
 			return true;
@@ -104,12 +114,12 @@ void CMessenger::StartMsgProcessor()
 {
 	if ( -1 != m_ownQueueDescriptor )
 	{	
-		char[MSG_QUEUE] messageBuffer;
-		size_t messageSize(0)
+		char messageBuffer[MSG_SIZE];
+		size_t messageSize(0);
 
 		do
 		{
-			messageSize = mq_receive( m_ownQueueDescriptor, messageBuffer, MSG_QUEUE, 0 );
+			messageSize = mq_receive( m_ownQueueDescriptor, messageBuffer, MSG_SIZE, 0 );
 			if ( messageSize > 0 )
 			{
 				CMessage message(messageBuffer, messageSize);
@@ -118,12 +128,13 @@ void CMessenger::StartMsgProcessor()
 					tMsgId2SubscriberIterator pIter = m_msgId2SubscriberMap.find( message.GetMsgId() );
 					if ( m_msgId2SubscriberMap.end() != pIter )
 					{
-						message.Reset()
 						pIter->second->HandleMessage(message);
 					}
 				}				
 			} 
 		} while( m_run );
 	}
+}
+
 }
 

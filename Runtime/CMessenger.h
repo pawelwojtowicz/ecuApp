@@ -14,8 +14,8 @@ class CMessage;
 class CMessenger
 {
 	typedef std::map<std::string, mqd_t> tQueueName2QueueDescriptorMap;
-	typedef tQueueName2QueueDescriptor::const_iterator tQueueMapConstIter;
-	typedef tQueueName2QueueDescriptor::iterator tQueueMapIter;
+	typedef tQueueName2QueueDescriptorMap::const_iterator tQueueMapConstIter;
+	typedef tQueueName2QueueDescriptorMap::iterator tQueueMapIter;
 
 	typedef std::map<int, ISubscriber*> tMsgId2SubscriberMap;
 	typedef tMsgId2SubscriberMap::iterator tMsgId2SubscriberIterator;

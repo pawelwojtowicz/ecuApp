@@ -5,6 +5,9 @@ namespace Runtime
 {
 class CMessage
 {
+public:
+	CMessage( const char* buffer, size_t size );
+	const bool IsValid() const;
 	const std::string& GetTargetName() const;
 	const unsigned GetPrio() const;
 	const char* GetBuffer() const;

@@ -16,4 +16,6 @@ typedef double					Real64;
 
 typedef std::list<std::string> tStringList;
 typedef std::vector<std::string> tStringVector;
+
+static const std::string s_cEmptyString("");
 #endif
