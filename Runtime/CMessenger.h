@@ -4,6 +4,7 @@
 #include <mqueue.h>
 #include <map>
 #include <string>
+#include "../Global/GlobalTypes.h"
 
 namespace Runtime
 {
@@ -13,11 +14,16 @@ class CMessage;
 
 class CMessenger
 {
-	typedef std::map<std::string, mqd_t> tQueueName2QueueDescriptorMap;
+	struct QueueDetails
+	{
+		std::string QueueName;
+		mqd_t QueueDescriptor;
+	};
+	typedef std::map<UInt32, QueueDetails> tQueueName2QueueDescriptorMap;
 	typedef tQueueName2QueueDescriptorMap::const_iterator tQueueMapConstIter;
 	typedef tQueueName2QueueDescriptorMap::iterator tQueueMapIter;
 
-	typedef std::map<int, ISubscriber*> tMsgId2SubscriberMap;
+	typedef std::map<UInt32, ISubscriber*> tMsgId2SubscriberMap;
 	typedef tMsgId2SubscriberMap::iterator tMsgId2SubscriberIterator;
 	typedef tMsgId2SubscriberMap::const_iterator tMsgId2SubscriberConstIterator;
 public:
@@ -30,17 +36,20 @@ public:
 	bool Shutdown();
 
 	//initialization of the transmitter
-	bool ConnectQueue(const std::string& queueName);
+	UInt32 ConnectQueue(const std::string& queueName);
 	bool DisconnectQueue(const std::string& queueName);
 
 	//initialization of the receiver
-	bool SubscribeMessage( const int& msgId, ISubscriber* pSubscriber );
-	bool UnsubscribeMessage( const int& msgId, ISubscriber* pSubscriber );
+	bool SubscribeMessage( const UInt32& msgId, ISubscriber* pSubscriber );
+	bool UnsubscribeMessage( const UInt32& msgId, ISubscriber* pSubscriber );
 
 	//send message
 	bool PostMessage( const CMessage& message );
 
 	void StartMsgProcessor();
+
+private:
+	tQueueMapIter FindQueueByName( const std::string& queueName ); 
 
 private:
 	tQueueName2QueueDescriptorMap m_queueName2QueueDescMap;
@@ -50,6 +59,8 @@ private:
 	bool m_run;
 
 	mqd_t m_ownQueueDescriptor;
+
+	UInt32 m_currentID;
 };
 
 }

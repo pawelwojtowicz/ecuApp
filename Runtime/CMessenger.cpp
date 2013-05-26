@@ -10,7 +10,8 @@ namespace Runtime
 {
 
 CMessenger::CMessenger()
-:m_run(true)
+: m_run( true )
+, m_currentID( 1 )
 {
 }
 
@@ -42,30 +43,35 @@ bool CMessenger::Shutdown()
 }
 
 //initialization of the transmitter
-bool CMessenger::ConnectQueue(const std::string& queueName)
+UInt32 CMessenger::ConnectQueue(const std::string& queueName)
 {
-	tQueueMapConstIter pCIter = m_queueName2QueueDescMap.find(queueName);
+	UInt32 queueID(-1);
+	tQueueMapConstIter pCIter = FindQueueByName(queueName);
 	if ( m_queueName2QueueDescMap.end() == pCIter )
 	{
 		mqd_t queueDescriptor = mq_open( queueName.c_str() , O_WRONLY );
 		if ( -1 != queueDescriptor )
 		{
-			m_queueName2QueueDescMap.insert(tQueueName2QueueDescriptorMap::value_type(queueName,queueDescriptor));
-		}
-		else
-		{
-			return false;
+			QueueDetails qd;
+			qd.QueueName = queueName;
+			qd.QueueDescriptor = queueDescriptor;
+			queueID = m_currentID++;
+			m_queueName2QueueDescMap.insert(tQueueName2QueueDescriptorMap::value_type(queueID,qd));
 		}
 	}
-	return true;
+	else
+	{
+		queueID = pCIter->first;
+	}
+	return queueID;
 }
 
 bool CMessenger::DisconnectQueue(const std::string& queueName)
 {
-	tQueueMapIter pIter = m_queueName2QueueDescMap.find( queueName );
+	tQueueMapIter pIter = FindQueueByName( queueName );
 	if ( m_queueName2QueueDescMap.end() == pIter )
 	{
-		if ( mq_close( pIter->second ) )
+		if ( mq_close( pIter->second.QueueDescriptor ) )
 		{
 			m_queueName2QueueDescMap.erase(pIter);
 			return true;
@@ -75,7 +81,7 @@ bool CMessenger::DisconnectQueue(const std::string& queueName)
 }
 
 //initialization of the receiver
-bool CMessenger::SubscribeMessage( const int& msgId, ISubscriber* pSubscriber )
+bool CMessenger::SubscribeMessage( const UInt32& msgId, ISubscriber* pSubscriber )
 {
 	if ( m_msgId2SubscriberMap.end() == m_msgId2SubscriberMap.find( msgId ) )
 	{
@@ -85,7 +91,7 @@ bool CMessenger::SubscribeMessage( const int& msgId, ISubscriber* pSubscriber )
 	return false;
 }
 
-bool CMessenger::UnsubscribeMessage( const int& msgId, ISubscriber* pSubscriber )
+bool CMessenger::UnsubscribeMessage( const UInt32& msgId, ISubscriber* pSubscriber )
 {
 	tMsgId2SubscriberIterator pIter = m_msgId2SubscriberMap.find( msgId );
 	if ( m_msgId2SubscriberMap.end() != pIter  )
@@ -99,10 +105,10 @@ bool CMessenger::UnsubscribeMessage( const int& msgId, ISubscriber* pSubscriber 
 //send message
 bool CMessenger::PostMessage( const CMessage& message )
 {
-	tQueueMapIter pIter ;//= m_queueName2QueueDescMap.find( message.GetTargetName() );
+	tQueueMapIter pIter = m_queueName2QueueDescMap.find( message.GetTargetId() );
 	if ( m_queueName2QueueDescMap.end() != pIter )
 	{
-		if ( 0 == mq_send( pIter->second , message.GetBuffer() , message.GetBufferSize(), message.GetMessagePrio() ) )
+		if ( 0 == mq_send( pIter->second.QueueDescriptor , message.GetBuffer() , message.GetBufferSize(), message.GetMessagePrio() ) )
 		{
 			return true;
 		}
@@ -136,5 +142,17 @@ void CMessenger::StartMsgProcessor()
 	}
 }
 
+CMessenger::tQueueMapIter CMessenger::FindQueueByName( const std::string& queueName )
+{
+	for (tQueueMapIter iter = m_queueName2QueueDescMap.begin() ; iter != m_queueName2QueueDescMap.end() ; ++iter )
+	{
+		if (queueName == iter->second.QueueName )
+		{
+			return iter;
+		}
+	}
+
+	return m_queueName2QueueDescMap.end();
+}
 }
 
