@@ -99,10 +99,10 @@ bool CMessenger::UnsubscribeMessage( const int& msgId, ISubscriber* pSubscriber 
 //send message
 bool CMessenger::PostMessage( const CMessage& message )
 {
-	tQueueMapIter pIter = m_queueName2QueueDescMap.find( message.GetTargetName() );
+	tQueueMapIter pIter ;//= m_queueName2QueueDescMap.find( message.GetTargetName() );
 	if ( m_queueName2QueueDescMap.end() != pIter )
 	{
-		if ( 0 == mq_send( pIter->second , message.GetBuffer() , message.GetSize(), message.GetPrio() ) )
+		if ( 0 == mq_send( pIter->second , message.GetBuffer() , message.GetBufferSize(), message.GetMessagePrio() ) )
 		{
 			return true;
 		}
@@ -125,7 +125,7 @@ void CMessenger::StartMsgProcessor()
 				CMessage message(messageBuffer, messageSize);
 				if ( message.IsValid() )
 				{
-					tMsgId2SubscriberIterator pIter = m_msgId2SubscriberMap.find( message.GetMsgId() );
+					tMsgId2SubscriberIterator pIter = m_msgId2SubscriberMap.find( message.GetMessageId() );
 					if ( m_msgId2SubscriberMap.end() != pIter )
 					{
 						pIter->second->HandleMessage(message);
