@@ -8,7 +8,7 @@ LINKER_INPUT= FileSystem.o CTokenizer.o CFile.o CThread.o
 	$(CC) $(CFLAGS) $< -o $@
 
 default: $(LINKER_INPUT)
-	-mkdir $(INSTALL_PATH)
+	-mkdir -p $(INSTALL_PATH)
 	$(CC) $(LFLAGS) -o $(INSTALL_PATH)/$(OUTPUT) $(LINKER_INPUT)
 	
 

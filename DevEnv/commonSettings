@@ -1,5 +1,5 @@
 export CC:=g++
-export CFLAGS:= -c -Wall -pedantic
+export CFLAGS:= -c -Wall -pedantic -I"../Global"
 export LFLAGS:= -pthread
 export BIN_PATH:= ../../Bin
 export INTERMEDIATE_PATH=$(BIN_PATH)/Intermediate

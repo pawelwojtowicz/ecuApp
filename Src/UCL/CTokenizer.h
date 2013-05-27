@@ -1,7 +1,7 @@
 #ifndef UCL_CTOKENIZER_H
 #define UCL_CTOKENIZER_H
 
-#include "UCLTypes.h"
+#include "GlobalTypes.h"
 
 namespace UCL
 {
