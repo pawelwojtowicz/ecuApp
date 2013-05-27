@@ -1,0 +1,3 @@
+export CFLAGS:=$(CFLAGS) -fPIC
+export LFLAGS:=$(LFLAGS) -shared
+export INSTALL_PATH:=$(TARGET_PATH)/lib

@@ -1,0 +1,7 @@
+export CC:=g++
+export CFLAGS:= -c -Wall -pedantic
+export LFLAGS:= -pthread
+export BIN_PATH:= ../../Bin
+export INTERMEDIATE_PATH=$(BIN_PATH)/Intermediate
+export TARGET_PATH=$(BIN_PATH)/Target
+
