@@ -59,7 +59,7 @@ bool CSharedStorage::Shutdown()
 	bool retVal(false);
 
 
-	if (-1 != shm_unlink(m_storageName.c_str());
+	if (-1 != shm_unlink( m_storageName.c_str() ) )
 	{
 		retVal = true;
 	}
