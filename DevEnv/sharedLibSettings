@@ -1,3 +1,10 @@
+include ../../DevEnv/commonSettings
+
 export CFLAGS:=$(CFLAGS) -fPIC
 export LFLAGS:=$(LFLAGS) -shared
+export OUTPUT_POSTFIX:=.so
 export INSTALL_PATH:=$(TARGET_PATH)/lib
+
+include ../../DevEnv/buildingRules
+
+

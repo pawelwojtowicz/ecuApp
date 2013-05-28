@@ -4,6 +4,17 @@ LINKER_INPUT= $(addprefix $(OBJ_DIR)/, $(OBJ))
 .cpp.o:
 	$(CC) $(CFLAGS) $< -o $(OBJ_DIR)/$@
 
-default: $(OBJ)
-	-mkdir -p $(INSTALL_PATH)
-	$(CC) $(LFLAGS) -o $(INSTALL_PATH)/$(OUTPUT) $(LINKER_INPUT)
+default: DirStructure $(OBJ)
+	$(CC) $(LFLAGS) -o $(INSTALL_PATH)/$(OUTPUT)$(OUTPUT_POSTFIX) $(LINKER_INPUT)
+
+DirStructure:
+	-mkdir -p $(BIN_PATH)
+	-mkdir -p $(INTERMEDIATE_PATH)
+	-mkdir -p $(OBJ_DIR)
+	-mkdir -p $(TARGET_PATH)
+	-mkdir -p $(INSTALL_PATH)	
+
+clean:
+	-rm -f $(OBJ_DIR)/*.o
+	-rm -f $(INSTALL_PATH)/$(OUTPUT)
+
