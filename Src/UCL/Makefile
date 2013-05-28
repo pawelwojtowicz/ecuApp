@@ -1,15 +1,9 @@
+OUTPUT= libUCL.so
+OBJ= FileSystem.o CTokenizer.o CFile.o CThread.o
+
 include ../../DevEnv/commonSettings
 include ../../DevEnv/sharedLibSettings
-
-OUTPUT= libUCL.so
-LINKER_INPUT= FileSystem.o CTokenizer.o CFile.o CThread.o 
-
-.cpp.o:
-	$(CC) $(CFLAGS) $< -o $@
-
-default: $(LINKER_INPUT)
-	-mkdir -p $(INSTALL_PATH)
-	$(CC) $(LFLAGS) -o $(INSTALL_PATH)/$(OUTPUT) $(LINKER_INPUT)
+include ../../DevEnv/buildingRules
 	
 
 FileSystem.o:	FileSystem.cpp FileSystem.h
@@ -18,6 +12,6 @@ CFile.o:	CFile.h CFile.cpp
 CThread.o:	CThread.h CThread.cpp
 
 clean:
-	-rm *.o
+	-rm $(OBJ_DIR)/*.o
 	-rm $(INSTALL_PATH)/$(OUTPUT)
 

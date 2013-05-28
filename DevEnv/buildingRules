@@ -1,0 +1,9 @@
+OBJ_DIR=$(INTERMEDIATE_PATH)/$(OUTPUT)
+LINKER_INPUT= $(addprefix $(OBJ_DIR)/, $(OBJ))
+
+.cpp.o:
+	$(CC) $(CFLAGS) $< -o $(OBJ_DIR)/$@
+
+default: $(OBJ)
+	-mkdir -p $(INSTALL_PATH)
+	$(CC) $(LFLAGS) -o $(INSTALL_PATH)/$(OUTPUT) $(LINKER_INPUT)
