@@ -40,6 +40,10 @@ public:
 
 	Int8* GetBuffer() const { return m_messageBuffer; };
 	const size_t GetBufferSize() const { return m_messageSize; };
+	void PrintBuffer();
+
+	template<typename TYPE> bool SetValueImpl(const TYPE& value );
+	template<typename TYPE> bool GetValueImpl( TYPE& value );
 
 	bool SetValue(const UInt8& value);
 	bool GetValue(UInt8& value);	

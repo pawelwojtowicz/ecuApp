@@ -8,7 +8,7 @@ LINKER_INPUT= $(addprefix $(OBJ_DIR)/, $(OBJ))
 	$(CC) $(CFLAGS) $< -o $(OBJ_DIR)/$@
 
 default: DirStructure $(OBJ)
-	$(CC) $(LFLAGS) -o $(INSTALL_PATH)/$(OUTPUT)$(OUTPUT_POSTFIX) $(LINKER_INPUT)
+	$(CC) $(LINKER_INPUT) -o $(INSTALL_PATH)/$(OUTPUT)$(OUTPUT_POSTFIX) $(LFLAGS) 
 
 DirStructure:
 	-mkdir -p $(BIN_PATH)
