@@ -49,98 +49,178 @@ void CMessage::DeserializeHeader()
 
 bool CMessage::SetValue(const UInt8& value)
 {
-	bool retVal(false);
-	return retVal;
+	if ( static_cast<UInt32>(m_serializerPosition - MSG_HEADER_SIZE - m_messageBuffer) >= sizeof(value) )
+	{
+		memcpy( m_serializerPosition, &value, sizeof( value ));
+		m_serializerPosition += sizeof( value );
+		return true;
+	}
+	return false;
 }
 
 bool CMessage::GetValue(UInt8& value)
 {
-	bool retVal(false);
-	return retVal;
+	if ( static_cast<UInt32>(m_serializerPosition - MSG_HEADER_SIZE - m_messageBuffer) >= sizeof(value) )
+	{
+		memcpy(&value, m_serializerPosition, sizeof( value ));
+		m_serializerPosition += sizeof( value );
+		return true;
+	}
+	return false;
 }
 
 bool CMessage::SetValue(const UInt16& value)
 {
-	bool retVal(false);
-	return retVal;
+	if ( static_cast<UInt32>(m_serializerPosition - MSG_HEADER_SIZE - m_messageBuffer) >= sizeof(value) )
+	{
+		memcpy( m_serializerPosition, &value, sizeof( value ));
+		m_serializerPosition += sizeof( value );
+		return true;
+	}
+	return false;
 }
 
 bool CMessage::GetValue(UInt16& value)
 {
-	bool retVal(false);
-	return retVal;
+	if ( static_cast<UInt32>(m_serializerPosition - MSG_HEADER_SIZE - m_messageBuffer) >= sizeof(value) )
+	{
+		memcpy(&value, m_serializerPosition, sizeof( value ));
+		m_serializerPosition += sizeof( value );
+		return true;
+	}
+	return false;
 }
 
 bool CMessage::SetValue(const UInt32& value)
 {
-	bool retVal(false);
-	return retVal;
+	if ( static_cast<UInt32>(m_serializerPosition - MSG_HEADER_SIZE - m_messageBuffer) >= sizeof(value) )
+	{
+		memcpy( m_serializerPosition, &value, sizeof( value ));
+		m_serializerPosition += sizeof( value );
+		return true;
+	}
+	return false;
 }
 
 bool CMessage::GetValue(UInt32& value)
 {
-	bool retVal(false);
-	return retVal;
+	if ( static_cast<UInt32>(m_serializerPosition - MSG_HEADER_SIZE - m_messageBuffer) >= sizeof(value) )
+	{
+		memcpy(&value, m_serializerPosition, sizeof( value ));
+		m_serializerPosition += sizeof( value );
+		return true;
+	}
+	return false;
 }
 
 bool CMessage::SetValue(const Int8& value)
 {
-	bool retVal(false);
-	return retVal;
+	if ( static_cast<UInt32>(m_serializerPosition - MSG_HEADER_SIZE - m_messageBuffer) >= sizeof(value) )
+	{
+		memcpy( m_serializerPosition, &value, sizeof( value ));
+		m_serializerPosition += sizeof( value );
+		return true;
+	}
+	return false;
 }
 
 bool CMessage::GetValue(Int8& value)
 {
-	bool retVal(false);
-	return retVal;
+	if ( static_cast<UInt32>(m_serializerPosition - MSG_HEADER_SIZE - m_messageBuffer) >= sizeof(value) )
+	{
+		memcpy(&value, m_serializerPosition, sizeof( value ));
+		m_serializerPosition += sizeof( value );
+		return true;
+	}
+	return false;
 }
 
 bool CMessage::SetValue(const Int16& value)
 {
-	bool retVal(false);
-	return retVal;
+	if ( static_cast<UInt32>(m_serializerPosition - MSG_HEADER_SIZE - m_messageBuffer) >= sizeof(value) )
+	{
+		memcpy( m_serializerPosition, &value, sizeof( value ));
+		m_serializerPosition += sizeof( value );
+		return true;
+	}
+	return false;
 }
 
 bool CMessage::GetValue(Int16& value)
 {
-	bool retVal(false);
-	return retVal;
+	if ( static_cast<UInt32>(m_serializerPosition - MSG_HEADER_SIZE - m_messageBuffer) >= sizeof(value) )
+	{
+		memcpy(&value, m_serializerPosition, sizeof( value ));
+		m_serializerPosition += sizeof( value );
+		return true;
+	}
+	return false;
 }
 
 bool CMessage::SetValue(const Int32& value)
 {
-	bool retVal(false);
-	return retVal;
+	if ( static_cast<UInt32>(m_serializerPosition - MSG_HEADER_SIZE - m_messageBuffer) >= sizeof(value) )
+	{
+		memcpy( m_serializerPosition, &value, sizeof( value ));
+		m_serializerPosition += sizeof( value );
+		return true;
+	}
+	return false;
 }
 
 bool CMessage::GetValue(Int32& value)
 {
-	bool retVal(false);
-	return retVal;
+	if ( static_cast<UInt32>(m_serializerPosition - MSG_HEADER_SIZE - m_messageBuffer) >= sizeof(value) )
+	{
+		memcpy(&value, m_serializerPosition, sizeof( value ));
+		m_serializerPosition += sizeof( value );
+		return true;
+	}
+	return false;
 }
 
 bool CMessage::SetValue(const Real32& value)
 {
-	bool retVal(false);
-	return retVal;
+	if ( static_cast<UInt32>(m_serializerPosition - MSG_HEADER_SIZE - m_messageBuffer) >= sizeof(value) )
+	{
+		memcpy( m_serializerPosition, &value, sizeof( value ));
+		m_serializerPosition += sizeof( value );
+		return true;
+	}
+	return false;
 }
 
 bool CMessage::GetValue(Real32& value)
 {
-	bool retVal(false);
-	return retVal;
+	if ( static_cast<UInt32>(m_serializerPosition - MSG_HEADER_SIZE - m_messageBuffer) >= sizeof(value) )
+	{
+		memcpy(&value, m_serializerPosition, sizeof( value ));
+		m_serializerPosition += sizeof( value );
+		return true;
+	}
+	return false;
 }
 
 bool CMessage::SetValue(const Real64& value)
 {
-	bool retVal(false);
-	return retVal;
+	if ( static_cast<UInt32>(m_serializerPosition - MSG_HEADER_SIZE - m_messageBuffer) >= sizeof(value) )
+	{
+		memcpy( m_serializerPosition, &value, sizeof( value ));
+		m_serializerPosition += sizeof( value );
+		return true;
+	}
+	return false;
 }
 
 bool CMessage::GetValue(Real64& value)
 {
-	bool retVal(false);
-	return retVal;
+	if ( static_cast<UInt32>(m_serializerPosition - MSG_HEADER_SIZE - m_messageBuffer) >= sizeof(value) )
+	{
+		memcpy(&value, m_serializerPosition, sizeof( value ));
+		m_serializerPosition += sizeof( value );
+		return true;
+	}
+	return false;
 }
 
 bool CMessage::SetValue(const std::string& value)

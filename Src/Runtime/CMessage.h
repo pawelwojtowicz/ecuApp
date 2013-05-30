@@ -1,7 +1,8 @@
 #ifndef RUNTIME_CMESSAGE_H
 #define RUNTIME_CMESSAGE_H
-#define MSG_HEADER_SIZE ( sizeof(UInt32) + sizeof(UInt8) + sizeof(UInt32) )
 #include "../Global/GlobalTypes.h"
+
+#define MSG_HEADER_SIZE ( sizeof(UInt32) + sizeof(UInt8) + sizeof(UInt32) )
 
 namespace Runtime
 {
@@ -37,7 +38,7 @@ public:
 		m_serializerPosition = m_messageBuffer + MSG_HEADER_SIZE;
 	}
 
-	const Int8* GetBuffer() const { return m_messageBuffer; };
+	Int8* GetBuffer() const { return m_messageBuffer; };
 	const size_t GetBufferSize() const { return m_messageSize; };
 
 	bool SetValue(const UInt8& value);
