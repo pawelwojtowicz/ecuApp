@@ -4,6 +4,10 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 
+#include <stdio.h>
+#include <errno.h>
+#include <string.h>
+
 #define MSG_SIZE 256
 
 namespace Runtime
@@ -49,12 +53,19 @@ UInt32 CMessenger::ConnectQueue(const std::string& queueName)
 	tQueueMapConstIter pCIter = FindQueueByName(queueName);
 	if ( m_queueName2QueueDescMap.end() == pCIter )
 	{
-		mqd_t queueDescriptor = mq_open( queueName.c_str() , O_WRONLY );
+		mqd_t queueDescriptor = mq_open( queueName.c_str() , O_WRONLY|O_CREAT, S_IRWXU, NULL);
+
 		if ( -1 != queueDescriptor )
 		{
+			mq_attr queueAttributes;
+			mq_getattr(queueDescriptor,&queueAttributes);
+
 			QueueDetails qd;
 			qd.QueueName = queueName;
 			qd.QueueDescriptor = queueDescriptor;
+			qd.MaxMsgs = queueAttributes.mq_maxmsg;
+			qd.MaxMsgSize = queueAttributes.mq_msgsize;
+
 			queueID = m_currentID++;
 			m_queueName2QueueDescMap.insert(tQueueName2QueueDescriptorMap::value_type(queueID,qd));
 		}

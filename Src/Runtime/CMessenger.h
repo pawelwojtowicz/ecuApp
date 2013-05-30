@@ -18,6 +18,8 @@ class CMessenger
 	{
 		std::string QueueName;
 		mqd_t QueueDescriptor;
+		long MaxMsgs;
+		long MaxMsgSize;
 	};
 	typedef std::map<UInt32, QueueDetails> tQueueName2QueueDescriptorMap;
 	typedef tQueueName2QueueDescriptorMap::const_iterator tQueueMapConstIter;
