@@ -161,14 +161,33 @@ bool CMessage::GetValue(Real64& value)
 
 bool CMessage::SetValue(const std::string& value)
 {
-	bool retVal(false);
-	return retVal;
+	UInt8 stringLength(value.length());
+	size_t neededSpace = stringLength * sizeof( std::string::value_type ) + sizeof(UInt8);
+	if ( m_messageSize - static_cast<UInt32>(m_serializerPosition  - m_messageBuffer)  >= neededSpace )
+	{
+		if ( SetValue(stringLength) )
+		{
+			memcpy( m_serializerPosition, value.c_str(), stringLength );
+			m_serializerPosition += stringLength;
+			return true;
+		}
+	}
+	return false;
 }
 
 bool CMessage::GetValue(std::string& value)
 {
-	bool retVal(false);
-	return retVal;
+	UInt8 stringLength(0);
+	if ( GetValue(stringLength) )
+	{
+		if ( m_messageSize - static_cast<UInt32>(m_serializerPosition  - m_messageBuffer)  >= stringLength )
+		{
+			value.assign(m_serializerPosition,stringLength);
+			m_serializerPosition += stringLength;
+			return true;
+		}
+	}
+	return false;
 }
 
 void CMessage::PrintBuffer()
