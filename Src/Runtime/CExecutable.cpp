@@ -1,4 +1,14 @@
 #include "CExecutable.h"
+#include <signal.h>
+#include <sys/time.h>
+
+void timerHandler( int signalNo )
+{
+	if (SIGALRM == signalNo )
+	{
+		__pExecutable->NotifyTimer();
+	}
+}
 
 namespace Runtime
 {
@@ -30,6 +40,20 @@ const std::string& CExecutable::GetArgument( const UInt8& argNo )
 Int32 CExecutable::GetArgumentCount()
 {
 	return m_arguments.size();
+}
+
+bool CExecutable::InitializeTimer( const UInt32& startAfter )
+{
+	signal( SIGALRM, timerHandler );
+
+	itimerval delay;
+	delay.it_value.tv_sec = startAfter;
+	delay.it_value.tv_usec = 0;
+	delay.it_interval.tv_sec = 1;
+	delay.it_interval.tv_usec = 0;
+
+	return ( 0 != setitimer(ITIMER_REAL, &delay, NULL) );
+	
 }
 
 }

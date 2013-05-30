@@ -18,9 +18,12 @@ public:
 	virtual Int32 Run() = 0 ;
 	virtual void Shutdown() {} ;
 
+	virtual void NotifyTimer() {} ;
 protected:
 	const std::string& GetArgument( const UInt8& argNo );
 	Int32 GetArgumentCount();
+
+	bool InitializeTimer( const UInt32& startAfter = 1 );
 
 private:
 	tStringVector m_arguments;

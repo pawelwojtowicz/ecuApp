@@ -42,9 +42,6 @@ public:
 	const size_t GetBufferSize() const { return m_messageSize; };
 	void PrintBuffer();
 
-	template<typename TYPE> bool SetValueImpl(const TYPE& value );
-	template<typename TYPE> bool GetValueImpl( TYPE& value );
-
 	bool SetValue(const UInt8& value);
 	bool GetValue(UInt8& value);	
 	bool SetValue(const UInt16& value);
@@ -63,6 +60,11 @@ public:
 	bool GetValue(Real64& value);	
 	bool SetValue(const std::string& value);
 	bool GetValue(std::string& value);	
+
+private:
+	template<typename TYPE> bool SetValueImpl(const TYPE& value );
+	template<typename TYPE> bool GetValueImpl( TYPE& value );
+
 
 
 private:
