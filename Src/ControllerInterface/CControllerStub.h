@@ -6,7 +6,15 @@ namespace Controller
 
 class CControllerStub
 {
+public:
+	CControllerStub( Runtime::IMessenger& rMessenger );
+	virtual ~CControllerStub();
 
+	virtual bool Initialize();
+	virtual bool Shutdown();
+
+private:
+	IRuntime::IMessenger& m_messenger;
 };
 
 }

@@ -36,8 +36,6 @@ void CMessage::SerializeHeader()
 	m_serializerPosition = m_messageBuffer;
 	memcpy(m_serializerPosition,&m_msgID, sizeof(m_msgID));
 	m_serializerPosition += sizeof(m_msgID);
-	memcpy(m_serializerPosition, &m_msgPrio, sizeof( m_msgPrio));
-	m_serializerPosition += sizeof(m_msgPrio);
 	memcpy(m_serializerPosition, &m_timestamp, sizeof( m_timestamp));
 	m_serializerPosition += sizeof(m_timestamp);
 }
@@ -47,8 +45,6 @@ void CMessage::DeserializeHeader()
 	m_serializerPosition = m_messageBuffer;
 	memcpy(&m_msgID, m_serializerPosition, sizeof(m_msgID));
 	m_serializerPosition += sizeof(m_msgID);
-	memcpy(&m_msgPrio, m_serializerPosition, sizeof( m_msgPrio));
-	m_serializerPosition += sizeof(m_msgPrio);
 	memcpy(&m_timestamp, m_serializerPosition, sizeof( m_timestamp));
 	m_serializerPosition += sizeof(m_timestamp);
 }

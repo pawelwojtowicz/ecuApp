@@ -2,7 +2,7 @@
 #define RUNTIME_CMESSAGE_H
 #include "../Global/GlobalTypes.h"
 
-#define MSG_HEADER_SIZE ( sizeof(UInt32) + sizeof(UInt8) + sizeof(UInt32) )
+#define MSG_HEADER_SIZE ( sizeof(UInt32) + sizeof(UInt32) )
 
 namespace Runtime
 {
@@ -64,8 +64,6 @@ public:
 private:
 	template<typename TYPE> bool SetValueImpl(const TYPE& value );
 	template<typename TYPE> bool GetValueImpl( TYPE& value );
-
-
 
 private:
 	UInt32 m_msgID;

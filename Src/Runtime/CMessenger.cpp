@@ -133,15 +133,17 @@ void CMessenger::StartMsgProcessor()
 	{	
 		char messageBuffer[MSG_SIZE];
 		size_t messageSize(0);
+		UInt32 priority(0);
 
 		do
 		{
-			messageSize = mq_receive( m_ownQueueDescriptor, messageBuffer, MSG_SIZE, 0 );
+			messageSize = mq_receive( m_ownQueueDescriptor, messageBuffer, MSG_SIZE, &priority );
 			if ( messageSize > 0 )
 			{
 				CMessage message(messageBuffer, messageSize);
 				if ( message.IsValid() )
 				{
+					message.SetMsgPrio(static_cast<UInt8>(priority));
 					tMsgId2SubscriberIterator pIter = m_msgId2SubscriberMap.find( message.GetMessageId() );
 					if ( m_msgId2SubscriberMap.end() != pIter )
 					{
