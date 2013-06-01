@@ -2,5 +2,6 @@ include ../../DevEnv/commonSettings
 
 export OUTPUT_POSTFIX:=
 export INSTALL_PATH:=$(TARGET_PATH)/bin
+LFLAGS+= -lRuntime -lrt
 
 include ../../DevEnv/buildingRules
