@@ -153,6 +153,11 @@ void CMessenger::StartMsgProcessor()
 	}
 }
 
+void CMessenger::StopMsgProcessor()
+{
+	m_run = false;
+}
+
 CMessenger::tQueueMapIter CMessenger::FindQueueByName( const std::string& queueName )
 {
 	for (tQueueMapIter iter = m_queueName2QueueDescMap.begin() ; iter != m_queueName2QueueDescMap.end() ; ++iter )

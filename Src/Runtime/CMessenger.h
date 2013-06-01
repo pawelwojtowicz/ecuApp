@@ -4,7 +4,8 @@
 #include <mqueue.h>
 #include <map>
 #include <string>
-#include "../Global/GlobalTypes.h"
+#include "GlobalTypes.h"
+#include "IMessenger.h"
 
 namespace Runtime
 {
@@ -49,6 +50,8 @@ public:
 	bool PostMessage( const CMessage& message );
 
 	void StartMsgProcessor();
+
+	void StopMsgProcessor();
 
 private:
 	tQueueMapIter FindQueueByName( const std::string& queueName ); 

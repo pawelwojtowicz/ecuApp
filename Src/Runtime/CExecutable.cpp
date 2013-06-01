@@ -13,7 +13,8 @@ void timerHandler( int signalNo )
 namespace Runtime
 {
 
-CExecutable::CExecutable()
+CExecutable::CExecutable(const std::string& unitName)
+: m_processName(unitName)
 {
 	__pExecutable = this;
 }
@@ -52,8 +53,12 @@ bool CExecutable::InitializeTimer( const UInt32& startAfter )
 	delay.it_interval.tv_sec = 1;
 	delay.it_interval.tv_usec = 0;
 
-	return ( 0 != setitimer(ITIMER_REAL, &delay, NULL) );
-	
+	return ( 0 != setitimer(ITIMER_REAL, &delay, NULL) );	
+}
+
+const std::string& CExecutable::GetUnitName()
+{
+	return m_processName;
 }
 
 }
