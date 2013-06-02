@@ -19,8 +19,6 @@ class CMessenger
 	{
 		std::string QueueName;
 		mqd_t QueueDescriptor;
-		long MaxMsgs;
-		long MaxMsgSize;
 	};
 	typedef std::map<UInt32, QueueDetails> tQueueName2QueueDescriptorMap;
 	typedef tQueueName2QueueDescriptorMap::const_iterator tQueueMapConstIter;
@@ -35,8 +33,12 @@ public:
 	virtual ~CMessenger();
 
 	//general initialization
-	bool Initialize(const std::string& componentName);
+	bool Initialize(const std::string& runtimeUnitName);
 	bool Shutdown();
+
+	bool GetQueueParameters(Int32& maxNoMsg, Int32& maxMsgSize, Int32& currentQueueSize);
+	bool SetQueueCapacity( const Int32& queueCapacity);
+	bool SetMaxMessageSize( const Int32& maxMsgSize);
 
 	//initialization of the transmitter
 	UInt32 ConnectQueue(const std::string& queueName);
@@ -63,9 +65,9 @@ private:
 
 	bool m_run;
 
+	UInt32 m_currentID;
 	mqd_t m_ownQueueDescriptor;
 
-	UInt32 m_currentID;
 };
 
 }

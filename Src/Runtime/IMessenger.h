@@ -14,17 +14,18 @@ public:
 	virtual ~IMessenger() {};
 
 public:
-
+	virtual bool Initialize( const std::string& runtimeUnitQueueName) = 0;
+	virtual bool Shutdown() = 0;
 	//initialization of the transmitter
-	UInt32 ConnectQueue(const std::string& queueName);
-	bool DisconnectQueue(const std::string& queueName);
+	virtual UInt32 ConnectQueue(const std::string& queueName) = 0;
+	virtual bool DisconnectQueue(const std::string& queueName) = 0;
 
 	//initialization of the receiver
-	bool SubscribeMessage( const UInt32& msgId, ISubscriber* pSubscriber );
-	bool UnsubscribeMessage( const UInt32& msgId, ISubscriber* pSubscriber );
+	virtual bool SubscribeMessage( const UInt32& msgId, ISubscriber* pSubscriber ) = 0;
+	virtual bool UnsubscribeMessage( const UInt32& msgId, ISubscriber* pSubscriber ) = 0;
 
 	//send message
-	bool PostMessage( const CMessage& message );
+	virtual bool PostMessage( const CMessage& message ) = 0;
 
 private:
 	IMessenger& operator=(const IMessenger&);

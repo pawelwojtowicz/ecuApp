@@ -1,6 +1,7 @@
 #include "CMessenger.h"
 #include "CMessage.h"
 #include "ISubscriber.h"
+#include <RuntimeConst.h>
 #include <fcntl.h>
 #include <sys/stat.h>
 
@@ -9,13 +10,16 @@
 #include <string.h>
 
 #define MSG_SIZE 256
+#define BROADCAST_QUEUE_ID 0
+#define OWN_QUEUE_ID 1
 
 namespace Runtime
 {
 
 CMessenger::CMessenger()
 : m_run( true )
-, m_currentID( 1 )
+, m_currentID( 2 ) // 0 = broadcast queue, 1 = own queue.
+, m_ownQueueDescriptor(-1)
 {
 }
 
@@ -24,14 +28,31 @@ CMessenger::~CMessenger()
 }
 
 	//general initialization
-bool CMessenger::Initialize(const std::string& componentName)
+bool CMessenger::Initialize(const std::string& runtimeUnitName)
 {
 	bool retVal(false);
 // create own message queue - R/W writes
 
-// attach to broadast queue
+	m_ownQueueDescriptor = mq_open( runtimeUnitName.c_str() , O_RDWR|O_CREAT, S_IRWXU, NULL);
+	if(-1 != m_ownQueueDescriptor)
+	{
+		// initialize the own QUEUE
+		QueueDetails qd;
+		qd.QueueName = runtimeUnitName;
+		qd.QueueDescriptor = m_ownQueueDescriptor;
+		m_queueName2QueueDescMap.insert(tQueueName2QueueDescriptorMap::value_type(OWN_QUEUE_ID,qd));
 
-// register broadcast queue
+		// initialize the BROADCAST queue, all of the
+		QueueDetails broadcastQueueDetails;
+		broadcastQueueDetails.QueueName = std::string(s_BroadcastQueueName);
+		broadcastQueueDetails.QueueDescriptor = mq_open( s_BroadcastQueueName , O_WRONLY|O_CREAT, S_IRWXU, NULL);
+		if ( -1 != broadcastQueueDetails.QueueDescriptor)
+		{
+			m_queueName2QueueDescMap.insert(tQueueName2QueueDescriptorMap::value_type(BROADCAST_QUEUE_ID,broadcastQueueDetails) );
+			retVal = true;
+		}
+	}
+
 	return retVal;
 }
 
@@ -46,6 +67,61 @@ bool CMessenger::Shutdown()
 	return retVal;
 }
 
+bool CMessenger::GetQueueParameters(Int32& maxNoMsg, Int32& maxMsgSize, Int32& currentQueueSize)
+{
+	bool retVal(false);
+	if ( -1 != m_ownQueueDescriptor )
+	{
+		mq_attr queueAttributes;
+		if ( 0 == mq_getattr(m_ownQueueDescriptor,&queueAttributes) )
+		{
+			maxNoMsg = queueAttributes.mq_maxmsg;
+			maxMsgSize = queueAttributes.mq_msgsize;
+			currentQueueSize = queueAttributes.mq_curmsgs;
+			retVal = true;
+		}
+	}
+
+	return retVal;
+}
+
+bool CMessenger::SetQueueCapacity( const Int32& queueCapacity)
+{
+	bool retVal(false);
+	if ( -1 != m_ownQueueDescriptor )
+	{
+		mq_attr queueAttributes;
+		if ( 0 == mq_getattr(m_ownQueueDescriptor,&queueAttributes) )
+		{
+			queueAttributes.mq_maxmsg = queueCapacity ;
+			if ( 0 == mq_setattr(m_ownQueueDescriptor,&queueAttributes , NULL) )
+			{
+				retVal = true;
+			}
+		}
+	}
+	return retVal;
+}
+
+bool CMessenger::SetMaxMessageSize( const Int32& maxMsgSize)
+{
+	bool retVal(false);
+	if ( -1 != m_ownQueueDescriptor )
+	{
+		mq_attr queueAttributes;
+		if ( 0 == mq_getattr(m_ownQueueDescriptor,&queueAttributes) )
+		{
+			queueAttributes.mq_msgsize = maxMsgSize ;
+			if ( 0 == mq_setattr(m_ownQueueDescriptor,&queueAttributes, NULL) )
+			{
+				retVal = true;
+			}
+		}
+	}
+	return retVal;
+}
+
+
 //initialization of the transmitter
 UInt32 CMessenger::ConnectQueue(const std::string& queueName)
 {
@@ -57,14 +133,9 @@ UInt32 CMessenger::ConnectQueue(const std::string& queueName)
 
 		if ( -1 != queueDescriptor )
 		{
-			mq_attr queueAttributes;
-			mq_getattr(queueDescriptor,&queueAttributes);
-
 			QueueDetails qd;
 			qd.QueueName = queueName;
 			qd.QueueDescriptor = queueDescriptor;
-			qd.MaxMsgs = queueAttributes.mq_maxmsg;
-			qd.MaxMsgSize = queueAttributes.mq_msgsize;
 
 			queueID = m_currentID++;
 			m_queueName2QueueDescMap.insert(tQueueName2QueueDescriptorMap::value_type(queueID,qd));

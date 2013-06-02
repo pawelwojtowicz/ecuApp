@@ -1,7 +1,7 @@
 #ifndef RUNTIMECONST_H
 #define RUNTIMECONST_H
 
-static char[] s_BroadcastQueueName = {"/BroadcastQueue"};
+static char s_BroadcastQueueName[] = {"/BroadcastQueue"};
 
 typedef enum
 {
