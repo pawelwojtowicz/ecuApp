@@ -9,7 +9,7 @@
 #include <errno.h>
 #include <string.h>
 
-#define MSG_SIZE 256
+#define MSG_SIZE 8192
 #define BROADCAST_QUEUE_ID 0
 #define OWN_QUEUE_ID 1
 
@@ -40,17 +40,9 @@ bool CMessenger::Initialize(const std::string& runtimeUnitName)
 		QueueDetails qd;
 		qd.QueueName = runtimeUnitName;
 		qd.QueueDescriptor = m_ownQueueDescriptor;
-		m_queueName2QueueDescMap.insert(tQueueName2QueueDescriptorMap::value_type(OWN_QUEUE_ID,qd));
-
-		// initialize the BROADCAST queue, all of the
-		QueueDetails broadcastQueueDetails;
-		broadcastQueueDetails.QueueName = std::string(s_BroadcastQueueName);
-		broadcastQueueDetails.QueueDescriptor = mq_open( s_BroadcastQueueName , O_WRONLY|O_CREAT, S_IRWXU, NULL);
-		if ( -1 != broadcastQueueDetails.QueueDescriptor)
-		{
-			m_queueName2QueueDescMap.insert(tQueueName2QueueDescriptorMap::value_type(BROADCAST_QUEUE_ID,broadcastQueueDetails) );
-			retVal = true;
-		}
+		qd.UsageCount = 1;
+		m_queueName2QueueDescMap.insert(tQueueId2QueueDescriptorMap::value_type(OWN_QUEUE_ID,qd));
+		retVal = true;
 	}
 
 	return retVal;
@@ -123,11 +115,11 @@ bool CMessenger::SetMaxMessageSize( const Int32& maxMsgSize)
 
 
 //initialization of the transmitter
-UInt32 CMessenger::ConnectQueue(const std::string& queueName)
+Int32 CMessenger::ConnectQueue(const std::string& queueName)
 {
-	UInt32 queueID(-1);
-	tQueueMapConstIter pCIter = FindQueueByName(queueName);
-	if ( m_queueName2QueueDescMap.end() == pCIter )
+	Int32 queueID(-1);
+	tQueueMapIter pIter = FindQueueByName(queueName);
+	if ( m_queueName2QueueDescMap.end() == pIter )
 	{
 		mqd_t queueDescriptor = mq_open( queueName.c_str() , O_WRONLY|O_CREAT, S_IRWXU, NULL);
 
@@ -136,14 +128,16 @@ UInt32 CMessenger::ConnectQueue(const std::string& queueName)
 			QueueDetails qd;
 			qd.QueueName = queueName;
 			qd.QueueDescriptor = queueDescriptor;
+			qd.UsageCount = 1;
 
 			queueID = m_currentID++;
-			m_queueName2QueueDescMap.insert(tQueueName2QueueDescriptorMap::value_type(queueID,qd));
+			m_queueName2QueueDescMap.insert(tQueueId2QueueDescriptorMap::value_type(queueID,qd));
 		}
 	}
 	else
 	{
-		queueID = pCIter->first;
+		++pIter->second.UsageCount;
+		queueID = pIter->first;
 	}
 	return queueID;
 }
@@ -155,29 +149,41 @@ bool CMessenger::DisconnectQueue(const std::string& queueName)
 	{
 		if ( mq_close( pIter->second.QueueDescriptor ) )
 		{
-			m_queueName2QueueDescMap.erase(pIter);
-			return true;
+			--pIter->second.UsageCount;
+			if (pIter->second.UsageCount <= 0 )
+			{
+				m_queueName2QueueDescMap.erase(pIter);
+				return true;
+			}
 		}
 	}
 	return false;
 }
 
 //initialization of the receiver
-bool CMessenger::SubscribeMessage( const UInt32& msgId, ISubscriber* pSubscriber )
+bool CMessenger::SubscribeMessage(  const Int32& supplierQueueId, const tMsgIds& msgId, ISubscriber* pSubscriber )
 {
 	if ( m_msgId2SubscriberMap.end() == m_msgId2SubscriberMap.find( msgId ) )
 	{
 		m_msgId2SubscriberMap.insert(tMsgId2SubscriberMap::value_type(msgId,pSubscriber));
+		if ( supplierQueueId > OWN_QUEUE_ID )
+		{
+			PostSubscriptionMessage( supplierQueueId, msgId, true );
+		}
 		return true;
 	}
 	return false;
 }
 
-bool CMessenger::UnsubscribeMessage( const UInt32& msgId, ISubscriber* pSubscriber )
+bool CMessenger::UnsubscribeMessage( const Int32& supplierQueueId,const tMsgIds& msgId, ISubscriber* pSubscriber )
 {
 	tMsgId2SubscriberIterator pIter = m_msgId2SubscriberMap.find( msgId );
 	if ( m_msgId2SubscriberMap.end() != pIter  )
 	{
+		if ( supplierQueueId > OWN_QUEUE_ID )
+		{
+			PostSubscriptionMessage( supplierQueueId, msgId, false );
+		}
 		m_msgId2SubscriberMap.erase(pIter);
 		return true;
 	}
@@ -185,14 +191,37 @@ bool CMessenger::UnsubscribeMessage( const UInt32& msgId, ISubscriber* pSubscrib
 }
 
 //send message
-bool CMessenger::PostMessage( const CMessage& message )
+bool CMessenger::PostMessage( CMessage& message )
 {
-	tQueueMapIter pIter = m_queueName2QueueDescMap.find( message.GetTargetId() );
-	if ( m_queueName2QueueDescMap.end() != pIter )
+	message.SerializeHeader();
+	Int32 targetId(message.GetTargetId());
+	if ( BROADCAST_QUEUE_ID == targetId )
 	{
-		if ( 0 == mq_send( pIter->second.QueueDescriptor , message.GetBuffer() , message.GetBufferSize(), message.GetMessagePrio() ) )
+		tMsgIdToInterestedQueuesIterator msgSubscribersIter = m_messageIdToQueueIdMap.find(message.GetMessageId());
+		if ( m_messageIdToQueueIdMap.end() != msgSubscribersIter )
 		{
-			return true;
+			tQueueIdSet& setOfQueueIds = msgSubscribersIter->second;
+			for	(	tQueueIdSetIterator queueIdIter = setOfQueueIds.begin() ; 
+						queueIdIter != setOfQueueIds.end() ; 
+						++queueIdIter )
+			{
+				tQueueMapIter pIter = m_queueName2QueueDescMap.find( message.GetTargetId() );
+				if ( m_queueName2QueueDescMap.end() != pIter )
+				{
+					mq_send( pIter->second.QueueDescriptor , message.GetBuffer() , message.GetBufferSize(), message.GetMessagePrio() );
+				}
+			}
+		}		
+	}
+	else
+	{
+		tQueueMapIter pIter = m_queueName2QueueDescMap.find( message.GetTargetId() );
+		if ( m_queueName2QueueDescMap.end() != pIter )
+		{
+			if ( 0 == mq_send( pIter->second.QueueDescriptor , message.GetBuffer() , message.GetBufferSize(), message.GetMessagePrio() ) )
+			{
+				return true;
+			}
 		}
 	}
 	return false;
@@ -209,19 +238,70 @@ void CMessenger::StartMsgProcessor()
 		do
 		{
 			messageSize = mq_receive( m_ownQueueDescriptor, messageBuffer, MSG_SIZE, &priority );
-			if ( messageSize > 0 )
+			if ( messageSize != -1 )
 			{
 				CMessage message(messageBuffer, messageSize);
 				if ( message.IsValid() )
 				{
-					message.SetMsgPrio(static_cast<UInt8>(priority));
-					tMsgId2SubscriberIterator pIter = m_msgId2SubscriberMap.find( message.GetMessageId() );
-					if ( m_msgId2SubscriberMap.end() != pIter )
+					message.DeserializeHeader();
+
+					tMsgIds msgId = message.GetMessageId();
+					switch ( msgId )
 					{
-						pIter->second->HandleMessage(message);
-					}
-				}				
+						case msgId_Runtime_SubscribeMessage:
+						{
+							std::string interestedQueueName;
+							UInt32 integerMsgId(0);	
+							if ( message.GetValue( interestedQueueName ) && message.GetValue( integerMsgId ) )
+							{
+								tMsgIds messageId = static_cast<tMsgIds>(integerMsgId);
+					
+								// connect to queue (increase reference count in case it's used already
+								Int32 queueId = ConnectQueue(interestedQueueName);
+
+								// check if this message already exists in the map
+								tMsgIdToInterestedQueuesIterator iter = m_messageIdToQueueIdMap.find(messageId);
+								if (iter != m_messageIdToQueueIdMap.end() )
+								{
+									if ( iter->second.end() == iter->second.find( queueId ) )
+									{
+										iter->second.insert( queueId );
+									}
+									else
+									{
+										// it already exists in the set - do not add/decrease ref count.
+										DisconnectQueue(interestedQueueName);
+									}
+								}
+								else
+								{
+									// msg id not yet exists in the map - add complete element to the map.
+									tQueueIdSet setForNewId;
+									setForNewId.insert( queueId );
+									m_messageIdToQueueIdMap.insert(tMsgIdToInterestedQueues::value_type(messageId, setForNewId) );
+								}
+							}
+						};break;
+						case msgId_Runtime_UnsubscribeMessage:
+						{
+						};break;
+
+						default:
+						{
+							message.SetMsgPrio(static_cast<UInt8>(priority));
+							tMsgId2SubscriberIterator pIter = m_msgId2SubscriberMap.find( msgId );
+							if ( m_msgId2SubscriberMap.end() != pIter )
+							{
+								pIter->second->HandleMessage(message);
+							}
+						}
+					}//switch
+				}	//			
 			} 
+			else
+			{
+				printf("blad %s\n", strerror(errno));
+			}
 		} while( m_run );
 	}
 }
@@ -243,5 +323,26 @@ CMessenger::tQueueMapIter CMessenger::FindQueueByName( const std::string& queueN
 
 	return m_queueName2QueueDescMap.end();
 }
+
+bool CMessenger::PostSubscriptionMessage( const Int32& supplierQueueId, tMsgIds messageId, bool subscribe )
+{
+	tQueueMapConstIter pCIter = m_queueName2QueueDescMap.find(supplierQueueId);
+	if ( m_queueName2QueueDescMap.end() != pCIter )
+	{
+		CMessage subscriptionMessage( 100 );
+		subscriptionMessage.SetMessageId(subscribe ? msgId_Runtime_SubscribeMessage : 																							 msgId_Runtime_UnsubscribeMessage);
+		subscriptionMessage.SetTargetId(supplierQueueId);	
+		subscriptionMessage.SetMsgPrio(255);
+
+		//setup the payload
+		subscriptionMessage.SetValue(pCIter->second.QueueName);
+		UInt32 integerMsgId(static_cast<UInt32>(messageId));
+		subscriptionMessage.SetValue(integerMsgId);
+
+		return PostMessage(subscriptionMessage);
+	}
+	return false;
+}
+
 }
 

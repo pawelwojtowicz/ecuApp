@@ -1,6 +1,7 @@
 #ifndef RUNTIME_CMESSAGE_H
 #define RUNTIME_CMESSAGE_H
-#include "../Global/GlobalTypes.h"
+#include "GlobalTypes.h"
+#include "RuntimeConst.h"
 
 #define MSG_HEADER_SIZE ( sizeof(UInt32) + sizeof(UInt32) )
 
@@ -13,8 +14,8 @@ public:
 	CMessage( Int8* buffer, size_t size );
 	virtual ~CMessage();
 
-	inline void SetMessageId( const UInt32& msgId ) { m_msgID = msgId; } ; 
-	inline const UInt32 GetMessageId() const { return m_msgID; };
+	inline void SetMessageId( const tMsgIds& msgId ) { m_msgID = msgId; } ; 
+	inline const tMsgIds GetMessageId() const { return m_msgID; };
 
 	inline void SetMsgPrio( const UInt8 msgPrio ) { m_msgPrio = msgPrio; };
 	inline const UInt8 GetMessagePrio() const { return m_msgPrio; } ;
@@ -27,8 +28,8 @@ public:
 		return ( m_messageSize >= MSG_HEADER_SIZE );
 	} ;
 
-	inline void SetTarget( const UInt32& targetQueueId ) { m_targetQueueId = targetQueueId; };
-	inline const UInt32 GetTargetId() const { return m_targetQueueId; };
+	inline void SetTargetId( const Int32& targetQueueId ) { m_targetQueueId = targetQueueId; };
+	inline const Int32 GetTargetId() const { return m_targetQueueId; };
 
 	void SerializeHeader();
 	void DeserializeHeader();
@@ -66,10 +67,10 @@ private:
 	template<typename TYPE> bool GetValueImpl( TYPE& value );
 
 private:
-	UInt32 m_msgID;
+	tMsgIds m_msgID;
 	UInt8  m_msgPrio;
 	UInt32 m_timestamp;
-	UInt32 m_targetQueueId;
+	Int32 m_targetQueueId;
 
 	size_t m_messageSize;
 	Int8* m_messageBuffer;

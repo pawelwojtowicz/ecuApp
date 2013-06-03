@@ -11,7 +11,7 @@ public:
 	ISubscriber() {};
 	~ISubscriber() {};
 	
-	virtual void HandleMessage( const CMessage& message ) = 0;
+	virtual void HandleMessage( CMessage& message ) = 0;
 };
 }
 

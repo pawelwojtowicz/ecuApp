@@ -3,8 +3,10 @@
 
 #include <mqueue.h>
 #include <map>
+#include <set>
 #include <string>
 #include "GlobalTypes.h"
+#include "RuntimeConst.h"
 #include "IMessenger.h"
 
 namespace Runtime
@@ -19,14 +21,24 @@ class CMessenger
 	{
 		std::string QueueName;
 		mqd_t QueueDescriptor;
+		UInt8 UsageCount;
 	};
-	typedef std::map<UInt32, QueueDetails> tQueueName2QueueDescriptorMap;
-	typedef tQueueName2QueueDescriptorMap::const_iterator tQueueMapConstIter;
-	typedef tQueueName2QueueDescriptorMap::iterator tQueueMapIter;
 
-	typedef std::map<UInt32, ISubscriber*> tMsgId2SubscriberMap;
-	typedef tMsgId2SubscriberMap::iterator tMsgId2SubscriberIterator;
-	typedef tMsgId2SubscriberMap::const_iterator tMsgId2SubscriberConstIterator;
+	// creates an association between QueueID and the QueueDetails structure. Used during PostingMessage
+	// to select right Queue descriptor depending on the TargetId
+	typedef std::map<Int32, QueueDetails> 							tQueueId2QueueDescriptorMap;
+	typedef tQueueId2QueueDescriptorMap::const_iterator tQueueMapConstIter;
+	typedef tQueueId2QueueDescriptorMap::iterator 			tQueueMapIter;
+
+	// matches the MsgId with the subscriber.
+	typedef std::map<tMsgIds, ISubscriber*> 			tMsgId2SubscriberMap;
+	typedef tMsgId2SubscriberMap::iterator			  tMsgId2SubscriberIterator;
+	typedef tMsgId2SubscriberMap::const_iterator 	tMsgId2SubscriberConstIterator;
+
+	typedef std::set<Int32> tQueueIdSet;
+	typedef tQueueIdSet::iterator tQueueIdSetIterator;
+	typedef std::map<tMsgIds, tQueueIdSet> tMsgIdToInterestedQueues;
+	typedef tMsgIdToInterestedQueues::iterator tMsgIdToInterestedQueuesIterator;
 public:
 	//construction/destruction
 	CMessenger();
@@ -41,27 +53,31 @@ public:
 	bool SetMaxMessageSize( const Int32& maxMsgSize);
 
 	//initialization of the transmitter
-	UInt32 ConnectQueue(const std::string& queueName);
+	Int32 ConnectQueue(const std::string& queueName);
 	bool DisconnectQueue(const std::string& queueName);
 
 	//initialization of the receiver
-	bool SubscribeMessage( const UInt32& msgId, ISubscriber* pSubscriber );
-	bool UnsubscribeMessage( const UInt32& msgId, ISubscriber* pSubscriber );
+	bool SubscribeMessage( const Int32& supplierQueueId, const tMsgIds& msgId, ISubscriber* pSubscriber );
+	bool UnsubscribeMessage( const Int32& supplierQueueId, const tMsgIds& msgId, ISubscriber* pSubscriber );
 
 	//send message
-	bool PostMessage( const CMessage& message );
+	bool PostMessage( CMessage& message );
 
 	void StartMsgProcessor();
 
 	void StopMsgProcessor();
 
 private:
-	tQueueMapIter FindQueueByName( const std::string& queueName ); 
+	tQueueMapIter FindQueueByName( const std::string& queueName );
+
+	bool PostSubscriptionMessage( const Int32& supplierQueueId, tMsgIds, bool subscribe );
 
 private:
-	tQueueName2QueueDescriptorMap m_queueName2QueueDescMap;
+	tQueueId2QueueDescriptorMap m_queueName2QueueDescMap;
 
 	tMsgId2SubscriberMap m_msgId2SubscriberMap;
+
+	tMsgIdToInterestedQueues m_messageIdToQueueIdMap;
 
 	bool m_run;
 
