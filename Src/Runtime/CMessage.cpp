@@ -6,7 +6,7 @@ namespace Runtime
 {
 
 CMessage::CMessage( const size_t payloadSize )
-: m_messageSize( MSG_HEADER_SIZE + payloadSize )
+: m_messageSize( MSG_HEADER_SIZE + payloadSize <= MAX_MSG_SIZE ? MSG_HEADER_SIZE + payloadSize : MAX_MSG_SIZE   )
 , m_messageBuffer( new Int8[m_messageSize] )
 , m_ownBuffer(true)
 , m_serializerPosition(m_messageBuffer+MSG_HEADER_SIZE)

@@ -9,7 +9,6 @@
 #include <errno.h>
 #include <string.h>
 
-#define MSG_SIZE 8192
 #define BROADCAST_QUEUE_ID 0
 #define OWN_QUEUE_ID 1
 
@@ -33,7 +32,12 @@ bool CMessenger::Initialize(const std::string& runtimeUnitName)
 	bool retVal(false);
 // create own message queue - R/W writes
 
-	m_ownQueueDescriptor = mq_open( runtimeUnitName.c_str() , O_RDWR|O_CREAT, S_IRWXU, NULL);
+	mq_attr queueAttributes;
+	queueAttributes.mq_flags = 0;
+	queueAttributes.mq_maxmsg = MAX_QUEUE_SIZE;
+	queueAttributes.mq_msgsize = MAX_MSG_SIZE;
+
+	m_ownQueueDescriptor = mq_open( runtimeUnitName.c_str() , O_RDWR|O_CREAT, S_IRWXU, &queueAttributes);
 	if(-1 != m_ownQueueDescriptor)
 	{
 		// initialize the own QUEUE
@@ -44,6 +48,12 @@ bool CMessenger::Initialize(const std::string& runtimeUnitName)
 		m_queueName2QueueDescMap.insert(tQueueId2QueueDescriptorMap::value_type(OWN_QUEUE_ID,qd));
 		retVal = true;
 	}
+	else
+	{
+		printf("Nie ma kolejki wlasnej\n");
+		printf("blad %s\n", strerror(errno));
+
+	}
 
 	return retVal;
 }
@@ -53,6 +63,7 @@ bool CMessenger::Shutdown()
 	bool retVal(false);
 // unregister broadcast queue
 
+	// trzeba zrobic unlink na kolejce
 // deattach from broadcast queue
 
 // dispose own queue
@@ -121,7 +132,12 @@ Int32 CMessenger::ConnectQueue(const std::string& queueName)
 	tQueueMapIter pIter = FindQueueByName(queueName);
 	if ( m_queueName2QueueDescMap.end() == pIter )
 	{
-		mqd_t queueDescriptor = mq_open( queueName.c_str() , O_WRONLY|O_CREAT, S_IRWXU, NULL);
+		mq_attr queueAttributes;
+		queueAttributes.mq_flags = 0;
+		queueAttributes.mq_maxmsg = MAX_QUEUE_SIZE;
+		queueAttributes.mq_msgsize = MAX_MSG_SIZE;
+
+		mqd_t queueDescriptor = mq_open( queueName.c_str() , O_WRONLY|O_CREAT, S_IRWXU, &queueAttributes);
 
 		if ( -1 != queueDescriptor )
 		{
@@ -147,15 +163,15 @@ bool CMessenger::DisconnectQueue(const std::string& queueName)
 	tQueueMapIter pIter = FindQueueByName( queueName );
 	if ( m_queueName2QueueDescMap.end() == pIter )
 	{
-		if ( mq_close( pIter->second.QueueDescriptor ) )
-		{
 			--pIter->second.UsageCount;
 			if (pIter->second.UsageCount <= 0 )
 			{
-				m_queueName2QueueDescMap.erase(pIter);
+				if ( mq_close( pIter->second.QueueDescriptor ) )
+				{
+					m_queueName2QueueDescMap.erase(pIter);
+				}
 				return true;
 			}
-		}
 	}
 	return false;
 }
@@ -231,14 +247,14 @@ void CMessenger::StartMsgProcessor()
 {
 	if ( -1 != m_ownQueueDescriptor )
 	{	
-		char messageBuffer[MSG_SIZE];
-		size_t messageSize(0);
+		char messageBuffer[MAX_MSG_SIZE];
+		Int32 messageSize(0);
 		UInt32 priority(0);
 
 		do
 		{
-			messageSize = mq_receive( m_ownQueueDescriptor, messageBuffer, MSG_SIZE, &priority );
-			if ( messageSize != -1 )
+			messageSize = mq_receive( m_ownQueueDescriptor, messageBuffer, MAX_MSG_SIZE, &priority );
+			if ( messageSize > 0 )
 			{
 				CMessage message(messageBuffer, messageSize);
 				if ( message.IsValid() )
