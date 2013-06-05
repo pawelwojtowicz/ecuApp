@@ -99,7 +99,14 @@ void CTimerManager::HandleMessage( CMessage& message )
 			if ( ( timerIter->second.active ) && ( timerIter->second.timerNextExpiration <= currentTime ) )
 			{
 				timerIter->second.timerSubscriber->NotifyTimer(timerIter->first);
-				timerIter->second.timerNextExpiration = currentTime + timerIter->second.timerPeriod; 
+				if (timerIter->second.timerPeriod > 0 )
+				{
+					timerIter->second.timerNextExpiration = currentTime + timerIter->second.timerPeriod;
+				}
+				else
+				{
+					timerIter->second.active = false;
+				} 
 			}
 		}
 	}
