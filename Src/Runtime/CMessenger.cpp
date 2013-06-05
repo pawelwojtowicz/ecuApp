@@ -9,8 +9,6 @@
 #include <errno.h>
 #include <string.h>
 
-#define BROADCAST_QUEUE_ID 0
-#define OWN_QUEUE_ID 1
 
 namespace Runtime
 {
@@ -40,6 +38,7 @@ bool CMessenger::Initialize(const std::string& runtimeUnitName)
 	m_ownQueueDescriptor = mq_open( runtimeUnitName.c_str() , O_RDWR|O_CREAT, S_IRWXU, &queueAttributes);
 	if(-1 != m_ownQueueDescriptor)
 	{
+		printf("jest wlasna kolejka\n");
 		// initialize the own QUEUE
 		QueueDetails qd;
 		qd.QueueName = runtimeUnitName;

@@ -26,6 +26,7 @@ void CExecutable::InitModule(int argc, char** argv)
 		std::string argString(argv[i]);
 		m_arguments.push_back(argString);
 	}
+	Initialize();
 }
 
 const std::string& CExecutable::GetArgument( const UInt8& argNo )

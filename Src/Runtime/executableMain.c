@@ -1,5 +1,4 @@
 #include "CExecutable.h"
-#include <stdio.h>
 
 Runtime::CExecutable* __pExecutable;
 
