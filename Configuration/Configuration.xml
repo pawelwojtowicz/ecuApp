@@ -1,0 +1,20 @@
+<Configuration>
+	<CNode Name="mainNode1">
+		<Parameter Name="Par1" Type="UInt32">114</Parameter>
+		<Parameter Name="Par2" Type="Int8">432</Parameter>
+		<Parameter Name="Par3" Type="UInt32">4432</Parameter>
+		<Parameter Name="Par4" Type="UInt32">4323</Parameter>
+	</CNode>
+	<CNode Name="mainNode2">
+		<CNode Name="KolejneZagniezdzenie3">
+			<Parameter Name="Par1" Type="UInt32">4</Parameter>
+			<Parameter Name="Par2" Type="Int8">4</Parameter>
+			<Parameter Name="Par3" Type="UInt32">3</Parameter>
+			<Parameter Name="Par4" Type="UInt32">3</Parameter>
+		</CNode>
+		<Parameter Name="Par1" Type="UInt32">1</Parameter>
+		<Parameter Name="Par2" Type="Int8">2</Parameter>
+		<Parameter Name="Par3" Type="UInt32">3</Parameter>
+		<Parameter Name="Par4" Type="UInt32">4</Parameter>
+	</CNode>
+</Configuration>
