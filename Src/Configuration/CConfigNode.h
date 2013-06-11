@@ -20,6 +20,8 @@ public:
 	void AddParameter( const std::string& parameterName, const std::string& type, const std::string& value );	
 
 
+	const CConfigNode* GetConfigNode(const std::string& configNodeName) const;
+	const CParameter* GetParameter( const std::string& parameterName ) const;
 private:
 	tName2ConfigNodeMap m_configNodesMap;
 

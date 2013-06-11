@@ -39,9 +39,8 @@ CConfigNode* CConfiguration::ScanNode( const XMLNode& node )
 	CConfigNode* pConfigNode = new CConfigNode();
 	if ( 0 != pConfigNode )
 	{
-	//scan the nodes first
+		//scan the nodes first
 		UInt32 noOfNodes( node.nChildNode(sConst_ConfigurationNode));
-		printf("found nodes %d\n", noOfNodes);
 		for(UInt32 nodeIdx = 0 ; nodeIdx < noOfNodes ; ++nodeIdx )
 		{
 			const XMLNode& subnode = node.getChildNode( sConst_ConfigurationNode , nodeIdx );
@@ -49,7 +48,6 @@ CConfigNode* CConfiguration::ScanNode( const XMLNode& node )
 			const std::string& subnodeName = subnode.getAttribute(sConst_ConfigurationTag_KeyName);
 			if (!subnodeName.empty())
 			{
-				printf("Znaleziono podgalonz %s\n", subnodeName.c_str());
 				CConfigNode* targetNodeStructure = ScanNode(subnode);
 				if ( 0 != targetNodeStructure )
 				{
@@ -57,10 +55,8 @@ CConfigNode* CConfiguration::ScanNode( const XMLNode& node )
 				}
 			}
 		}
-
-	//scan parameters
+		//scan parameters
 		UInt32 noOfParameters( node.nChildNode(sConst_ConfigurationParameter));
-		printf("found parameters %d\n", noOfParameters);
 		for(UInt32 paramIdx = 0 ; paramIdx < noOfParameters ; ++paramIdx )
 		{
 			const XMLNode& paramNode = node.getChildNode( sConst_ConfigurationParameter , paramIdx );

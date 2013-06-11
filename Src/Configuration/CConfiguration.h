@@ -1,14 +1,14 @@
 #ifndef CONFIGURATION_CONFIGURATION_H
 #define CONFIGURATION_CONFIGURATION_H
 #include "GlobalTypes.h"
+#include "CConfigNode.h"
+#include "CParameter.h"
 
 
 class XMLNode;
 
 namespace Configuration
 {
-class CConfigNode;
-
 class CConfiguration
 {
 	CConfiguration( const std::string& configurationFileName );
