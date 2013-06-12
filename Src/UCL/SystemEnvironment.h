@@ -14,6 +14,8 @@ public:
 	static bool UnsetVariable( const std::string& variableName );
 
 	static bool ClearEnvironment();
+
+	static std::string ResolveEnvironmentVariable(const std::string& inputString);
 };
 
 }
