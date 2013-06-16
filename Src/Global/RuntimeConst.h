@@ -13,7 +13,10 @@ typedef enum
 	msgId_Runtime_SubscribeMessage,
 	msgId_Runtime_UnsubscribeMessage,
 	msgId_Runtime_Timer_1000,
-	msgId_Controller_TestMessage
+	msgId_Controller_InitDone,
+	msgId_Controller_Heartbeat,
+	msgId_Controller_RestartRequest,
+	msgId_Controller_ShutdownRequest,
 } tMsgIds;
 
 #endif
