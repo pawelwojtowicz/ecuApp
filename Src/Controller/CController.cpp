@@ -20,19 +20,6 @@ CController::CController()
 
 void CController::Initialize()
 {
-	m_controllerStub.Initialize();
-	if ( m_messenger.SubscribeMessage( OWN_QUEUE_ID, msgId_Runtime_Timer_1000, &m_timerManager) )
-	{
-		InitializeTimer();
-	}
-
-}
-
-
-Int32 CController::Run()
-{
-	
-
 	const Configuration::CConfigNode* pConfig = Configuration::CConfiguration::GetConfiguration("//home//tpdev//Programowanie//lnxEmbdDevice//Configuration//Configuration.xml");
 
 	if (pConfig != 0 )
@@ -44,7 +31,30 @@ Int32 CController::Run()
 	{
 		printf("NOK\n");
 	}
-	return 0;
+
+	m_controllerStub.Initialize();
+
+  m_timer1Id = ( GetTimerManager().CreateTimer(this) );
+  m_timer2Id = ( GetTimerManager().CreateTimer(this) );
+
+	GetTimerManager().SetTimer(m_timer1Id, 5,2);
+	GetTimerManager().SetTimer(m_timer2Id, 10,0);
+	
+	GetTimerManager().StartTimer(m_timer1Id);
+	GetTimerManager().StartTimer(m_timer2Id);
+
+	if ( m_messenger.SubscribeMessage( OWN_QUEUE_ID, msgId_Runtime_Timer_1000, &m_timerManager) )
+	{
+		InitializeTimer();
+	}
+}
+
+
+Int32 CController::Run()
+{
+	m_messenger.StartMsgProcessor();
+
+	 return 0;
 }
 
 	//called right before shutdown - release all the resources here
@@ -56,6 +66,18 @@ void CController::Shutdown()
 void CController::NotifyTimer()
 {
 	m_messenger.PostMessage(m_timerMessage);
+}
+
+void CController::NotifyTimer( const Int32& timerId )
+{
+	if (timerId == m_timer1Id )
+	{
+		printf("m_timer1Id jedzie co 2s\n");
+	}
+	else if (m_timer2Id == timerId)
+	{
+		printf("m_timer2Id jedzie raz po 10s\n");
+	}
 }
 
 }

@@ -8,12 +8,13 @@
 #include "Runtime/ISubscriber.h"
 #include "Runtime/CTimerManager.h"
 #include "Runtime/CMessage.h"
+#include "Runtime/ITimerListener.h"
 #include "ControllerInterface/CControllerStub.h"
 
 namespace Controller
 {
 
-class CController: public Runtime::CExecutable
+class CController: public Runtime::CExecutable, Runtime::ITimerListener
 {
 public:
 	CController();
@@ -25,6 +26,10 @@ public:
 
 private:
 	virtual void NotifyTimer();
+
+	virtual void NotifyTimer( const Int32& timerId );
+
+	Runtime::ITimerManager& GetTimerManager() { return m_timerManager; };
 	
 
 private:
@@ -35,6 +40,9 @@ private:
 	Runtime::CMessage m_timerMessage;
 
 	CControllerStub m_controllerStub;
+
+	Int32 m_timer1Id;
+	Int32 m_timer2Id;
 };
 
 }
