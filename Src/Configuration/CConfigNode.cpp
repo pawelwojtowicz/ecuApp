@@ -1,7 +1,7 @@
 #include "CConfigNode.h"
 #include "CParameter.h"
 #include <stdio.h>
-#include "CTokenizer.h"
+#include <UCL/CTokenizer.h>
 
 namespace Configuration
 {
