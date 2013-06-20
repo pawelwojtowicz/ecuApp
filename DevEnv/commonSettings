@@ -3,6 +3,7 @@ export ARCHIVER:=ar
 export BIN_PATH:= ../../Bin
 export INTERMEDIATE_PATH=$(BIN_PATH)/Intermediate
 export TARGET_PATH=$(BIN_PATH)/Target
+export SHARED_LIB_PATH=$(BIN_PATH)/Target/lib
 export CFLAGS:= -c -Wall -pedantic -I"../Global" -I".."
-export LFLAGS:= -pthread -L$(INTERMEDIATE_PATH)
+export LFLAGS:= -pthread -L$(INTERMEDIATE_PATH) -L$(SHARED_LIB_PATH)
 
