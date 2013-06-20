@@ -6,20 +6,37 @@
 #include "Runtime/CExecutable.h"
 #include "Runtime/CMessenger.h"
 #include "Runtime/ISubscriber.h"
+#include "Runtime/CTimerManager.h"
+#include "Runtime/CMessage.h"
+#include "ControllerInterface/CControllerStub.h"
 
-class CController: public Runtime::CExecutable, public Runtime::ISubscriber
+namespace Controller
+{
+
+class CController: public Runtime::CExecutable
 {
 public:
 	CController();
-	~CController() {};
+	virtual ~CController() {};
+
+	virtual void Initialize();
 	virtual Int32 Run();
-
-	virtual void HandleMessage( Runtime::CMessage& message );
-
+	virtual void Shutdown();
 
 private:
-	Runtime::CMessenger m_messager; 
+	virtual void NotifyTimer();
+	
 
+private:
+	Runtime::CMessenger m_messenger;
+
+	Runtime::CTimerManager m_timerManager;
+
+	Runtime::CMessage m_timerMessage;
+
+	CControllerStub m_controllerStub;
 };
+
+}
 
 #endif

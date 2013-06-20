@@ -1,5 +1,5 @@
 OUTPUT= libRuntime
-OBJ = CMessenger.o CMessage.o CSharedStorage.o CExecutable.o executableMain.o CStubBase.o CTimerManager.o CRuntimeUnit.o
+OBJ = CMessenger.o CMessage.o CSharedStorage.o CExecutable.o executableMain.o CStubBase.o CTimerManager.o CRuntimeUnit.o CStubBase.o
 
 include ../../DevEnv/staticLibSettings
 

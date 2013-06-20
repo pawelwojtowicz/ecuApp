@@ -21,6 +21,9 @@ protected:
 	Runtime::IMessenger& GetMessenger();
 
 private:
+	CStubBase(const CStubBase&);
+	CStubBase& operator=(const CStubBase&);
+
 	Runtime::IMessenger& m_rMessenger;
 
 	std::string m_runtimeUnitQueueName;

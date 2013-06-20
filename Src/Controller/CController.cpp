@@ -1,43 +1,61 @@
 #include "CController.h"
 #include "Runtime/CMessage.h"
+#include <Configuration/CConfiguration.h>
 
-CController gs;
+Controller::CController gs;
 
-CController::CController()
-: CExecutable("TestProcess")
+namespace Controller
 {
+CController::CController()
+: CExecutable("Controller")
+, m_messenger()
+, m_timerMessage(0)
+, m_controllerStub( m_messenger )
+{
+	m_timerMessage.SetMessageId(msgId_Runtime_Timer_1000);
+	m_timerMessage.SetMsgPrio(255);
+	m_timerMessage.SetTargetId(OWN_QUEUE_ID);
+}
+
+
+void CController::Initialize()
+{
+	m_controllerStub.Initialize();
+	if ( m_messenger.SubscribeMessage( OWN_QUEUE_ID, msgId_Runtime_Timer_1000, &m_timerManager) )
+	{
+		InitializeTimer();
+	}
 
 }
+
 
 Int32 CController::Run()
 {
-
-	if (m_messager.Initialize("/ControllerQueue") )
-	{
-		printf("Udalo sie - controller otworzyl kolejke\n");
-	}
-
-	Int32 a, b, c;
-	m_messager.GetQueueParameters(a,b,c);
-	printf("%d %d %d", a, b, c);
 	
-	if (m_messager.SubscribeMessage( 0, msgId_Controller_TestMessage, this ) )
+
+	const Configuration::CConfigNode* pConfig = Configuration::CConfiguration::GetConfiguration("//home//tpdev//Programowanie//lnxEmbdDevice//Configuration//Configuration.xml");
+
+	if (pConfig != 0 )
 	{
-		printf("Zarejestrowani na mesecz\n");
+		printf("OK\n");
+
 	}
-
-	m_messager.StartMsgProcessor();
-
+	else
+	{
+		printf("NOK\n");
+	}
 	return 0;
 }
 
-void CController::HandleMessage( Runtime::CMessage& message )
+	//called right before shutdown - release all the resources here
+void CController::Shutdown()
 {
-	printf("wszedl tutaj - jest nowy messecz\n");
-	std::string tekstMsga;
-	message.GetValue(tekstMsga);
-	UInt32 value(0);
-	message.GetValue( value );
 
-	printf("dane z MSGA [%s], [%d]\n", tekstMsga.c_str(), value);
+}
+
+void CController::NotifyTimer()
+{
+	m_messenger.PostMessage(m_timerMessage);
+}
+
 }

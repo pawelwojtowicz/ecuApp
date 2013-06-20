@@ -18,6 +18,7 @@ CStubBase::~CStubBase()
 bool CStubBase::Initialize()
 {
 //Initialize own queue;
+	m_rMessenger.Initialize(m_runtimeUnitQueueName);
 	return true;
 }
 

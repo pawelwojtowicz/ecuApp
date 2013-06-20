@@ -15,7 +15,7 @@ namespace Runtime
 class ISubscriber;
 class CMessage;
 
-class CMessenger
+class CMessenger : public IMessenger
 {
 	struct QueueDetails
 	{

@@ -16,8 +16,10 @@ public:
 	virtual ~IMessenger() {};
 
 public:
+	virtual bool Initialize(const std::string& runtimeUnitName) = 0;
+	virtual bool Shutdown() = 0;
 	//initialization of the transmitter
-	virtual UInt32 ConnectQueue(const std::string& queueName) = 0;
+	virtual Int32 ConnectQueue(const std::string& queueName) = 0;
 	virtual bool DisconnectQueue(const std::string& queueName) = 0;
 
 	//initialization of the receiver
@@ -25,7 +27,7 @@ public:
 	virtual bool UnsubscribeMessage( const Int32& supplierQueueId, const tMsgIds& msgId, ISubscriber* pSubscriber ) = 0;
 
 	//send message
-	virtual bool PostMessage( const CMessage& message ) = 0;
+	virtual bool PostMessage( CMessage& message ) = 0;
 
 private:
 	IMessenger& operator=(const IMessenger&);
