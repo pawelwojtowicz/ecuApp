@@ -34,7 +34,7 @@ private:
 																			const std::string& processQueue, 
 																			const std::string& unitVersion);
 	virtual void NotifyUnitHeartbeat(	const UInt32 unitId, 
-																		const tProcessStatus& status );
+																		const Controller::tProcessStatus& status );
 
 
 	virtual void NotifyShutdownRequest();

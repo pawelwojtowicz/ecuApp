@@ -3,6 +3,7 @@
 #include "IControllerServices.h"
 #include <Runtime/CMessenger.h>
 #include <Runtime/CMessage.h>
+#include <stdio.h>
 
 namespace Controller
 {
@@ -45,15 +46,39 @@ void CControllerStub::HandleMessage(Runtime::CMessage& rMessage)
 		{
 		case msgId_Controller_InitDone:
 			{
+				UInt32 unitId(0);
+				std::string versionInfo;
+				std::string queueName;
+				bool ok(false);
+				ok = rMessage.GetValue(unitId);
+			 	ok &= rMessage.GetValue(queueName);
+				ok &= rMessage.GetValue(versionInfo);
+	
+				if (ok)
+				{
+					m_pControllerServices->NotifyUnitInitialized(unitId, queueName, versionInfo);
+				}
 			};break;
 		case msgId_Controller_Heartbeat:
 			{
+				bool ok(false);
+				UInt32 unitId(0);
+				UInt8 unitStatus(0);
+				ok = rMessage.GetValue(unitId);
+			 	ok &= rMessage.GetValue(unitStatus);
+
+				if (ok)
+				{
+					m_pControllerServices->NotifyUnitHeartbeat(	unitId, static_cast<tProcessStatus>(unitStatus));
+				}
 			};break;
 		case msgId_Controller_RestartRequest:
 			{
+				m_pControllerServices->NotifyRestartRequest();
 			};break;
 		case msgId_Controller_ShutdownRequest:
 			{
+				m_pControllerServices->NotifyShutdownRequest();
 			};break;
 		default:;
 		};

@@ -29,12 +29,25 @@ bool CControllerProxy::ReportInitDone(const UInt32& processId, const std::string
 
 bool CControllerProxy::SendProcessHeartbeat(const UInt32 processId, const tProcessStatus& status )
 {
-	return true;
+	UInt8 intStatus(static_cast<UInt8>(status));
+	Runtime::CMessage initDoneMsg(256);
+	initDoneMsg.SetMessageId(msgId_Controller_Heartbeat);
+	initDoneMsg.SetMsgPrio(255);
+	initDoneMsg.SetTargetId(GetTargetQueueId());
+	initDoneMsg.SetValue(processId);
+	initDoneMsg.SetValue(intStatus);
+
+	return GetMessenger().PostMessage(initDoneMsg);
 }
 
 bool CControllerProxy::RequestShutdown()
 {
-	return true;
+	Runtime::CMessage initDoneMsg(256);
+	initDoneMsg.SetMessageId(msgId_Controller_ShutdownRequest);
+	initDoneMsg.SetMsgPrio(255);
+	initDoneMsg.SetTargetId(GetTargetQueueId());
+
+	return GetMessenger().PostMessage(initDoneMsg);
 }
 
 bool CControllerProxy::RequestRestart()

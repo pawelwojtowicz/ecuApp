@@ -75,18 +75,21 @@ void CController::NotifyUnitInitialized(	const UInt32& unitId,
 																			const std::string& processQueue, 
 																			const std::string& unitVersion)
 {
-	printf("Dostalem message NotifyUnitInitialized\n");
+	printf("Msg_initDone uid=[%d] pqName=[%s] unitVersion=[%s]\n", unitId, processQueue.c_str(), unitVersion.c_str() );
 }
 
 void CController::NotifyUnitHeartbeat(	const UInt32 unitId, 
-																		const tProcessStatus& status )
+																		const Controller::tProcessStatus& status )
 {
+	printf("Msg_Heartbeat uid=[%d] status=[%d]\n", unitId, status );
 }
 
 
 void CController::NotifyShutdownRequest()
 {
+	printf("Request Shutdown dostalem");
 }
+
 void CController::NotifyRestartRequest()
 {
 }
