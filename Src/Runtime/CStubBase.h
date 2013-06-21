@@ -1,6 +1,7 @@
 #ifndef RUNTIME_CSTUBBASE_H
 #define RUNTIME_CSTUBBASE_H
 #include <GlobalTypes.h>
+#include <RuntimeConst.h>
 #include "ISubscriber.h"
 
 namespace Runtime
@@ -19,6 +20,8 @@ public:
 
 protected:
 	Runtime::IMessenger& GetMessenger();
+
+	void SubscribeMessage(const tMsgIds& msgId );
 
 private:
 	CStubBase(const CStubBase&);

@@ -5,8 +5,9 @@
 
 namespace Controller
 {
-class CControllerProxy : Runtime::CProxyBase
+class CControllerProxy : public Runtime::CProxyBase
 {
+public:
 	CControllerProxy(Runtime::IMessenger& rMessenger);
 	virtual ~CControllerProxy();
 

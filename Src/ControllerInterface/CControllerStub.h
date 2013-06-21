@@ -6,10 +6,12 @@
 namespace Runtime
 {
 class CMessenger;
+class CMessage;
 }
 
 namespace Controller
 {
+class IControllerServices;
 
 class CControllerStub: public Runtime::CStubBase
 {
@@ -17,7 +19,7 @@ public:
 	CControllerStub( Runtime::IMessenger& rMessenger );
 	virtual ~CControllerStub();
 
-	virtual bool Initialize();
+	virtual bool Initialize(IControllerServices* pControllerServices);
 	virtual bool Shutdown();
 
 	virtual void HandleMessage(Runtime::CMessage& rMessage);
@@ -25,6 +27,7 @@ public:
 
 
 private:
+	IControllerServices* m_pControllerServices;
 };
 
 }

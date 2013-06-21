@@ -26,7 +26,7 @@ public:
 	virtual void NotifyTimer();
 
 protected:
-	IMessenger& GetMessenger();
+	IMessenger& GetMessenger() { return m_messenger;};
 
 	void InitializeTimerManager();
 

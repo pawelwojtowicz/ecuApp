@@ -10,11 +10,14 @@
 #include "Runtime/CMessage.h"
 #include "Runtime/ITimerListener.h"
 #include "ControllerInterface/CControllerStub.h"
+#include "ControllerInterface/IControllerServices.h"
 
 namespace Controller
 {
 
-class CController: public Runtime::CExecutable, Runtime::ITimerListener
+class CController:	public IControllerServices, 
+										public Runtime::CExecutable, 
+										public Runtime::ITimerListener
 {
 public:
 	CController();
@@ -25,9 +28,23 @@ public:
 	virtual void Shutdown();
 
 private:
-	virtual void NotifyTimer();
 
+	// implementation of Controller::IControllerServices
+	virtual void NotifyUnitInitialized(	const UInt32& unitId, 
+																			const std::string& processQueue, 
+																			const std::string& unitVersion);
+	virtual void NotifyUnitHeartbeat(	const UInt32 unitId, 
+																		const tProcessStatus& status );
+
+
+	virtual void NotifyShutdownRequest();
+	virtual void NotifyRestartRequest();
+
+	// Runtime infrastructure - handling of the timers - do not touch
+	virtual void NotifyTimer();
 	virtual void NotifyTimer( const Int32& timerId );
+
+	
 
 	Runtime::ITimerManager& GetTimerManager() { return m_timerManager; };
 	

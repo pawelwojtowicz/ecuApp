@@ -32,16 +32,7 @@ void CController::Initialize()
 		printf("NOK\n");
 	}
 
-	m_controllerStub.Initialize();
-
-  m_timer1Id = ( GetTimerManager().CreateTimer(this) );
-  m_timer2Id = ( GetTimerManager().CreateTimer(this) );
-
-	GetTimerManager().SetTimer(m_timer1Id, 5,2);
-	GetTimerManager().SetTimer(m_timer2Id, 10,0);
-	
-	GetTimerManager().StartTimer(m_timer1Id);
-	GetTimerManager().StartTimer(m_timer2Id);
+	m_controllerStub.Initialize(this);
 
 	if ( m_messenger.SubscribeMessage( OWN_QUEUE_ID, msgId_Runtime_Timer_1000, &m_timerManager) )
 	{
@@ -78,6 +69,26 @@ void CController::NotifyTimer( const Int32& timerId )
 	{
 		printf("m_timer2Id jedzie raz po 10s\n");
 	}
+}
+
+void CController::NotifyUnitInitialized(	const UInt32& unitId, 
+																			const std::string& processQueue, 
+																			const std::string& unitVersion)
+{
+	printf("Dostalem message NotifyUnitInitialized\n");
+}
+
+void CController::NotifyUnitHeartbeat(	const UInt32 unitId, 
+																		const tProcessStatus& status )
+{
+}
+
+
+void CController::NotifyShutdownRequest()
+{
+}
+void CController::NotifyRestartRequest()
+{
 }
 
 }
