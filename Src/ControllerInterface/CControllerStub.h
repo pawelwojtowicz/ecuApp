@@ -22,9 +22,13 @@ public:
 	virtual bool Initialize(IControllerServices* pControllerServices);
 	virtual bool Shutdown();
 
+	virtual bool BroadcastPendingShutdown();
+
+	virtual bool BroadcastShutdown();
+
+
+private:
 	virtual void HandleMessage(Runtime::CMessage& rMessage);
-
-
 
 private:
 	IControllerServices* m_pControllerServices;

@@ -7,6 +7,7 @@ CRuntimeUnit::CRuntimeUnit( const std::string& runtimeUnitName , const std::stri
 , m_timerMessage(0)
 , m_unitQueueName(unitQueueName)
 , m_unitReturnValue(0)
+, m_controllerProxy(m_messenger)
 {
 	m_timerMessage.SetMessageId(msgId_Runtime_Timer_1000);
 	m_timerMessage.SetMsgPrio(255);
@@ -21,6 +22,7 @@ CRuntimeUnit::~CRuntimeUnit()
 void CRuntimeUnit::Initialize()
 {
 	m_messenger.Initialize(m_unitQueueName);
+	m_controllerProxy.Initialize(this);
 }
 
 Int32 CRuntimeUnit::Run()
@@ -28,6 +30,18 @@ Int32 CRuntimeUnit::Run()
 	m_messenger.StartMsgProcessor();
 	return m_unitReturnValue;
 }
+
+void CRuntimeUnit::NotifyShutdownPending()
+{
+	printf("Pending shutdown\n");
+}
+
+void CRuntimeUnit::ShutdownProcess()
+{
+	printf("Stopping the msg processor");
+	m_messenger.StopMsgProcessor();
+}
+
 
 void CRuntimeUnit::Shutdown()
 {

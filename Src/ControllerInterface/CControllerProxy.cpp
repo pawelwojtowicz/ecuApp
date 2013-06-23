@@ -1,17 +1,38 @@
 #include "CControllerProxy.h"
 #include <Runtime/IMessenger.h>
 #include <Runtime/CMessage.h>
+#include "IControllerListener.h"
 #include "ControllerInterfaceConst.h"
+#include <stdio.h>
 
 namespace Controller
 {
 CControllerProxy::CControllerProxy(Runtime::IMessenger& rMessenger)
 : Runtime::CProxyBase(rMessenger, s_ControllerQueueName)
+, m_pControllerListener(0)
 {
 }
 
 CControllerProxy::~CControllerProxy()
 {
+}
+
+bool CControllerProxy::Initialize(IControllerListener* pListener)
+{
+	bool retVal(CProxyBase::Initialize());
+
+	if ( 0 != pListener )
+	{
+		m_pControllerListener = pListener;
+		retVal &= SubscribeMessage(msgId_Controller_PendingShutdown);
+		retVal &= SubscribeMessage(msgId_Controller_Shutdown); 
+	}
+	else
+	{
+		retVal = false;
+	}
+
+	return retVal;
 }
 
 bool CControllerProxy::ReportInitDone(const UInt32& processId, const std::string& processQueue, const std::string& unitVersion)
@@ -52,6 +73,31 @@ bool CControllerProxy::RequestShutdown()
 
 bool CControllerProxy::RequestRestart()
 {
-	return true;
+	Runtime::CMessage initDoneMsg(256);
+	initDoneMsg.SetMessageId(msgId_Controller_RestartRequest);
+	initDoneMsg.SetMsgPrio(255);
+	initDoneMsg.SetTargetId(GetTargetQueueId());
+
+	return GetMessenger().PostMessage(initDoneMsg);
 }
+
+void CControllerProxy::HandleMessage(Runtime::CMessage& rMessage)
+{
+	if (0 != m_pControllerListener)
+	{
+		switch ( rMessage.GetMessageId() )
+		{
+			case msgId_Controller_PendingShutdown:
+			{
+				m_pControllerListener->NotifyShutdownPending();
+			};break;
+			case msgId_Controller_Shutdown:
+			{
+				m_pControllerListener->ShutdownProcess();
+			};break;
+			default:;
+		}
+	}
+}
+
 }

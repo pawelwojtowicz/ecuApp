@@ -87,7 +87,19 @@ void CController::NotifyUnitHeartbeat(	const UInt32 unitId,
 
 void CController::NotifyShutdownRequest()
 {
-	printf("Request Shutdown dostalem");
+	static int a = 0;
+	printf("Request Shutdown dostalema = [%d]\n", a);
+
+	if ( a++%5 )
+	{
+		printf("Broadcast\n");
+		m_controllerStub.BroadcastPendingShutdown();
+	}
+
+	if (a > 10)
+	{
+		m_controllerStub.BroadcastShutdown();
+	}
 }
 
 void CController::NotifyRestartRequest()

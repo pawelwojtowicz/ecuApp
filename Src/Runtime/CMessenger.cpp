@@ -217,7 +217,7 @@ bool CMessenger::PostMessage( CMessage& message )
 						queueIdIter != setOfQueueIds.end() ; 
 						++queueIdIter )
 			{
-				tQueueMapIter pIter = m_queueName2QueueDescMap.find( message.GetTargetId() );
+				tQueueMapIter pIter = m_queueName2QueueDescMap.find( *queueIdIter );
 				if ( m_queueName2QueueDescMap.end() != pIter )
 				{
 					mq_send( pIter->second.QueueDescriptor , message.GetBuffer() , message.GetBufferSize(), message.GetMessagePrio() );

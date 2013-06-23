@@ -16,7 +16,9 @@ typedef enum
 	msgId_Controller_InitDone,
 	msgId_Controller_Heartbeat,
 	msgId_Controller_RestartRequest,
-	msgId_Controller_ShutdownRequest
+	msgId_Controller_ShutdownRequest,
+	msgId_Controller_PendingShutdown,
+	msgId_Controller_Shutdown
 } tMsgIds;
 
 #endif

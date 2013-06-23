@@ -3,11 +3,14 @@
 #include "CExecutable.h"
 #include "CTimerManager.h"
 #include "CMessage.h"
+#include "ControllerInterface/IControllerListener.h"
+#include "ControllerInterface/CControllerProxy.h"
 #include <stdio.h>
 
 namespace Runtime
 {
-class CRuntimeUnit: public CExecutable
+class CRuntimeUnit: public CExecutable,
+										public Controller::IControllerListener
 {
 public:
 	CRuntimeUnit( const std::string& runtimeUnitName, const std::string& runtimeUnitQueueName );
@@ -32,7 +35,14 @@ protected:
 
 	ITimerManager& GetTimerManager() { return m_timerManager; };
 
+	Controller::CControllerProxy& GetControllerProxy() { return m_controllerProxy; };
+
 	const std::string GetUnitQueueName() { return m_unitQueueName; };
+
+private:
+	virtual void NotifyShutdownPending();
+
+	virtual void ShutdownProcess();
 
 private:
 	CMessenger m_messenger;
@@ -44,6 +54,8 @@ private:
 	std::string m_unitQueueName;
 
 	Int32 m_unitReturnValue;
+
+	Controller::CControllerProxy m_controllerProxy;
 };
 
 }

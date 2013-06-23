@@ -5,11 +5,15 @@
 
 namespace Controller
 {
+class IControllerListener;
+
 class CControllerProxy : public Runtime::CProxyBase
 {
 public:
 	CControllerProxy(Runtime::IMessenger& rMessenger);
 	virtual ~CControllerProxy();
+
+	bool Initialize(IControllerListener* pListener);
 
 	bool ReportInitDone(const UInt32& processId, const std::string& processQueue, const std::string& unitVersion);
 
@@ -19,8 +23,12 @@ public:
 	bool RequestRestart();
 
 private:
+	void HandleMessage(Runtime::CMessage& rMessage);
+
 	CControllerProxy(const CControllerProxy&);
 	CControllerProxy& operator=(const CControllerProxy&);
+
+	IControllerListener* m_pControllerListener;
 };
 
 }

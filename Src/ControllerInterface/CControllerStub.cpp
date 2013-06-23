@@ -89,5 +89,27 @@ void CControllerStub::HandleMessage(Runtime::CMessage& rMessage)
 	}
 }
 
+bool CControllerStub::BroadcastPendingShutdown()
+{
+	Runtime::CMessage pendingShutdownMsg(256);
+	pendingShutdownMsg.SetMessageId(msgId_Controller_PendingShutdown);
+	pendingShutdownMsg.SetMsgPrio(255);
+	pendingShutdownMsg.SetTargetId(BROADCAST_QUEUE_ID);
+
+	return GetMessenger().PostMessage(pendingShutdownMsg);
+
+}
+
+bool CControllerStub::BroadcastShutdown()
+{
+	Runtime::CMessage shutdownMsg(256);
+	shutdownMsg.SetMessageId(msgId_Controller_Shutdown);
+	shutdownMsg.SetMsgPrio(255);
+	shutdownMsg.SetTargetId(BROADCAST_QUEUE_ID);
+
+	return GetMessenger().PostMessage(shutdownMsg);
+}
+
+
 
 }

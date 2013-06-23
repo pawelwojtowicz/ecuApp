@@ -19,7 +19,7 @@ public:
 	virtual bool Shutdown(); 
 
 protected:
-	Runtime::IMessenger& GetMessenger();
+	Runtime::IMessenger& GetMessenger() { return m_rMessenger;};
 
 	void SubscribeMessage(const tMsgIds& msgId );
 
