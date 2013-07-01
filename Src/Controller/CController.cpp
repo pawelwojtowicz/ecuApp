@@ -2,6 +2,9 @@
 #include "Runtime/CMessage.h"
 #include <Configuration/CConfiguration.h>
 
+static const char sCfg_WatchdogConfig[] = {"Watchdog"};
+static const char sCfg_ProcessManager[] = {"ProcessManager"};
+
 Controller::CController gs;
 
 namespace Controller
@@ -11,6 +14,8 @@ CController::CController()
 , m_messenger()
 , m_timerMessage(0)
 , m_controllerStub( m_messenger )
+, m_watchdogManager(m_timerManager)
+, m_processManager(m_timerManager)
 {
 	m_timerMessage.SetMessageId(msgId_Runtime_Timer_1000);
 	m_timerMessage.SetMsgPrio(255);
@@ -20,16 +25,34 @@ CController::CController()
 
 void CController::Initialize()
 {
-	const Configuration::CConfigNode* pConfig = Configuration::CConfiguration::GetConfiguration("//home//tpdev//Programowanie//lnxEmbdDevice//Configuration//Configuration.xml");
+	const Configuration::CConfigNode* pConfig = Configuration::CConfiguration::GetConfiguration("/home/tpdev/Programowanie/lnxEmbdDevice/Configuration/ControllerConfig.xml");
 
 	if (pConfig != 0 )
 	{
-		printf("OK\n");
+		const Configuration::CConfigNode* pWatchdogConfig = pConfig->GetConfigNode(sCfg_WatchdogConfig);
+		if ( 0 != pWatchdogConfig )
+		{
+			m_watchdogManager.Initialize(pWatchdogConfig);
+		}
+		else
+		{
+			printf("failed to initialize Watchdog\n");
+		}
+
+		const Configuration::CConfigNode* pProcessMgrConfig = pConfig->GetConfigNode(sCfg_ProcessManager);
+		if ( 0!= pProcessMgrConfig )
+		{
+			m_processManager.Initialize(pProcessMgrConfig);
+		}
+		else
+		{
+			printf("failed to initialize the process controller");
+		}
 
 	}
 	else
 	{
-		printf("NOK\n");
+		printf("Configuration file not found\n");
 	}
 
 	m_controllerStub.Initialize(this);

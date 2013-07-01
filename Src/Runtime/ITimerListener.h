@@ -1,5 +1,6 @@
 #ifndef RUNTIME_ITIMERLISTENER_H
 #define RUNTIME_ITIMERLISTENER_H
+#include <GlobalTypes.h>
 
 namespace Runtime
 {

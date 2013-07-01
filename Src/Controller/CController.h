@@ -11,6 +11,8 @@
 #include "Runtime/ITimerListener.h"
 #include "ControllerInterface/CControllerStub.h"
 #include "ControllerInterface/IControllerServices.h"
+#include "CWatchdogManager.h"
+#include "CProcessManager.h"
 
 namespace Controller
 {
@@ -57,6 +59,10 @@ private:
 	Runtime::CMessage m_timerMessage;
 
 	CControllerStub m_controllerStub;
+
+	CWatchdogManager m_watchdogManager;
+
+	CProcessManager m_processManager;
 
 	Int32 m_timer1Id;
 	Int32 m_timer2Id;
