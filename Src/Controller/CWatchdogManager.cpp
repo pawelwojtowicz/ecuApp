@@ -42,23 +42,14 @@ bool CWatchdogManager::Initialize( const Configuration::CConfigNode* configNode 
 
 	if ( 0 != configNode )
 	{
-		if ( configNode->GetParameter(sCfg_DeviceIdParName)->IsValid() &&
-					configNode->GetParameter(sCfg_DeviceIdParName)->GetString(m_watchdogDeviceName) )
-		{
-			printf("poprawnie pobrano %s %s\n", sCfg_WatchdogRefreshPeriod, m_watchdogDeviceName.c_str() );
-		}
+		m_watchdogDeviceName = configNode->GetParameter(sCfg_DeviceIdParName)->GetString(m_watchdogDeviceName);
+		printf("poprawnie pobrano %s %s\n", sCfg_WatchdogRefreshPeriod, m_watchdogDeviceName.c_str() );
 		
-		if ( configNode->GetParameter(sCfg_WatchdogRefreshPeriod)->IsValid() &&
-					configNode->GetParameter(sCfg_WatchdogRefreshPeriod)->GetUInt32(m_watchdogResetPeriod) )
-		{
-			printf("poprawnie pobrano %s %d\n", sCfg_WatchdogRefreshPeriod, m_watchdogResetPeriod );
-		}
+		m_watchdogResetPeriod = configNode->GetParameter(sCfg_WatchdogRefreshPeriod)->GetUInt32(m_watchdogResetPeriod);
+		printf("poprawnie pobrano %s %d\n", sCfg_WatchdogRefreshPeriod, m_watchdogResetPeriod );
 
-		if ( configNode->GetParameter(sCfg_WatchdogExpirationTimeout)->IsValid() &&
-					configNode->GetParameter(sCfg_WatchdogExpirationTimeout)->GetInt32(m_watchdogExpirationTimeout) )
-		{
-			printf("poprawnie pobrano %s %d\n", sCfg_WatchdogExpirationTimeout, m_watchdogExpirationTimeout );
-		}
+		m_watchdogExpirationTimeout = configNode->GetParameter(sCfg_WatchdogExpirationTimeout)->GetInt32(m_watchdogExpirationTimeout);
+		printf("poprawnie pobrano %s %d\n", sCfg_WatchdogExpirationTimeout, m_watchdogExpirationTimeout );
 
 		// initialize the watchdog driver
 		m_watchdogFD = open(m_watchdogDeviceName.c_str(), O_RDWR);

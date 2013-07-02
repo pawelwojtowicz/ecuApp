@@ -5,6 +5,17 @@
 
 namespace Configuration
 {
+
+CConfigNode::CConfigNode(const std::string& nodeName)
+: m_currentSubnode(m_configNodesMap.end())
+, m_nodeName(nodeName)
+{
+}
+
+CConfigNode::~CConfigNode()
+{
+}
+
 void CConfigNode::AddConfigNode( const std::string& nodeName, CConfigNode* pConfigNode )
 {
 	m_configNodesMap.insert( tName2ConfigNodeMap::value_type( nodeName, pConfigNode) );
@@ -60,6 +71,35 @@ const CParameter* CConfigNode::GetParameter( const std::string& parameterName ) 
 		return pParamCIter->second;
 	}
 	return &emptyParameter;
+}
+
+const CConfigNode* CConfigNode::GetFirstSubnode() const
+{
+	CConfigNode* pConfigNode = 0;
+
+	m_currentSubnode = m_configNodesMap.begin();
+
+	if ( m_configNodesMap.end() != m_currentSubnode )
+	{
+		pConfigNode = m_currentSubnode->second;
+	}
+
+	return pConfigNode;
+}
+
+const CConfigNode* CConfigNode::GetNextSubnode() const
+{
+	CConfigNode* pConfigNode = 0;
+	if (m_configNodesMap.end() != m_currentSubnode )
+	{
+		++m_currentSubnode;
+
+		if ( m_configNodesMap.end() !=m_currentSubnode )
+		{
+			pConfigNode = m_currentSubnode->second;
+		}
+	}
+	return pConfigNode;
 }
 
 

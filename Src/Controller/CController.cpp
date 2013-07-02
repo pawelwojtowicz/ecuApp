@@ -98,13 +98,13 @@ void CController::NotifyUnitInitialized(	const UInt32& unitId,
 																			const std::string& processQueue, 
 																			const std::string& unitVersion)
 {
-	printf("Msg_initDone uid=[%d] pqName=[%s] unitVersion=[%s]\n", unitId, processQueue.c_str(), unitVersion.c_str() );
+	m_processManager.NotifyUnitInitialized(	unitId,processQueue,unitVersion);
 }
 
 void CController::NotifyUnitHeartbeat(	const UInt32 unitId, 
 																		const Controller::tProcessStatus& status )
 {
-	printf("Msg_Heartbeat uid=[%d] status=[%d]\n", unitId, status );
+	m_processManager.NotifyUnitHeartbeat(	unitId, status );
 }
 
 

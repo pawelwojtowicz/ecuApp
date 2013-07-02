@@ -26,15 +26,15 @@ public:
 	virtual ~CParameter();
 
 	bool IsValid() const { return eTypeInvalid != m_parameterType; };
-	bool GetInt8( Int8& value ) const;
-	bool GetInt16( Int16& value ) const;
-	bool GetInt32( Int32& value ) const;
-	bool GetUInt8( UInt8& value ) const;
-	bool GetUInt16( UInt16& value ) const;
-	bool GetUInt32( UInt32& value ) const;
-	bool GetReal32( Real32& value ) const;
-	bool GetReal64( Real64& value ) const;
-	bool GetString( std::string& value) const;
+	const Int8 GetInt8( const Int8& value ) const;
+	const Int16 GetInt16( const Int16& value ) const;
+	const Int32 GetInt32( const Int32& value ) const;
+	const UInt8 GetUInt8( const UInt8& value ) const;
+	const UInt16 GetUInt16( const UInt16& value ) const;
+	const UInt32 GetUInt32( const UInt32& value ) const;
+	const Real32 GetReal32( const Real32& value ) const;
+	const Real64 GetReal64( const Real64& value ) const;
+	const std::string GetString( const std::string& value) const;
 private:
 	tParameterType m_parameterType;
 	

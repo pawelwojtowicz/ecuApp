@@ -11,12 +11,26 @@
 		</CNode>
 	</CNode>
 	<CNode Name="Watchdog">
-		<Parameter Name="DeviceId" Type="String">wtdf01:</Parameter>
+		<Parameter Name="DeviceId" Type="String">dupa</Parameter>
 		<Parameter Name="WatchdogRefreshPeriod" Type="UInt32">10</Parameter>
 		<Parameter Name="MaxWatchodCounter" Type="UInt32">3</Parameter>
 	</CNode>
 	<CNode Name="ProcessManager">
 		<CNode Name="Sample">
+			<Parameter Name="CommandLine" Type="String">testProcess</Parameter>
+			<Parameter Name="StartupGroup" Type="UInt8">1</Parameter>
+			<Parameter Name="ShutdownGroup" Type="UInt8">1</Parameter>
+			<Parameter Name="HeartbeatPeriod" Type="UInt32">15</Parameter>
+			<CNode Name="DebugZones">
+				<Parameter Name="Info" Type="bool">true</Parameter>
+				<Parameter Name="Error" Type="bool">true</Parameter>
+				<Parameter Name="Warning" Type="bool">true</Parameter>
+				<Parameter Name="Detail1" Type="bool">true</Parameter>
+				<Parameter Name="Detail2" Type="bool">true</Parameter>
+				<Parameter Name="Detail3" Type="bool">true</Parameter>
+			</CNode>
+		</CNode>
+		<CNode Name="DrugiProces">
 			<Parameter Name="CommandLine" Type="String">testProcess</Parameter>
 			<Parameter Name="StartupGroup" Type="UInt8">1</Parameter>
 			<Parameter Name="ShutdownGroup" Type="UInt8">1</Parameter>

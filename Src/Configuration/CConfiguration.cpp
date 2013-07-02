@@ -28,6 +28,7 @@ bool CConfiguration::LoadFile( const std::string& configurationFileName )
 
 	printf("opening the file: %s\n", configurationFileName.c_str());
 	XMLNode xMainNode=XMLNode::openFileHelper(configurationFileName.c_str(),sConst_ConfigurationMainNode);
+	printf("wszed\n");
 
 	m_pConfigNode = ScanNode( xMainNode );
 	
@@ -36,7 +37,9 @@ bool CConfiguration::LoadFile( const std::string& configurationFileName )
 
 CConfigNode* CConfiguration::ScanNode( const XMLNode& node )
 {
-	CConfigNode* pConfigNode = new CConfigNode();
+	
+	std::string nodeName = node.isAttributeSet(sConst_ConfigurationTag_KeyName) ? node.getAttribute(sConst_ConfigurationTag_KeyName) : std::string("n/a");
+	CConfigNode* pConfigNode = new CConfigNode(nodeName);
 	if ( 0 != pConfigNode )
 	{
 		//scan the nodes first

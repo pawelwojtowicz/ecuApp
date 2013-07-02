@@ -59,98 +59,90 @@ CParameter::~CParameter()
 {
 }
 
-bool CParameter::GetInt8( Int8& value ) const
+const Int8 CParameter::GetInt8( const Int8& value ) const
 {
 	if ( eTypeInt8 == m_parameterType )
 	{
 		Int32 tmp( atoi( m_parameterValue.c_str() ) );
-		value = static_cast<Int8>(tmp);
-		return true;
+		return static_cast<Int8>(tmp);
 	}
-	return false;
+	return value;
 }
 
-bool CParameter::GetInt16( Int16& value ) const
+const Int16 CParameter::GetInt16( const Int16& value ) const
 {
 	if ( eTypeInt16 == m_parameterType )
 	{
 		Int32 tmp( atoi( m_parameterValue.c_str() ) );
-		value = static_cast<Int16>(tmp);
-		return true;
+		return static_cast<Int16>(tmp);
 	}
-	return false;
+	return value;
 }
 
-bool CParameter::GetInt32( Int32& value ) const
+const Int32 CParameter::GetInt32( const Int32& value ) const
 {
 	if ( eTypeInt32 == m_parameterType )
 	{
-		value = atoi( m_parameterValue.c_str() );
-		return true;
+		return atoi( m_parameterValue.c_str() );
+		
 	}
-	return false;
+	return value;
 }
 
-bool CParameter::GetUInt8( UInt8& value ) const
+const UInt8 CParameter::GetUInt8( const UInt8& value ) const
 {
 	if ( eTypeUInt8 == m_parameterType )
 	{
 		UInt32 tmp( atoi( m_parameterValue.c_str() ) );
-		value = static_cast<UInt8>(tmp);
-		return true;
+		return static_cast<UInt8>(tmp);
 	}
-	return false;
+	return value;
 }
 
-bool CParameter::GetUInt16( UInt16& value ) const
+const UInt16 CParameter::GetUInt16( const UInt16& value ) const
 {
 	if ( eTypeUInt16 == m_parameterType )
 	{
 		UInt32 tmp( atoi( m_parameterValue.c_str() ) );
-		value = static_cast<UInt16>(tmp);
-		return true;
+		return static_cast<UInt16>(tmp);
 	}
-	return false;
+	return value;
 }
 
-bool CParameter::GetUInt32( UInt32& value ) const
+const UInt32 CParameter::GetUInt32( const UInt32& value ) const
 {
 	if ( eTypeUInt32 == m_parameterType )
 	{
-		value = atoi( m_parameterValue.c_str() );
-		return true;
+		return atoi( m_parameterValue.c_str() );
 	}
-	return false;
+	return value;
 }
 
-bool CParameter::GetReal32( Real32& value ) const
+const Real32 CParameter::GetReal32(  const Real32& value ) const
+{
+	if ( eTypeReal32 == m_parameterType )
+	{
+		return atof( m_parameterValue.c_str() );
+	}
+	return value;
+}
+
+const Real64 CParameter::GetReal64(  const Real64& value ) const
 {
 	if ( eTypeReal64 == m_parameterType )
 	{
-		value = atof( m_parameterValue.c_str() );
-		return true;
+		return atof( m_parameterValue.c_str() );
 	}
-	return false;
+	return value;
 }
 
-bool CParameter::GetReal64( Real64& value ) const
-{
-	if ( eTypeReal64 == m_parameterType )
-	{
-		value = atof( m_parameterValue.c_str() );
-		return true;
-	}
-	return false;
-}
-
-bool CParameter::GetString( std::string& value) const
+const std::string CParameter::GetString( const std::string& value) const
 {
 	if ( eTypeString == m_parameterType )
 	{
-		value = m_parameterValue;
-		return true;
+		return m_parameterValue;
 	}
-	return false;
+	return value;
 }
 
 }
