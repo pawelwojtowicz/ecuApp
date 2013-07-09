@@ -1,4 +1,5 @@
 #include "CRuntimeUnit.h"
+#include <cstdlib>
 
 namespace Runtime
 {
@@ -8,6 +9,7 @@ CRuntimeUnit::CRuntimeUnit( const std::string& runtimeUnitName , const std::stri
 , m_unitQueueName(unitQueueName)
 , m_unitReturnValue(0)
 , m_controllerProxy(m_messenger)
+, m_healthReporter(m_timerManager,m_controllerProxy)
 {
 	m_timerMessage.SetMessageId(msgId_Runtime_Timer_1000);
 	m_timerMessage.SetMsgPrio(255);
@@ -23,7 +25,24 @@ void CRuntimeUnit::Initialize()
 {
 	m_messenger.Initialize(m_unitQueueName);
 	m_controllerProxy.Initialize(this);
+
+	UInt32 runtimeUnitId(0);
+	UInt32 heartbeatPeriod(0);
+
+	if ( 3 == GetArgumentCount() )
+	{
+		runtimeUnitId = ::atoi(GetArgument(1).c_str());
+		heartbeatPeriod = ::atoi(GetArgument(2).c_str());
+		m_healthReporter.Initialize(runtimeUnitId, heartbeatPeriod);
+	}
 }
+
+void CRuntimeUnit::InitDone(const bool& initStatus)
+{
+	std::string versionInfo(__DATE__);
+	m_healthReporter.ReportInitDone(m_unitQueueName, versionInfo, initStatus);
+}
+
 
 Int32 CRuntimeUnit::Run()
 {
@@ -60,4 +79,20 @@ void CRuntimeUnit::InitializeTimerManager()
 		InitializeTimer();
 	}
 }
+
+void CRuntimeUnit::SetIddle()
+{
+	m_healthReporter.SetIddle();
+}
+
+void CRuntimeUnit::SetBusy()
+{
+	m_healthReporter.SetBusy();
+}
+
+void CRuntimeUnit::SetError()
+{
+	m_healthReporter.SetError();
+}
+
 }

@@ -19,6 +19,14 @@ class CProcessManager : public Runtime::ITimerListener
 {
 	typedef std::map< UInt32, CProcessHandler* > tProcessMap;
 	typedef tProcessMap::iterator tProcessIterator;
+
+	struct RuntimeUnitGroup
+	{
+		std::string GroupName;
+		UInt32 GroupId;
+	};
+	typedef std::map< UInt32, RuntimeUnitGroup > tTimerToGroupMap;
+	typedef tTimerToGroupMap::const_iterator tGroupIterator;
 public:
 	CProcessManager( Runtime::ITimerManager& rTimerManager );
 	virtual ~CProcessManager();
@@ -38,6 +46,8 @@ public:
 private:
 	CProcessManager(const CProcessManager&);
 	CProcessManager& operator=(const CProcessManager&);
+
+	tTimerToGroupMap m_timer2GroupMap;
 
 	tProcessMap m_processList;
 

@@ -15,7 +15,9 @@ public:
 
 	bool Initialize(IControllerListener* pListener);
 
-	bool ReportInitDone(const UInt32& processId, const std::string& processQueue, const std::string& unitVersion);
+	bool ReportInitDone(	const UInt32& processId, 
+												const std::string& processQueue, 
+												const std::string& unitVersion);
 
 	bool SendProcessHeartbeat(const UInt32 processId, const tProcessStatus& status );
 

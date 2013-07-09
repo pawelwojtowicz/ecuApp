@@ -11,6 +11,7 @@ class CConfigNode;
 
 namespace Controller
 {
+
 class CProcessHandler: public UCL::CThread
 {
 public:
@@ -30,10 +31,9 @@ private:
 	std::string m_executableFileName;
 	UInt8 m_startupGroup;
 	UInt8 m_shutdownGroup;
+
+	bool m_running;
 	
-
-
-
 	tProcessStatus m_processStatus;
 
 	std::string m_queueName;

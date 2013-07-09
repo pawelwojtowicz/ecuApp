@@ -20,7 +20,7 @@ bool CProcessManager::Initialize( const Configuration::CConfigNode* configNode )
 	bool retVal(false);
 	m_processMonitorTimerId = m_rTimerManager.CreateTimer(this);
 	m_rTimerManager.SetTimer( m_processMonitorTimerId , m_processMonitorInterval, m_processMonitorInterval);
-printf("processControllerInit\n");
+
 	const Configuration::CConfigNode* pProcessNode = configNode->GetFirstSubnode();
 	
 	UInt32 unitId(1);
@@ -32,10 +32,13 @@ printf("processControllerInit\n");
 		{
 			m_processList.insert(tProcessMap::value_type( unitId, pHandler ) );
 		}
-		
-		printf("ProcessName %s \n", pProcessNode->GetConfigNodeName().c_str() );
 		++unitId;
 		pProcessNode = configNode->GetNextSubnode();
+	}
+
+	for (tProcessIterator pIter = m_processList.begin() ; m_processList.end() != pIter ; ++pIter)
+	{
+		pIter->second->Start();
 	}
 
 	return retVal;

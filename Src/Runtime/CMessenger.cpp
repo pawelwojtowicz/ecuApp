@@ -133,7 +133,7 @@ Int32 CMessenger::ConnectQueue(const std::string& queueName)
 		queueAttributes.mq_maxmsg = MAX_QUEUE_SIZE;
 		queueAttributes.mq_msgsize = MAX_MSG_SIZE;
 
-		mqd_t queueDescriptor = mq_open( queueName.c_str() , O_WRONLY|O_CREAT, S_IRWXU, &queueAttributes);
+		mqd_t queueDescriptor = mq_open( queueName.c_str() , O_WRONLY|O_CREAT|O_NONBLOCK, S_IRWXU, &queueAttributes);
 
 		if ( -1 != queueDescriptor )
 		{

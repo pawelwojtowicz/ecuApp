@@ -5,6 +5,7 @@
 #include "CMessage.h"
 #include "ControllerInterface/IControllerListener.h"
 #include "ControllerInterface/CControllerProxy.h"
+#include "CHealthReporter.h"
 #include <stdio.h>
 
 namespace Runtime
@@ -39,6 +40,12 @@ protected:
 
 	const std::string GetUnitQueueName() { return m_unitQueueName; };
 
+	void SetIddle();
+	void SetBusy();
+	void SetError();
+
+	void InitDone(const bool& status);
+
 private:
 	virtual void NotifyShutdownPending();
 
@@ -49,13 +56,16 @@ private:
 
 	CTimerManager m_timerManager;
 
+	Controller::CControllerProxy m_controllerProxy;
+
+	CHealthReporter m_healthReporter;
+
 	CMessage m_timerMessage;
 
 	std::string m_unitQueueName;
 
 	Int32 m_unitReturnValue;
 
-	Controller::CControllerProxy m_controllerProxy;
 };
 
 }
