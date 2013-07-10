@@ -1,6 +1,6 @@
 #ifndef CONTROLLER_ICONTROLLERSERVICES_H
 #define CONTROLLER_ICONTROLLERSERVICES_H
-#include "ControllerInterfaceConst.h"
+#include <ControllerInterface/ControllerTypes.h>
 
 namespace Controller
 {

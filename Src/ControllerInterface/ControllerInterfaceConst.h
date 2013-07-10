@@ -5,14 +5,6 @@
 namespace Controller
 {
 static char s_ControllerQueueName[]={"/ControllerQueue"};
-
-typedef enum
-{
-	eStatus_None,	
-	eStatus_Iddle,
-	eStatus_Busy,
-	eStatus_Error
-} tProcessStatus;
 }
 
 

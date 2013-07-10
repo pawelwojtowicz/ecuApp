@@ -2,7 +2,7 @@
 #define CONTROLLER_CPROCESSHANDLER_H
 #include <GlobalTypes.h>
 #include <UCL/CThread.h>
-#include <ControllerInterface/ControllerInterfaceConst.h>
+#include <ControllerInterface/ControllerTypes.h>
 
 namespace Configuration
 {

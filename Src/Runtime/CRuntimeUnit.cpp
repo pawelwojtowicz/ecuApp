@@ -5,11 +5,11 @@ namespace Runtime
 {
 CRuntimeUnit::CRuntimeUnit( const std::string& runtimeUnitName , const std::string& unitQueueName )
 : CExecutable(runtimeUnitName)
+, m_controllerProxy(m_messenger)
+, m_healthReporter(m_timerManager,m_controllerProxy)
 , m_timerMessage(0)
 , m_unitQueueName(unitQueueName)
 , m_unitReturnValue(0)
-, m_controllerProxy(m_messenger)
-, m_healthReporter(m_timerManager,m_controllerProxy)
 {
 	m_timerMessage.SetMessageId(msgId_Runtime_Timer_1000);
 	m_timerMessage.SetMsgPrio(255);

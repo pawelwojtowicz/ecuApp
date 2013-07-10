@@ -15,12 +15,20 @@ namespace Controller
 CProcessHandler::CProcessHandler( const UInt32& unitId, const Configuration::CConfigNode* pConfigNode )
 : UCL::CThread( pConfigNode->GetConfigNodeName() )
 , m_processID(unitId)
-, m_hearbeatTimeout(2)
+, m_executableFileName()
+, m_startupGroup(0)
+, m_shutdownGroup(0)
 , m_running(true)
+, m_processStatus(eStatus_None)
+, m_queueName()
+, m_versionInformation()
+, m_lastHeartbeat(0)
+, m_hearbeatTimeout(5)
 {
 	m_executableFileName = pConfigNode->GetParameter(sCfg_ExecutableName)->GetString(std::string());
 	m_startupGroup = pConfigNode->GetParameter(sCfg_StartupGroup)->GetUInt8(0);
 	m_shutdownGroup = pConfigNode->GetParameter(sCfg_ShutdownGroup)->GetUInt8(0);
+	m_hearbeatTimeout = pConfigNode->GetParameter(sCfg_ShutdownGroup)->GetUInt32(m_hearbeatTimeout);
 }
 
 CProcessHandler::~CProcessHandler()
@@ -66,7 +74,7 @@ void CProcessHandler::Run()
 		if ( 0 == processId )
 		{
 			printf("starting[%s]\n",m_executableFileName.c_str());
-			execlp(m_executableFileName.c_str(),m_executableFileName.c_str(), runtimeIdStringBuffer, heartbeatPeriodStringBuffer,0);
+			execlp(m_executableFileName.c_str(),m_executableFileName.c_str(), runtimeIdStringBuffer, heartbeatPeriodStringBuffer,NULL);
 			printf("errno[%s]\n",strerror(errno));
 
 			sleep(10);

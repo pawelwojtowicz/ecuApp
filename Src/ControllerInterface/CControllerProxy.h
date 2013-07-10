@@ -1,7 +1,7 @@
 #ifndef CONTROLLER_CCONTROLLERPROXY_H
 #define CONTROLLER_CCONTROLLERPROXY_H
 #include <Runtime/CProxyBase.h>
-#include "ControllerInterfaceConst.h"
+#include "ControllerTypes.h"
 
 namespace Controller
 {

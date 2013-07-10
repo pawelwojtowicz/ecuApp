@@ -65,7 +65,6 @@ private:
 	std::string m_unitQueueName;
 
 	Int32 m_unitReturnValue;
-
 };
 
 }

@@ -32,7 +32,6 @@ bool CProxyBase::UnsubscribeMessage( const tMsgIds& msgId )
 
 void CProxyBase::HandleMessage(Runtime::CMessage& rMessage)
 {
-	rMessage;
 }
 
 

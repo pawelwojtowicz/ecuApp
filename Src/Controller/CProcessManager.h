@@ -1,7 +1,7 @@
 #ifndef CONTROLLER_CPROCESSMANAGER_H
 #define CONTROLLER_CPROCESSMANAGER_H
 #include <map>
-#include <ControllerInterface/ControllerInterfaceConst.h>
+#include <ControllerInterface/ControllerTypes.h>
 #include <Runtime/ITimerManager.h>
 #include <Runtime/ITimerListener.h>
 

@@ -1,7 +1,7 @@
 #ifndef RUNTIME_CHEALTHREPORTER_H
 #define RUNTIME_CHEALTHREPORTER_H
 #include "ITimerListener.h"
-#include <ControllerInterface/ControllerInterfaceConst.h>
+#include <ControllerInterface/ControllerTypes.h>
 
 namespace Controller
 {
