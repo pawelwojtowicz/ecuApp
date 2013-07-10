@@ -7,8 +7,9 @@
 #include <string.h>
 
 static char sCfg_ExecutableName[] = {"CommandLine"};
-static char sCfg_StartupGroup[] = {"StartupGroup"};
-static char sCfg_ShutdownGroup[] = {"ShutdownGroup"};
+static char sCfg_StartupGroup[] 	= {"StartupGroup"};
+static char sCfg_ShutdownGroup[] 	= {"ShutdownGroup"};
+static char sCfg_HeartbeatPeriod[]= {"HeartbeatPeriod"};
 
 namespace Controller
 {
@@ -28,7 +29,7 @@ CProcessHandler::CProcessHandler( const UInt32& unitId, const Configuration::CCo
 	m_executableFileName = pConfigNode->GetParameter(sCfg_ExecutableName)->GetString(std::string());
 	m_startupGroup = pConfigNode->GetParameter(sCfg_StartupGroup)->GetUInt8(0);
 	m_shutdownGroup = pConfigNode->GetParameter(sCfg_ShutdownGroup)->GetUInt8(0);
-	m_hearbeatTimeout = pConfigNode->GetParameter(sCfg_ShutdownGroup)->GetUInt32(m_hearbeatTimeout);
+	m_hearbeatTimeout = pConfigNode->GetParameter(sCfg_HeartbeatPeriod)->GetUInt32(m_hearbeatTimeout);
 }
 
 CProcessHandler::~CProcessHandler()
@@ -37,6 +38,7 @@ CProcessHandler::~CProcessHandler()
 
 bool CProcessHandler::IsValid()
 {
+	// check if file exists, check the heartbeat period, 
 	return true;
 }
 

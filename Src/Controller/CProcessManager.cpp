@@ -28,11 +28,18 @@ bool CProcessManager::Initialize( const Configuration::CConfigNode* configNode )
 	while( 0 != pProcessNode )
 	{
 		CProcessHandler* pHandler = new CProcessHandler(unitId, pProcessNode);
-		if (0 != pHandler && pHandler->IsValid() )
+		if (0 != pHandler  )
 		{
-			m_processList.insert(tProcessMap::value_type( unitId, pHandler ) );
+			if ( pHandler->IsValid() )
+			{
+				m_processList.insert(tProcessMap::value_type( unitId, pHandler ) );
+				++unitId;
+			}
+			else
+			{
+				delete pHandler;
+			}
 		}
-		++unitId;
 		pProcessNode = configNode->GetNextSubnode();
 	}
 
