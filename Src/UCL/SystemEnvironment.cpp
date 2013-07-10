@@ -7,6 +7,16 @@
 #define VARIABLE_POSTFIX "}"
 #define VARIABLE_POSTFIX_LENGTH 1
 
+static char sDflt_ApplicationPath[] = {"/bin"};
+static char sDflt_ConfigPath[]			= {"/etc/opt"};
+static char sDflt_LogPath[]					= {"/var/log"};
+static char sDflt_TempPath[]				= {"/tmp"};
+
+static char sVarName_AppPath[]			= {"APP_DIR"};
+static char sVarName_Config[]				= {"CONFIG_DIR"};
+static char sVarName_LogPath[]			= {"LOG_DIR"};
+static char sVarName_TempPath[]			= {"TMP_DIR"};
+
 namespace UCL
 {
 const std::string SystemEnvironment::GetVariable(const std::string& variableName)
@@ -63,9 +73,59 @@ std::string SystemEnvironment::ResolveEnvironmentVariable(const std::string& inp
 			}
 		}
 	}
-	return output;
+	return output;	
+}
 
+std::string SystemEnvironment::ResolvePath(const tPathType& pathType, const std::string& fileName)
+{
+	std::string path;
+	switch (pathType)
+	{
+	case Dir_App:
+		{
+			path = GetVariable(sVarName_AppPath);
+			if ( path.empty() )
+			{
+				path = sDflt_ApplicationPath;
+			}
+		};break;
+	case Dir_Config:
+		{
+			path = GetVariable(sVarName_Config);
+			if ( path.empty() )
+			{
+				path = sDflt_ConfigPath;
+			}
+		};break;
+	case Dir_Log:
+		{
+			path = GetVariable(sVarName_LogPath);
+			if ( path.empty() )
+			{
+				path = sDflt_LogPath;
+			}
+		};break;
+	case Dir_Temp:
+		{
+			path = GetVariable(sVarName_TempPath);
+			if ( path.empty() )
+			{
+				path = sDflt_TempPath;
+			}
+		};break;
+	default:;
+	}
 	
+	if ( path.empty() )
+	{
+		path = fileName;
+	}
+	else if ( !fileName.empty() )
+	{
+		path += std::string("/");
+		path += fileName;
+	}
+	return path;
 }
 
 

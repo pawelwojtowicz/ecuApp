@@ -7,7 +7,14 @@ namespace UCL
 class SystemEnvironment
 {
 public:
-	static const std::string GetVariable(const std::string& variableName);
+	typedef enum
+	{
+		Dir_App,
+		Dir_Config,
+		Dir_Log,
+		Dir_Temp
+	} tPathType;
+	static const std::string GetVariable( const std::string& variableName );
 
 	static bool SetVariable(const std::string& variableName, const std::string& variableValue );
 	
@@ -16,6 +23,8 @@ public:
 	static bool ClearEnvironment();
 
 	static std::string ResolveEnvironmentVariable(const std::string& inputString);
+
+	static std::string ResolvePath(const tPathType&, const std::string& fileName);
 };
 
 }

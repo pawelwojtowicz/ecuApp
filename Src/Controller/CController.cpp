@@ -1,5 +1,6 @@
 #include "CController.h"
 #include "Runtime/CMessage.h"
+#include <UCL/SystemEnvironment.h>
 #include <Configuration/CConfiguration.h>
 
 static const char sCfg_WatchdogConfig[] = {"Watchdog"};
@@ -25,7 +26,8 @@ CController::CController()
 
 void CController::Initialize()
 {
-	const Configuration::CConfigNode* pConfig = Configuration::CConfiguration::GetConfiguration("/home/tpdev/Programowanie/lnxEmbdDevice/Configuration/ControllerConfig.xml");
+	std::string completeConfigPath = UCL::SystemEnvironment::ResolvePath(UCL::SystemEnvironment::Dir_Config, "ControllerConfig.xml");
+	const Configuration::CConfigNode* pConfig = Configuration::CConfiguration::GetConfiguration(completeConfigPath);
 
 	if (pConfig != 0 )
 	{
