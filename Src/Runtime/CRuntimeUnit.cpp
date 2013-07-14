@@ -5,6 +5,7 @@ namespace Runtime
 {
 CRuntimeUnit::CRuntimeUnit( const std::string& runtimeUnitName , const std::string& unitQueueName )
 : CExecutable(runtimeUnitName)
+, m_loggingAgent()
 , m_controllerProxy(m_messenger)
 , m_healthReporter(m_timerManager,m_controllerProxy)
 , m_timerMessage(0)
@@ -23,9 +24,6 @@ CRuntimeUnit::~CRuntimeUnit()
 
 void CRuntimeUnit::Initialize()
 {
-	m_messenger.Initialize(m_unitQueueName);
-	m_controllerProxy.Initialize(this);
-
 	UInt32 runtimeUnitId(0);
 	UInt32 heartbeatPeriod(0);
 
@@ -35,6 +33,10 @@ void CRuntimeUnit::Initialize()
 		heartbeatPeriod = ::atoi(GetArgument(2).c_str());
 		m_healthReporter.Initialize(runtimeUnitId, heartbeatPeriod);
 	}
+	m_loggingAgent.Initialize(runtimeUnitId);
+
+	m_messenger.Initialize(m_unitQueueName);
+	m_controllerProxy.Initialize(this);
 }
 
 void CRuntimeUnit::InitDone(const bool& initStatus)
@@ -65,6 +67,8 @@ void CRuntimeUnit::ShutdownProcess()
 void CRuntimeUnit::Shutdown()
 {
 	m_messenger.Shutdown();
+
+	m_loggingAgent.Shutdown();
 }
 
 void CRuntimeUnit::NotifyTimer()

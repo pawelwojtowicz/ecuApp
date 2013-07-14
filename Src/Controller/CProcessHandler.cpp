@@ -6,10 +6,10 @@
 #include <errno.h>
 #include <string.h>
 
-static char sCfg_ExecutableName[] = {"CommandLine"};
-static char sCfg_StartupGroup[] 	= {"StartupGroup"};
-static char sCfg_ShutdownGroup[] 	= {"ShutdownGroup"};
-static char sCfg_HeartbeatPeriod[]= {"HeartbeatPeriod"};
+static char sCfg_ExecutableName[] 	= {"CommandLine"};
+static char sCfg_StartupGroup[] 		= {"StartupGroup"};
+static char sCfg_ShutdownGroup[] 		= {"ShutdownGroup"};
+static char sCfg_HeartbeatPeriod[]	= {"HeartbeatPeriod"};
 
 namespace Controller
 {

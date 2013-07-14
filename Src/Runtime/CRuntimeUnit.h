@@ -1,6 +1,7 @@
 #ifndef RUNTIME_CRUNTIMEUNIT_H
 #define RUNTIME_CRUNTIMEUNIT_H
 #include "CExecutable.h"
+#include "Logger/CLoggingAgent.h"
 #include "CTimerManager.h"
 #include "CMessage.h"
 #include "ControllerInterface/IControllerListener.h"
@@ -52,6 +53,8 @@ private:
 	virtual void ShutdownProcess();
 
 private:
+	Logger::CLoggingAgent m_loggingAgent;
+
 	CMessenger m_messenger;
 
 	CTimerManager m_timerManager;

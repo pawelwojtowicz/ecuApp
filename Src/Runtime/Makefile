@@ -3,7 +3,7 @@ OBJ = CMessenger.o CMessage.o CSharedStorage.o CExecutable.o executableMain.o CS
 
 include ../../DevEnv/staticLibSettings
 
-LFLAGS+= -lControllerInterface
+LFLAGS+= -lControllerInterface - lLogger
 
 CMessenger.o:	CMessenger.cpp CMessenger.h
 CMessage.o:	CMessage.cpp CMessage.h
