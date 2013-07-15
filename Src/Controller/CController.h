@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <GlobalTypes.h>
+#include "Logger/CLogManager.h"
 #include "Runtime/CExecutable.h"
 #include "Runtime/CMessenger.h"
 #include "Runtime/ISubscriber.h"
@@ -52,6 +53,8 @@ private:
 	
 
 private:
+	Logger::CLogManager m_loggerManager;
+
 	Runtime::CMessenger m_messenger;
 
 	Runtime::CTimerManager m_timerManager;

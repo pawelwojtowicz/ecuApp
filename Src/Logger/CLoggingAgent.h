@@ -1,6 +1,7 @@
 #ifndef LOGGER_CLOGGINGAGENT_H
 #define LOGGER_CLOGGINGAGENT_H
 #include "ILogAgent.h"
+#include <mqueue.h>
 #include <GlobalTypes.h>
 namespace Logger
 {
@@ -17,6 +18,8 @@ public:
 
 private:
 
+	//logger queue descriptor
+	mqd_t m_loggerQueueDescriptor;
 };
 }
 #endif

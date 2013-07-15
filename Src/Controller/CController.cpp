@@ -12,6 +12,7 @@ namespace Controller
 {
 CController::CController()
 : CExecutable("Controller")
+, m_loggerManager()
 , m_messenger()
 , m_timerMessage(0)
 , m_controllerStub( m_messenger )
@@ -26,6 +27,8 @@ CController::CController()
 
 void CController::Initialize()
 {
+	m_loggerManager.Initialize();
+
 	std::string completeConfigPath = UCL::SystemEnvironment::ResolvePath(UCL::SystemEnvironment::Dir_Config, "ControllerConfig.xml");
 	const Configuration::CConfigNode* pConfig = Configuration::CConfiguration::GetConfiguration(completeConfigPath);
 
@@ -76,6 +79,7 @@ Int32 CController::Run()
 	//called right before shutdown - release all the resources here
 void CController::Shutdown()
 {
+	m_loggerManager.Shutdown();
 
 }
 

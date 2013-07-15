@@ -7,8 +7,11 @@ namespace Logger
 {
 class CLogManager : public UCL::CThread
 {
+public:
 	CLogManager();
 	virtual ~CLogManager();
+	
+	void UpdateLoggerPrefixTable();
 
 	bool Initialize();
 

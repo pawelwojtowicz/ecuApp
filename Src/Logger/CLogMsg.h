@@ -40,7 +40,7 @@ private:
 
 	// indicates the name of the file, where the log was issued
 	const char* m_codeFileName;
-
+	size_t m_codeFileNameSize;
 	// indicates the line, where the log was issued
 	UInt32 m_line;
 

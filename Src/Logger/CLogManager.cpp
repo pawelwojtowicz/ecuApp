@@ -1,6 +1,7 @@
 #include "CLogManager.h"
 #include "LoggerConst.h"
 #include "CLogMsg.h"
+#include <stdio.h>
 
 namespace Logger
 {
@@ -23,6 +24,8 @@ bool CLogManager::Initialize()
 
 	m_loggerQueueDescriptor = mq_open( s_LoggerQueue , O_RDWR|O_CREAT, S_IRWXU, &queueAttributes);
 
+	Start();
+
 	return ( -1 != m_loggerQueueDescriptor );
 }
 
@@ -42,9 +45,9 @@ void CLogManager::Run()
 		while ( m_running )
 		{
 			logMsgSize = mq_receive( m_loggerQueueDescriptor, (char*)logMsgBuffer, MAX_LOGGER_MSG_SIZE, &priority );
-
 			if (logMessage.Deserialize(logMsgBuffer, logMsgSize ) )
 			{
+				logMessage.ToString();
 			}	
 		}
 	}
