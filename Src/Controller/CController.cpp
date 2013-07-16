@@ -1,4 +1,5 @@
 #include "CController.h"
+#include "Logger/Logger.h"
 #include "Runtime/CMessage.h"
 #include <UCL/SystemEnvironment.h>
 #include <Configuration/CConfiguration.h>
@@ -34,13 +35,10 @@ void CController::Initialize()
 
 	if (pConfig != 0 )
 	{
-
 		const Configuration::CConfigNode* pLoggerConfig = pConfig->GetConfigNode(sCfg_LoggerConfig);
 		m_loggerManager.Initialize(pLoggerConfig);
 		m_loggingAgent.Initialize(0);// okomentowac to
 		m_loggingAgent.SetDebugLevel(m_loggerManager.GetDefaultDebugZones());
-
-		
 
 		const Configuration::CConfigNode* pWatchdogConfig = pConfig->GetConfigNode(sCfg_WatchdogConfig);
 		if ( 0 != pWatchdogConfig )
@@ -49,7 +47,7 @@ void CController::Initialize()
 		}
 		else
 		{
-			printf("failed to initialize Watchdog\n");
+			RETAILMSG(ERROR, ("No configuration for Watchdog available. "));
 		}
 
 		const Configuration::CConfigNode* pProcessMgrConfig = pConfig->GetConfigNode(sCfg_ProcessManager);
@@ -62,12 +60,12 @@ void CController::Initialize()
 		}
 		else
 		{
-			printf("failed to initialize the process controller");
+			RETAILMSG(ERROR, ("No configuration for Process Controller available. Critical failure"));
 		}
 	}
 	else
 	{
-		printf("Configuration file not found\n");
+		RETAILMSG(ERROR, ("Configuration file: [%s] is missing - Critical failure", completeConfigPath.c_str()));
 	}
 
 	m_controllerStub.Initialize(this);

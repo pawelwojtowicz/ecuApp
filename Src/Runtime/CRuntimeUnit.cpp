@@ -37,7 +37,6 @@ void CRuntimeUnit::Initialize()
 	}
 	m_loggingAgent.Initialize(runtimeUnitId);
 	m_loggingAgent.SetDebugLevel(debugZoneLevel);
-	printf("debugLevel %08x w komponencie\n", debugZoneLevel);
 
 	m_messenger.Initialize(m_unitQueueName);
 	m_controllerProxy.Initialize(this);
@@ -58,12 +57,12 @@ Int32 CRuntimeUnit::Run()
 
 void CRuntimeUnit::NotifyShutdownPending()
 {
-	printf("Pending shutdown\n");
+	RETAILMSG(WARNING, ("CRuntimeUnit::NotifyShutdownPending() - not implemented"));
 }
 
 void CRuntimeUnit::ShutdownProcess()
 {
-	printf("Stopping the msg processor");
+	RETAILMSG(WARNING, ("CRuntimeUnit::ShutdownProcess() - finishing the process"));
 	m_messenger.StopMsgProcessor();
 }
 

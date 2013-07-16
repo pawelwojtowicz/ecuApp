@@ -1,4 +1,5 @@
 #include "CWatchdogManager.h"
+#include <Logger/Logger.h>
 #include <linux/watchdog.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -43,13 +44,15 @@ bool CWatchdogManager::Initialize( const Configuration::CConfigNode* configNode 
 	if ( 0 != configNode )
 	{
 		m_watchdogDeviceName = configNode->GetParameter(sCfg_DeviceIdParName)->GetString(m_watchdogDeviceName);
-		printf("poprawnie pobrano %s %s\n", sCfg_WatchdogRefreshPeriod, m_watchdogDeviceName.c_str() );
 		
 		m_watchdogResetPeriod = configNode->GetParameter(sCfg_WatchdogRefreshPeriod)->GetUInt32(m_watchdogResetPeriod);
-		printf("poprawnie pobrano %s %d\n", sCfg_WatchdogRefreshPeriod, m_watchdogResetPeriod );
 
 		m_watchdogExpirationTimeout = configNode->GetParameter(sCfg_WatchdogExpirationTimeout)->GetInt32(m_watchdogExpirationTimeout);
-		printf("poprawnie pobrano %s %d\n", sCfg_WatchdogExpirationTimeout, m_watchdogExpirationTimeout );
+
+		RETAILMSG(INFO, ("Watchdog configuration: deviceName=[%s], watchdogExp=[%d], refreshPeriod=[%d]",
+											 m_watchdogDeviceName.c_str(),
+											 m_watchdogExpirationTimeout, 
+											 m_watchdogResetPeriod));
 
 		// initialize the watchdog driver
 		m_watchdogFD = open(m_watchdogDeviceName.c_str(), O_RDWR);
@@ -57,6 +60,12 @@ bool CWatchdogManager::Initialize( const Configuration::CConfigNode* configNode 
 		{
 			ioctl(m_watchdogFD, WDIOC_SETTIMEOUT, &m_watchdogExpirationTimeout);
 		}
+		else
+		{
+			RETAILMSG(ERROR, ("Failed to open watchdog device [%s]", m_watchdogDeviceName.c_str() ));
+		}
+
+#pragma message ("Add reporting last restart reason")
 
 		// initialize the timers
 		m_watchdogResetTimerId = m_rTimerManager.CreateTimer(this);
@@ -85,10 +94,12 @@ void CWatchdogManager::NotifyTimer( const Int32& timerId )
 {
 	if ( timerId == m_watchdogResetTimerId )
 	{
+		RETAILMSG(INFO, ("Resetting watchdog"));
 		if ( -1 != m_watchdogFD )
 		{
 			ioctl(m_watchdogFD, WDIOC_KEEPALIVE, NULL);
 		}
 	}
 }
+
 }

@@ -57,8 +57,8 @@ bool CProcessHandler::IsValid()
 
 void CProcessHandler::NotifyHeartbeat(const tProcessStatus& status)
 {
-	printf("processId=[%s] status=%d\n", GetThreadName().c_str(), status);
 	m_processStatus = status;
+	RETAILMSG(INFO, ("Heartbeat from process [%s] received - status = [%d]", GetThreadName().c_str(), m_processStatus));	
 }
 
 void CProcessHandler::NotifyInitDone(const std::string& queueName, const std::string& versionInformation)
@@ -66,7 +66,7 @@ void CProcessHandler::NotifyInitDone(const std::string& queueName, const std::st
 	m_queueName = queueName;
 	m_versionInformation = versionInformation;
 
-	RETAILMSG(INFO, ("process %s reported initDone. Queue=%s, versionString=%s\n", GetThreadName().c_str(), m_queueName.c_str(), m_versionInformation.c_str() ) );
+	RETAILMSG(INFO, ("InitDone received from [%s]. Queue=%s, VersionInfo=%s", GetThreadName().c_str(), m_queueName.c_str(), m_versionInformation.c_str() ) );
 }
 
 
@@ -88,23 +88,22 @@ void CProcessHandler::Run()
 		
 		if ( 0 == processId )
 		{
-			printf("starting[%s]\n",m_executableFileName.c_str());
+			RETAILMSG(INFO, ( "Starting process %s", GetThreadName().c_str() ) );
 			execlp(	m_executableFileName.c_str(),
 							m_executableFileName.c_str(), 
 							runtimeIdStringBuffer, 
 							heartbeatPeriodStringBuffer,
 							debugZoneSettingBuffer,
 							NULL);
-			printf("errno[%s]\n",strerror(errno));
+			RETAILMSG(ERROR, ("Failed to start [%s], error=[%s]", GetThreadName().c_str(), strerror(errno)));
 
 			sleep(10);
 		}
 		else
 		{
-			printf("wait for ending the process\n");
+			RETAILMSG(INFO,("Process [%s] is started", GetThreadName().c_str()));
 			waitpid(processId, &returnValue, 0 );
-			printf("processFinished\n");
-
+			RETAILMSG(INFO,("Process [%s] is finished - return Value [%d]",GetThreadName().c_str(), returnValue));
 		}
 	}
 
