@@ -25,7 +25,7 @@
 		</CNode>
 	</CNode>
 	<CNode Name="Watchdog">
-		<Parameter Name="DeviceId" Type="String">dupa</Parameter>
+		<Parameter Name="DeviceId" Type="String">uotchDogh</Parameter>
 		<Parameter Name="WatchdogRefreshPeriod" Type="UInt32">10</Parameter>
 		<Parameter Name="MaxWatchodCounter" Type="UInt32">3</Parameter>
 	</CNode>
