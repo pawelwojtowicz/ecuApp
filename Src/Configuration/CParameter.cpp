@@ -1,6 +1,7 @@
 #include "CParameter.h"
 #include "ConfigurationConst.h"
 #include <cstdlib>
+#include <stdio.h>
 
 namespace Configuration
 {
@@ -49,6 +50,10 @@ CParameter::CParameter(const std::string& type, const std::string& value)
 	else if ( 0 == type.compare( sConst_ParamType_String ) )
 	{
 		m_parameterType = eTypeString;
+	}
+	else if ( 0 == type.compare( sConst_ParamType_Bool ) )
+	{
+		m_parameterType = eTypeBool;
 	}
 
 
@@ -141,6 +146,22 @@ const std::string CParameter::GetString( const std::string& value) const
 	if ( eTypeString == m_parameterType )
 	{
 		return m_parameterValue;
+	}
+	return value;
+}
+
+const bool CParameter::GetBool( const bool& value ) const
+{
+	if ( eTypeBool == m_parameterType )
+	{
+		if ( 0 == m_parameterValue.compare( "true" ) )
+		{
+			return true;
+		}
+		else if (0 == m_parameterValue.compare( "false" ) )
+		{
+			return false;
+		}
 	}
 	return value;
 }

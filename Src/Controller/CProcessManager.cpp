@@ -15,19 +15,20 @@ CProcessManager::~CProcessManager()
 {
 }
 
-bool CProcessManager::Initialize( const Configuration::CConfigNode* configNode )
+bool CProcessManager::Initialize( const Configuration::CConfigNode* configNode, 
+																	const UInt32& defaultDebugLevelSettings )
 {
 	bool retVal(false);
 	m_processMonitorTimerId = m_rTimerManager.CreateTimer(this);
 	m_rTimerManager.SetTimer( m_processMonitorTimerId , m_processMonitorInterval, m_processMonitorInterval);
 
 	const Configuration::CConfigNode* pProcessNode = configNode->GetFirstSubnode();
-	
+
 	UInt32 unitId(1);
 
 	while( 0 != pProcessNode )
 	{
-		CProcessHandler* pHandler = new CProcessHandler(unitId, pProcessNode);
+		CProcessHandler* pHandler = new CProcessHandler(unitId, defaultDebugLevelSettings ,pProcessNode);
 		if (0 != pHandler  )
 		{
 			if ( pHandler->IsValid() )
@@ -82,6 +83,17 @@ void CProcessManager::NotifyUnitHeartbeat(	const UInt32 unitId, const tProcessSt
 	{
 		pIter->second->NotifyHeartbeat(status);
 	}
+}
+
+void CProcessManager::GetRuntimeUnitShortnameList( tStringVector& runtimeShortnameList)
+{
+	runtimeShortnameList.resize( m_processList.size() + 1 );
+
+	for (tProcessIterator pIter = m_processList.begin() ; m_processList.end() != pIter ; ++pIter)
+	{
+		runtimeShortnameList[pIter->first] = pIter->second->GetShortname() ;
+	}
+
 }
 
 

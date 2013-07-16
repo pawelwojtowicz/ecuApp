@@ -5,6 +5,7 @@
 
 static const char sCfg_WatchdogConfig[] = {"Watchdog"};
 static const char sCfg_ProcessManager[] = {"ProcessManager"};
+static const char sCfg_LoggerConfig[]		= {"Logger"};
 
 Controller::CController gs;
 
@@ -13,6 +14,7 @@ namespace Controller
 CController::CController()
 : CExecutable("Controller")
 , m_loggerManager()
+, m_loggingAgent()
 , m_messenger()
 , m_timerMessage(0)
 , m_controllerStub( m_messenger )
@@ -27,13 +29,19 @@ CController::CController()
 
 void CController::Initialize()
 {
-	m_loggerManager.Initialize();
-
 	std::string completeConfigPath = UCL::SystemEnvironment::ResolvePath(UCL::SystemEnvironment::Dir_Config, "ControllerConfig.xml");
 	const Configuration::CConfigNode* pConfig = Configuration::CConfiguration::GetConfiguration(completeConfigPath);
 
 	if (pConfig != 0 )
 	{
+
+		const Configuration::CConfigNode* pLoggerConfig = pConfig->GetConfigNode(sCfg_LoggerConfig);
+		m_loggerManager.Initialize(pLoggerConfig);
+		m_loggingAgent.Initialize(0);// okomentowac to
+		m_loggingAgent.SetDebugLevel(m_loggerManager.GetDefaultDebugZones());
+
+		
+
 		const Configuration::CConfigNode* pWatchdogConfig = pConfig->GetConfigNode(sCfg_WatchdogConfig);
 		if ( 0 != pWatchdogConfig )
 		{
@@ -47,13 +55,15 @@ void CController::Initialize()
 		const Configuration::CConfigNode* pProcessMgrConfig = pConfig->GetConfigNode(sCfg_ProcessManager);
 		if ( 0!= pProcessMgrConfig )
 		{
-			m_processManager.Initialize(pProcessMgrConfig);
+			m_processManager.Initialize( pProcessMgrConfig, m_loggerManager.GetDefaultDebugZones() );
+			tStringVector processShortnameList;
+			m_processManager.GetRuntimeUnitShortnameList(processShortnameList);
+			m_loggerManager.UpdateSourceDictionary(processShortnameList);
 		}
 		else
 		{
 			printf("failed to initialize the process controller");
 		}
-
 	}
 	else
 	{

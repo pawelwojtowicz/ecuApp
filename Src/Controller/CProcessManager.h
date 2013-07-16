@@ -31,8 +31,11 @@ public:
 	CProcessManager( Runtime::ITimerManager& rTimerManager );
 	virtual ~CProcessManager();
 
-	bool Initialize( const Configuration::CConfigNode* configNode );
+	bool Initialize( const Configuration::CConfigNode* configNode, const UInt32& defaultDebugZones );
 	void Shutdown();
+
+public:
+	void GetRuntimeUnitShortnameList( tStringVector& runtimrShortnameList);
 
 	void NotifyUnitInitialized(	const UInt32& unitId, 
 															const std::string& processQueue, 

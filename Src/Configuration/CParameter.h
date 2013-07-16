@@ -18,7 +18,8 @@ class CParameter
 		eTypeUInt32,
 		eTypeReal32,
 		eTypeReal64,
-		eTypeString
+		eTypeString,
+		eTypeBool
 	} tParameterType;
 public:
 	CParameter();
@@ -35,6 +36,7 @@ public:
 	const Real32 GetReal32( const Real32& value ) const;
 	const Real64 GetReal64( const Real64& value ) const;
 	const std::string GetString( const std::string& value) const;
+	const bool GetBool( const bool& value ) const;
 private:
 	tParameterType m_parameterType;
 	

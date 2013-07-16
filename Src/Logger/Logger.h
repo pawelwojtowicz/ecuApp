@@ -11,7 +11,7 @@
 #define RETAILMSG( zone , logMsg)					 							\
 	if ( 0 != Logger::CLogMsg::ZoneEnabled( zone ) ) 			\
 	{																											\
-		Logger::CLogMsg msg( zone, __FILE__, __LINE__);	\
+		Logger::CLogMsg msg( zone, __FILE__, __LINE__);			\
 		msg.LogText logMsg ;																\
 	}																											\
 

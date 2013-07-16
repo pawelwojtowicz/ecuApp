@@ -15,7 +15,9 @@ namespace Controller
 class CProcessHandler: public UCL::CThread
 {
 public:
-	CProcessHandler( const UInt32& unitId, const Configuration::CConfigNode* pConfigNode );
+	CProcessHandler(	const UInt32& unitId, 
+										const UInt32& defaultDebugZones,
+										const Configuration::CConfigNode* pConfigNode );
 	virtual ~CProcessHandler();
 
 	bool IsValid();
@@ -24,6 +26,8 @@ public:
 
 	void NotifyInitDone(const std::string& queueName, const std::string& versionInformation);
 
+	const std::string& GetShortname() { return m_shortName; };
+
 	virtual void Run();
 
 private:
@@ -31,6 +35,8 @@ private:
 	std::string m_executableFileName;
 	UInt8 m_startupGroup;
 	UInt8 m_shutdownGroup;
+	UInt32 m_debugZoneSettings;
+
 
 	bool m_running;
 	
@@ -39,6 +45,8 @@ private:
 	std::string m_queueName;
 
 	std::string m_versionInformation;
+
+	std::string m_shortName;
 
 	UInt32 m_lastHeartbeat;
 

@@ -24,6 +24,8 @@ static char sConst_ParamType_Int32[]						= "Int32";
 static char sConst_ParamType_Real32[]						= "Real32";
 static char sConst_ParamType_Real64[]						= "Real64";
 
+static char sConst_ParamType_Bool[]							= "bool";
+
 static char sConst_ParamType_String[]						= "String";
 }
 #endif

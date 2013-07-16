@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <GlobalTypes.h>
 #include "Logger/CLogManager.h"
+#include "Logger/CLoggingAgent.h"
 #include "Runtime/CExecutable.h"
 #include "Runtime/CMessenger.h"
 #include "Runtime/ISubscriber.h"
@@ -54,6 +55,8 @@ private:
 
 private:
 	Logger::CLogManager m_loggerManager;
+
+	Logger::CLoggingAgent m_loggingAgent;
 
 	Runtime::CMessenger m_messenger;
 

@@ -12,7 +12,10 @@ public:
 	virtual ~CLoggingAgent();
 
 	void Initialize(const UInt32& unitId);
+
 	void Shutdown();
+
+	void SetDebugLevel( const UInt32& debugLevel );
 
 	virtual void IssueLog( const CLogMsg& msg );
 

@@ -26,14 +26,18 @@ void CRuntimeUnit::Initialize()
 {
 	UInt32 runtimeUnitId(0);
 	UInt32 heartbeatPeriod(0);
+	UInt32 debugZoneLevel(0xFFFF);
 
-	if ( 3 == GetArgumentCount() )
+	if ( 4 == GetArgumentCount() )
 	{
 		runtimeUnitId = ::atoi(GetArgument(1).c_str());
 		heartbeatPeriod = ::atoi(GetArgument(2).c_str());
+		debugZoneLevel = ::atoi(GetArgument(3).c_str());
 		m_healthReporter.Initialize(runtimeUnitId, heartbeatPeriod);
 	}
 	m_loggingAgent.Initialize(runtimeUnitId);
+	m_loggingAgent.SetDebugLevel(debugZoneLevel);
+	printf("debugLevel %08x w komponencie\n", debugZoneLevel);
 
 	m_messenger.Initialize(m_unitQueueName);
 	m_controllerProxy.Initialize(this);

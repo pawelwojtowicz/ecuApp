@@ -1,13 +1,13 @@
 <Configuration>
 	<CNode Name="Logger">
 		<Parameter Name="LoggingEngine" Type="String">BASIC</Parameter>
-		<CNode Name="DefaultZones">
+		<CNode Name="DefaultDebugLevel">
 			<Parameter Name="Info" Type="bool">true</Parameter>
 			<Parameter Name="Error" Type="bool">true</Parameter>
 			<Parameter Name="Warning" Type="bool">true</Parameter>
-			<Parameter Name="Detail1" Type="bool">true</Parameter>
-			<Parameter Name="Detail2" Type="bool">true</Parameter>
-			<Parameter Name="Detail3" Type="bool">true</Parameter>
+			<Parameter Name="Data" Type="bool">true</Parameter>
+			<Parameter Name="Detail1" Type="bool">false</Parameter>
+			<Parameter Name="Detail2" Type="bool">false</Parameter>
 		</CNode>
 	</CNode>
 	<CNode Name="Watchdog">
@@ -28,6 +28,7 @@
 			<Parameter Name="StartupGroup" Type="UInt8">1</Parameter>
 			<Parameter Name="ShutdownGroup" Type="UInt8">1</Parameter>
 			<Parameter Name="HeartbeatPeriod" Type="UInt32">15</Parameter>
+			<Parameter Name="Shortname" Type="String">TST</Parameter>
 			<CNode Name="DebugZones">
 				<Parameter Name="Info" Type="bool">true</Parameter>
 				<Parameter Name="Error" Type="bool">true</Parameter>
@@ -42,7 +43,8 @@
 			<Parameter Name="StartupGroup" Type="UInt8">1</Parameter>
 			<Parameter Name="ShutdownGroup" Type="UInt8">1</Parameter>
 			<Parameter Name="HeartbeatPeriod" Type="UInt32">15</Parameter>
-			<CNode Name="DebugZones">
+			<Parameter Name="Shortname" Type="String">NVP</Parameter>
+			<CNode Name="DebugLevel">
 				<Parameter Name="Info" Type="bool">true</Parameter>
 				<Parameter Name="Error" Type="bool">true</Parameter>
 				<Parameter Name="Warning" Type="bool">true</Parameter>

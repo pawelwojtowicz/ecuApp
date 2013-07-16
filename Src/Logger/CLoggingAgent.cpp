@@ -36,4 +36,10 @@ void CLoggingAgent::IssueLog( const CLogMsg& msg )
 	}
 }
 
+void CLoggingAgent::SetDebugLevel( const UInt32& debugLevel )
+{
+	CLogMsg::SetDebugLevel(debugLevel);
+}
+
+
 }
