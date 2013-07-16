@@ -1,5 +1,19 @@
 <Configuration>
 	<CNode Name="Logger">
+		<CNode Name="LogTargets">
+			<CNode Name="Console">
+				<Parameter Name="Type" Type="String">CONSOLE</Parameter>
+				<Parameter Name="Active" Type="bool">true</Parameter>
+			</CNode>
+			<CNode Name="Socket">
+				<Parameter Name="Type" Type="String">TCP</Parameter>
+				<Parameter Name="Active" Type="bool">false</Parameter>
+			</CNode>
+			<CNode Name="File">
+				<Parameter Name="Type" Type="String">FILE</Parameter>
+				<Parameter Name="Active" Type="bool">false</Parameter>
+			</CNode>
+		</CNode>
 		<Parameter Name="LoggingEngine" Type="String">BASIC</Parameter>
 		<CNode Name="DefaultDebugLevel">
 			<Parameter Name="Info" Type="bool">true</Parameter>

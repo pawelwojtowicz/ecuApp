@@ -8,14 +8,16 @@ class CConfigNode;
 
 namespace Logger
 {
+class CLogMsg;
+
 class ILogTarget
 {
 public:
 	ILogTarget() {};
 	virtual ~ILogTarget() {};
 
-	virtual bool Initialize(const Configuration::CConfigNode* pTargetConfiguration);
-	virtual void Shutdown();
+	virtual bool Initialize(const Configuration::CConfigNode* pTargetConfiguration) = 0;
+	virtual void Shutdown() = 0;
 
 	virtual void LogToTarget(const CLogMsg& logMsg ) = 0;
 private:

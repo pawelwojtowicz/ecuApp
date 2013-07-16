@@ -38,7 +38,10 @@ public:
 
 public:
 	static UInt32 ReadDebugLevelConfig(const Configuration::CConfigNode* configNode);
+private:
+	void ConfigureLogTargets(const Configuration::CConfigNode* configNode);
 
+	ILogTarget* CreateLogTarget(const std::string& targetTypeName);
 private:
 	//running flag - clear during shutdown
 	bool m_running;

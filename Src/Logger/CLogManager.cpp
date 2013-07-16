@@ -2,7 +2,7 @@
 #include "LoggerConst.h"
 #include "Logger.h"
 #include "Configuration/CConfiguration.h"
-#include "ILogTarget.h"
+#include "CConsoleTarget.h"
 #include <stdio.h>
 
 static const char sConstCfg_DefaultLogLevelNodeName[] = {"DefaultDebugLevel"};
@@ -13,6 +13,10 @@ static const char sConstCfg_DataZoneName[]						= {"Data"};
 static const char sConstCfg_Detail1ZoneName[]					= {"Detail1"};
 static const char sConstCfg_Detail2ZoneName[]					= {"Detail2"};
 
+static const char sConstCfg_LoggerTargetsNodeName[]		= {"LogTargets"};
+static const char sConstCfg_LoggerTargetType[]				= {"Type"};
+static const char sConstCfg_LoggerTargetActive[]			= {"Active"};
+static const char sConstCfg_LoggerTypeName_Console[]	= {"CONSOLE"};
 namespace Logger
 {
 CLogManager::CLogManager()
@@ -36,6 +40,7 @@ bool CLogManager::Initialize(const Configuration::CConfigNode* configNode)
 		
 		m_defaultLogLevel = ReadDebugLevelConfig(pDefaultLogLevelConfig);
 
+		ConfigureLogTargets(configNode->GetConfigNode(sConstCfg_LoggerTargetsNodeName));
 	}
 	else
 	{
@@ -90,7 +95,6 @@ void CLogManager::Run()
 			{
 				(*logTargetIter)->LogToTarget( logMessage );
 			}
-			logMessage.ToString();
 		}	
 	}
 }
@@ -140,4 +144,49 @@ void CLogManager::UpdateSourceDictionary( const tStringVector& dictionary )
 		m_runtimeDictionary[i] = dictionary[i];
 	}
 }
+
+void CLogManager::ConfigureLogTargets(const Configuration::CConfigNode* configNode)
+{
+	if ( 0 != configNode )
+	{
+		const Configuration::CConfigNode* pTargetConfigNode = configNode->GetFirstSubnode();
+
+		while( 0 != pTargetConfigNode )
+		{
+			bool targetActive = pTargetConfigNode->GetParameter(sConstCfg_LoggerTargetActive)->GetBool(false);
+			
+			if (targetActive)
+			{
+				std::string targetType = pTargetConfigNode->GetParameter(sConstCfg_LoggerTargetType)->GetString("");
+
+				ILogTarget* pLogTarget = CreateLogTarget(targetType);
+				if ( 0 != pLogTarget )
+				{
+					if ( pLogTarget->Initialize(pTargetConfigNode) )
+					{
+						m_targetList.push_back(pLogTarget);
+					}
+				}
+			}
+			else
+			{
+				printf("Target [%s] inactive\n", pTargetConfigNode->GetConfigNodeName().c_str() );
+			}
+			pTargetConfigNode = configNode->GetNextSubnode();
+		}
+	}
+}
+
+ILogTarget* CLogManager::CreateLogTarget(const std::string& targetTypeName)
+{
+	ILogTarget* pLogTarget = 0;
+
+	if (0 == targetTypeName.compare(sConstCfg_LoggerTypeName_Console) )
+	{
+		pLogTarget = new CConsoleTarget();
+	}
+
+	return pLogTarget;
+}
+
 }

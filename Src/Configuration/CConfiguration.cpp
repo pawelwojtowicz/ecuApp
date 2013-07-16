@@ -28,7 +28,6 @@ bool CConfiguration::LoadFile( const std::string& configurationFileName )
 
 	printf("opening the file: %s\n", configurationFileName.c_str());
 	XMLNode xMainNode=XMLNode::openFileHelper(configurationFileName.c_str(),sConst_ConfigurationMainNode);
-	printf("wszed\n");
 
 	m_pConfigNode = ScanNode( xMainNode );
 	
