@@ -1,4 +1,5 @@
 #include "CRuntimeUnit.h"
+#include <Logger/Logger.h>
 #include <cstdlib>
 
 namespace Runtime

@@ -106,7 +106,15 @@ void CProcessHandler::Run()
 			RETAILMSG(INFO,("Process [%s] is finished - return Value [%d]",GetThreadName().c_str(), returnValue));
 		}
 	}
+	
+	m_processStatus = eStatus_Stopped;
+	RETAILMSG(INFO,("ProcessHandler for [%s] is stopped",GetThreadName().c_str()));
 
+}
+
+void CProcessHandler::StopProcessHandler()
+{
+	m_running = false;
 }
 
 }

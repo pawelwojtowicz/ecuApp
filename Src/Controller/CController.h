@@ -23,6 +23,13 @@ class CController:	public IControllerServices,
 										public Runtime::CExecutable, 
 										public Runtime::ITimerListener
 {
+	typedef enum
+	{
+		eWaitingForInit,
+		eOperation,
+		ePendingShutdown,
+		eShutdown
+	} tDeviceState;
 public:
 	CController();
 	virtual ~CController() {};
@@ -54,6 +61,8 @@ private:
 	
 
 private:
+	tDeviceState m_deviceState;
+
 	Logger::CLogManager m_loggerManager;
 
 	Logger::CLoggingAgent m_loggingAgent;
@@ -70,8 +79,8 @@ private:
 
 	CProcessManager m_processManager;
 
-	Int32 m_timer1Id;
-	Int32 m_timer2Id;
+	Int32 m_pendingShutdownTimerId;
+	Int32 m_deviceShutdownTimerId;
 };
 
 }

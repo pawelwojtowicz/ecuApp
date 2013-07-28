@@ -32,10 +32,18 @@ public:
 	virtual ~CProcessManager();
 
 	bool Initialize( const Configuration::CConfigNode* configNode, const UInt32& defaultDebugZones );
+
+	void GetRuntimeUnitShortnameList( tStringVector& runtimrShortnameList);
+
+	bool IsBusy();
+
+	bool Stopped();
+
+	void SwitchOffProcessHandlers();
+
 	void Shutdown();
 
 public:
-	void GetRuntimeUnitShortnameList( tStringVector& runtimrShortnameList);
 
 	void NotifyUnitInitialized(	const UInt32& unitId, 
 															const std::string& processQueue, 

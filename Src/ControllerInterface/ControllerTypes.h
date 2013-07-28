@@ -7,7 +7,8 @@ typedef enum
 	eStatus_None,	
 	eStatus_Iddle,
 	eStatus_Busy,
-	eStatus_Error
+	eStatus_Error,
+	eStatus_Stopped
 } tProcessStatus;
 }
 #endif

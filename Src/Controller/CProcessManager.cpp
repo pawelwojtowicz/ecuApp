@@ -1,6 +1,6 @@
 #include "CProcessManager.h"
 #include <Configuration/CConfigNode.h>
-#include <stdio.h>
+#include <Logger/Logger.h>
 #include "CProcessHandler.h"
 namespace Controller
 {
@@ -96,5 +96,36 @@ void CProcessManager::GetRuntimeUnitShortnameList( tStringVector& runtimeShortna
 
 }
 
+bool CProcessManager::IsBusy()
+{
+	bool processBusy(false);
+
+	for (tProcessIterator pIter = m_processList.begin() ; m_processList.end() != pIter && !processBusy; ++pIter)
+	{
+		processBusy = ( eStatus_Busy == pIter->second->GetUnitStatus() );
+	}
+
+	return processBusy;
+}
+
+void CProcessManager::SwitchOffProcessHandlers()
+{
+	for (tProcessIterator pIter = m_processList.begin() ; m_processList.end() != pIter ; ++pIter)
+	{
+		pIter->second->StopProcessHandler();
+	}
+}
+
+bool CProcessManager::Stopped()
+{
+	bool stopped(true);
+
+	for (tProcessIterator pIter = m_processList.begin() ; m_processList.end() != pIter && stopped ; ++pIter)
+	{
+		stopped = ( eStatus_Stopped == pIter->second->GetUnitStatus());
+	}
+
+	return stopped;
+}
 
 }

@@ -28,6 +28,10 @@ public:
 
 	const std::string& GetShortname() { return m_shortName; };
 
+	tProcessStatus GetUnitStatus() { return m_processStatus; };
+
+	void StopProcessHandler();
+
 	virtual void Run();
 
 private:

@@ -14,6 +14,7 @@ namespace Controller
 {
 CController::CController()
 : CExecutable("Controller")
+, m_deviceState(eWaitingForInit)
 , m_loggerManager()
 , m_loggingAgent()
 , m_messenger()
@@ -73,7 +74,12 @@ void CController::Initialize()
 	if ( m_messenger.SubscribeMessage( OWN_QUEUE_ID, msgId_Runtime_Timer_1000, &m_timerManager) )
 	{
 		InitializeTimer();
+		m_pendingShutdownTimerId = GetTimerManager().CreateTimer(this);
+		GetTimerManager().SetTimer(m_pendingShutdownTimerId, 5,0);
+		m_deviceShutdownTimerId  = GetTimerManager().CreateTimer(this);
+		GetTimerManager().SetTimer(m_deviceShutdownTimerId, 1,3);
 	}
+	m_deviceState = eOperation;
 }
 
 
@@ -98,13 +104,22 @@ void CController::NotifyTimer()
 
 void CController::NotifyTimer( const Int32& timerId )
 {
-	if (timerId == m_timer1Id )
+	if ( timerId == m_pendingShutdownTimerId)
 	{
-		printf("m_timer1Id jedzie co 2s\n");
+		RETAILMSG(WARNING, ("Pending Shutdown timeout elapsed - shutting down device"));
+		m_deviceState = eShutdown;
+		m_processManager.SwitchOffProcessHandlers();
+		m_controllerStub.BroadcastShutdown();
+		GetTimerManager().StartTimer(m_deviceShutdownTimerId);
 	}
-	else if (m_timer2Id == timerId)
+	else if ( timerId == m_deviceShutdownTimerId )
 	{
-		printf("m_timer2Id jedzie raz po 10s\n");
+		RETAILMSG(INFO, ("Checking if process manager is ready to shutdown"));
+		if ( m_processManager.Stopped() )
+		{
+			RETAILMSG(INFO, ("Stopping message processor"));
+			m_messenger.StopMsgProcessor();
+		}
 	}
 }
 
@@ -124,18 +139,25 @@ void CController::NotifyUnitHeartbeat(	const UInt32 unitId,
 
 void CController::NotifyShutdownRequest()
 {
-	static int a = 0;
-	printf("Request Shutdown dostalema = [%d]\n", a);
-
-	if ( a++%5 )
+	RETAILMSG(INFO, ("Received shutdown request"));
+	if ( eOperation == m_deviceState )
 	{
-		printf("Broadcast\n");
-		m_controllerStub.BroadcastPendingShutdown();
-	}
-
-	if (a > 10)
-	{
-		m_controllerStub.BroadcastShutdown();
+		RETAILMSG(INFO, ("Device is in Operation"));
+		if ( m_processManager.IsBusy() )
+		{
+			RETAILMSG(INFO, ("ProcessManager is Busy - pending shutdown"));
+			m_deviceState = ePendingShutdown;
+			m_controllerStub.BroadcastPendingShutdown();
+			GetTimerManager().StartTimer(m_pendingShutdownTimerId);
+		}
+		else
+		{
+			RETAILMSG(INFO, ("ProcessManager is iddle - immediate shutdown"));
+			m_deviceState = eShutdown;
+			m_processManager.SwitchOffProcessHandlers();
+			m_controllerStub.BroadcastShutdown();
+			GetTimerManager().StartTimer(m_deviceShutdownTimerId);
+		}
 	}
 }
 
