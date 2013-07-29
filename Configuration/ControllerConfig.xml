@@ -41,7 +41,7 @@
 			<Parameter Name="CommandLine" Type="String">testProcess</Parameter>
 			<Parameter Name="StartupGroup" Type="UInt8">1</Parameter>
 			<Parameter Name="ShutdownGroup" Type="UInt8">1</Parameter>
-			<Parameter Name="HeartbeatPeriod" Type="UInt32">15</Parameter>
+			<Parameter Name="HeartbeatPeriod" Type="UInt32">5</Parameter>
 			<Parameter Name="Shortname" Type="String">TST</Parameter>
 			<CNode Name="DebugZones">
 				<Parameter Name="Info" Type="bool">true</Parameter>
@@ -56,7 +56,7 @@
 			<Parameter Name="CommandLine" Type="String">/home/tpdev/Programowanie/lnxEmbdDevice/Bin/Target/bin/newTest</Parameter>
 			<Parameter Name="StartupGroup" Type="UInt8">1</Parameter>
 			<Parameter Name="ShutdownGroup" Type="UInt8">1</Parameter>
-			<Parameter Name="HeartbeatPeriod" Type="UInt32">15</Parameter>
+			<Parameter Name="HeartbeatPeriod" Type="UInt32">5</Parameter>
 			<Parameter Name="Shortname" Type="String">NVP</Parameter>
 			<CNode Name="DebugLevel">
 				<Parameter Name="Info" Type="bool">true</Parameter>

@@ -5,6 +5,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <errno.h>
 #include <string.h>
 
@@ -96,14 +97,14 @@ void CProcessHandler::Run()
 							debugZoneSettingBuffer,
 							NULL);
 			RETAILMSG(ERROR, ("Failed to start [%s], error=[%s]", GetThreadName().c_str(), strerror(errno)));
-
-			sleep(10);
+			exit(-1);
 		}
 		else
 		{
 			RETAILMSG(INFO,("Process [%s] is started", GetThreadName().c_str()));
 			waitpid(processId, &returnValue, 0 );
 			RETAILMSG(INFO,("Process [%s] is finished - return Value [%d]",GetThreadName().c_str(), returnValue));
+			sleep(10);
 		}
 	}
 	
@@ -114,6 +115,7 @@ void CProcessHandler::Run()
 
 void CProcessHandler::StopProcessHandler()
 {
+	RETAILMSG(INFO, ("Stopping process handler %s",GetThreadName().c_str()));
 	m_running = false;
 }
 
