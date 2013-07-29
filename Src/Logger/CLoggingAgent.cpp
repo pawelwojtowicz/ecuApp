@@ -23,6 +23,7 @@ void CLoggingAgent::Initialize(const UInt32& unitId)
 
 void CLoggingAgent::Shutdown()
 {
+	mq_close(m_loggerQueueDescriptor);
 }
 
 void CLoggingAgent::IssueLog( const CLogMsg& msg )

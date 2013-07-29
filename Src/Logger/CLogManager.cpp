@@ -69,6 +69,34 @@ bool CLogManager::Initialize(const Configuration::CConfigNode* configNode)
 void CLogManager::Shutdown()
 {
 	m_running = false;
+	WaitFor();
+
+	//check how many log entries is waiting in the queue
+	mq_attr queueAttributes;
+	if ( 0 == mq_getattr(m_loggerQueueDescriptor,&queueAttributes) )
+	{
+		Int32 currentQueueSize = queueAttributes.mq_curmsgs;
+		CLogMsg logMessage;
+		Int8 logMsgBuffer[MAX_LOGGER_MSG_SIZE];
+		Int32 logMsgSize(0);
+		UInt32 priority(0);
+		tTargetIterator logTargetIter;
+
+		for (Int32 i = 0 ; i < currentQueueSize ; ++i )
+		{
+			logMsgSize = mq_receive( m_loggerQueueDescriptor, (char*)logMsgBuffer, MAX_LOGGER_MSG_SIZE, &priority );
+			if (logMessage.Deserialize(logMsgBuffer, logMsgSize ) )
+			{
+				logMessage.SetSourceShortName(m_runtimeDictionary[ logMessage.GetLogSrcRuntimeId()].c_str());
+				for(logTargetIter = m_targetList.begin() ; m_targetList.end() != logTargetIter ; ++logTargetIter)
+				{
+					(*logTargetIter)->LogToTarget( logMessage );
+				}
+			}	
+		}
+	}
+
+	mq_unlink(s_LoggerQueue);
 
 //stop the threads
 	for(tTargetIterator logTargetIter = m_targetList.begin() ; m_targetList.end() != logTargetIter ; ++logTargetIter)

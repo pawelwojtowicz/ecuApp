@@ -81,6 +81,7 @@ bool CWatchdogManager::Initialize( const Configuration::CConfigNode* configNode 
 
 void CWatchdogManager::Shutdown()
 {
+	RETAILMSG(INFO, ("Shutting down watchdog manager - device shuts down correctly"));
 	if (-1 != m_watchdogFD )
 	{
 		// write V, which signalizes the application is being closed correctly

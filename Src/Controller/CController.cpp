@@ -93,6 +93,8 @@ Int32 CController::Run()
 	//called right before shutdown - release all the resources here
 void CController::Shutdown()
 {
+	m_watchdogManager.Shutdown();
+	m_loggingAgent.Shutdown();
 	m_loggerManager.Shutdown();
 
 }
