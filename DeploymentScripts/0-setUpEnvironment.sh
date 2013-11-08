@@ -1,4 +1,4 @@
-export STAGING=$(pwd)/rootFileSystem
+export STAGING=$(pwd)/../Bin/Target
 export TARGET_LIB=$STAGING/lib
 export KERNEL_DIR=$(pwd)/linux.3.3.3
 export BUSYBOX=$(pwd)/busybox-1.21.0/_install

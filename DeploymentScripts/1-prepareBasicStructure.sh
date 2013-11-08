@@ -1,5 +1,3 @@
-STAGING=$(pwd)/rootFileSystem
-
 echo "Creating root directory for target filesystem on: "$STAGING
 mkdir $STAGING
 
