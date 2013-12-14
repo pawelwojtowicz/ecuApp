@@ -12,6 +12,7 @@ CExampleApp::CExampleApp()
 //important - queue name of the unit must start with the /
 : Runtime::CRuntimeUnit("ExampleApp", "/ExQueue")
 , m_timer1Id(0)
+, m_shutdownTimer(0)
 {
 }
 
@@ -34,6 +35,15 @@ void CExampleApp::Initialize()
   GetTimerManager().SetTimer(m_timer1Id, 5, 2 );
   GetTimerManager().StartTimer(m_timer1Id);
 
+  m_shutdownTimer = GetTimerManager().CreateTimer(this);
+  GetTimerManager().SetTimer(m_shutdownTimer, 10, 0 );
+  GetTimerManager().StartTimer(m_shutdownTimer);
+
+  m_iddleTimer = GetTimerManager().CreateTimer(this);
+  GetTimerManager().SetTimer(m_iddleTimer, 30, 0 );
+  GetTimerManager().StartTimer(m_iddleTimer);
+  SetBusy();
+
   InitDone(true);
 }
 
@@ -42,6 +52,17 @@ void CExampleApp::NotifyTimer( const Int32& timerId )
   if (timerId == m_timer1Id)
   {
     RETAILMSG(INFO, ("Test timer"));
+    
+  }
+  else if ( timerId == m_shutdownTimer )
+  {
+    RETAILMSG(INFO, ("Requesting shutdown"));
+    GetControllerProxy().RequestShutdown();
+  }
+  else if ( timerId ==m_iddleTimer )
+  {
+    RETAILMSG(INFO, ("ExampleApp iddle - system should be down in couple of seconds"));
+    SetIddle();
   }
 }
 

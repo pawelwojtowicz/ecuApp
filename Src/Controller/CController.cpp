@@ -75,7 +75,7 @@ void CController::Initialize()
 	{
 		InitializeTimer();
 		m_pendingShutdownTimerId = GetTimerManager().CreateTimer(this);
-		GetTimerManager().SetTimer(m_pendingShutdownTimerId, 5,0);
+		GetTimerManager().SetTimer(m_pendingShutdownTimerId, 60,0);
 		m_deviceShutdownTimerId  = GetTimerManager().CreateTimer(this);
 		GetTimerManager().SetTimer(m_deviceShutdownTimerId, 1,3);
 	}

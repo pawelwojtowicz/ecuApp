@@ -19,6 +19,10 @@ class CExampleApp : public Runtime::CRuntimeUnit, Runtime::ITimerListener
 private:
   Int32 m_timer1Id;
 
+  Int32 m_shutdownTimer;
+
+  Int32 m_iddleTimer;
+
 };
 
 }
