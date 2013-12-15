@@ -125,17 +125,19 @@ void CController::NotifyTimer( const Int32& timerId )
 	}
 }
 
-void CController::NotifyUnitInitialized(	const UInt32& unitId, 
-																			const std::string& processQueue, 
-																			const std::string& unitVersion)
+void CController::NotifyUnitInitialized( const UInt32& unitId, const std::string& processQueue, const std::string& unitVersion)
 {
 	m_processManager.NotifyUnitInitialized(	unitId,processQueue,unitVersion);
 }
 
-void CController::NotifyUnitHeartbeat(	const UInt32 unitId, 
-																		const Controller::tProcessStatus& status )
+void CController::NotifyUnitHeartbeat(	const UInt32 unitId, const Controller::tProcessStatus& status )
 {
 	m_processManager.NotifyUnitHeartbeat(	unitId, status );
+
+	if ( ePendingShutdown == m_deviceState )
+	{
+		ShutdownIfReady();
+	} 
 }
 
 
@@ -144,27 +146,32 @@ void CController::NotifyShutdownRequest()
 	RETAILMSG(INFO, ("Received shutdown request"));
 	if ( eOperation == m_deviceState )
 	{
-		RETAILMSG(INFO, ("Device is in Operation"));
-		if ( m_processManager.IsBusy() )
-		{
-			RETAILMSG(INFO, ("ProcessManager is Busy - pending shutdown"));
-			m_deviceState = ePendingShutdown;
-			m_controllerStub.BroadcastPendingShutdown();
-			GetTimerManager().StartTimer(m_pendingShutdownTimerId);
-		}
-		else
-		{
-			RETAILMSG(INFO, ("ProcessManager is iddle - immediate shutdown"));
-			m_deviceState = eShutdown;
-			m_processManager.SwitchOffProcessHandlers();
-			m_controllerStub.BroadcastShutdown();
-			GetTimerManager().StartTimer(m_deviceShutdownTimerId);
-		}
+		m_deviceState = ePendingShutdown;
+		m_controllerStub.BroadcastPendingShutdown();
+		RETAILMSG(INFO, ("PendingShutdown procedure started"));
+		GetTimerManager().StartTimer(m_pendingShutdownTimerId);
+		ShutdownIfReady();	
 	}
 }
 
 void CController::NotifyRestartRequest()
 {
+}
+
+void CController::ShutdownIfReady()
+{
+	if ( !m_processManager.IsBusy() )
+	{
+		RETAILMSG(INFO, ("ProcessManager is iddle - immediate shutdown"));
+		m_deviceState = eShutdown;
+		m_processManager.SwitchOffProcessHandlers();
+		m_controllerStub.BroadcastShutdown();
+		GetTimerManager().StartTimer(m_deviceShutdownTimerId);
+	}
+	else
+	{
+		RETAILMSG(INFO, ("ProcessManager is busy - not ready for shutdown"));
+	}
 }
 
 }

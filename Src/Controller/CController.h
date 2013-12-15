@@ -41,11 +41,8 @@ public:
 private:
 
 	// implementation of Controller::IControllerServices
-	virtual void NotifyUnitInitialized(	const UInt32& unitId, 
-																			const std::string& processQueue, 
-																			const std::string& unitVersion);
-	virtual void NotifyUnitHeartbeat(	const UInt32 unitId, 
-																		const Controller::tProcessStatus& status );
+	virtual void NotifyUnitInitialized(	const UInt32& unitId, const std::string& processQueue, const std::string& unitVersion);
+	virtual void NotifyUnitHeartbeat(	const UInt32 unitId, const Controller::tProcessStatus& status );
 
 
 	virtual void NotifyShutdownRequest();
@@ -55,11 +52,10 @@ private:
 	virtual void NotifyTimer();
 	virtual void NotifyTimer( const Int32& timerId );
 
-	
-
 	Runtime::ITimerManager& GetTimerManager() { return m_timerManager; };
+private:
+	void ShutdownIfReady();
 	
-
 private:
 	tDeviceState m_deviceState;
 
