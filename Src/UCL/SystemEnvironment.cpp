@@ -9,11 +9,11 @@
 
 static char sDflt_ApplicationPath[] = {"/bin"};
 static char sDflt_ConfigPath[]			= {"/etc/opt"};
-static char sDflt_LogPath[]					= {"/var/log"};
-static char sDflt_TempPath[]				= {"/tmp"};
+static char sDflt_LogPath[]			= {"/var/log"};
+static char sDflt_TempPath[]			= {"/tmp"};
 
 static char sVarName_AppPath[]			= {"APP_DIR"};
-static char sVarName_Config[]				= {"CONFIG_DIR"};
+static char sVarName_Config[]			= {"CONFIG_DIR"};
 static char sVarName_LogPath[]			= {"LOG_DIR"};
 static char sVarName_TempPath[]			= {"TMP_DIR"};
 

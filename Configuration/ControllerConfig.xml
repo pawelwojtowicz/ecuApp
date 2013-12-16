@@ -38,7 +38,7 @@
 	</CNode>
 	<CNode Name="ProcessManager">
 		<CNode Name="Sample">
-			<Parameter Name="CommandLine" Type="String">/home/pawel/programowanie/LinuxDevice/lnxEmbdDevice/Bin/Target/bin/exampleApp</Parameter>
+			<Parameter Name="CommandLine" Type="String">exampleApp</Parameter>
 			<Parameter Name="StartupGroup" Type="UInt8">1</Parameter>
 			<Parameter Name="ShutdownGroup" Type="UInt8">1</Parameter>
 			<Parameter Name="HeartbeatPeriod" Type="UInt32">5</Parameter>
@@ -53,7 +53,7 @@
 			</CNode>
 		</CNode>
 		<CNode Name="DrugiProces">
-			<Parameter Name="CommandLine" Type="String">/home/tpdev/Programowanie/lnxEmbdDevice/Bin/Target/bin/newTest</Parameter>
+			<Parameter Name="CommandLine" Type="String">newTest</Parameter>
 			<Parameter Name="StartupGroup" Type="UInt8">1</Parameter>
 			<Parameter Name="ShutdownGroup" Type="UInt8">1</Parameter>
 			<Parameter Name="HeartbeatPeriod" Type="UInt32">5</Parameter>

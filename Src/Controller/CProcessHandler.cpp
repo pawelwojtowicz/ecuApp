@@ -1,5 +1,6 @@
 #include "CProcessHandler.h"
 #include <Configuration/CConfigNode.h>
+#include <UCL/SystemEnvironment.h>
 #include <Logger/CLogManager.h>
 #include <Logger/Logger.h>
 #include <sys/wait.h>
@@ -34,7 +35,8 @@ CProcessHandler::CProcessHandler( const UInt32& unitId,
 , m_lastHeartbeat(0)
 , m_hearbeatTimeout(5)
 {
-	m_executableFileName = pConfigNode->GetParameter(sCfg_ExecutableName)->GetString(std::string());
+	std::string executableFileName = pConfigNode->GetParameter(sCfg_ExecutableName)->GetString(std::string());
+	m_executableFileName = UCL::SystemEnvironment::ResolvePath(UCL::SystemEnvironment::Dir_App, executableFileName);
 	m_startupGroup = pConfigNode->GetParameter(sCfg_StartupGroup)->GetUInt8(0);
 	m_shutdownGroup = pConfigNode->GetParameter(sCfg_ShutdownGroup)->GetUInt8(0);
 	m_hearbeatTimeout = pConfigNode->GetParameter(sCfg_HeartbeatPeriod)->GetUInt32(m_hearbeatTimeout);
