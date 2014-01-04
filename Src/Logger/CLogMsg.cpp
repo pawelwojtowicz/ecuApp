@@ -133,12 +133,7 @@ bool CLogMsg::Deserialize(const Int8* buffer, size_t bufferSize)
 
 const char* CLogMsg::ToString() const
 {
-	printf("%06u|%+3s|%7s|%-60s|%s(%d)\n", 	m_timeStamp,
-																					m_sourceShortName, 
-																					GetZoneName(),
-																					m_logText, 
-																					m_codeFileName, 
-																					m_line);
+	printf("%06u|%+3s|%7s|%-100s|%s(%d)\n",m_timeStamp,m_sourceShortName, GetZoneName(),m_logText,m_codeFileName,m_line);
 	return 0;
 }
 
