@@ -20,6 +20,7 @@ CEnvironment::~CEnvironment()
 void CEnvironment::Initialize()
 {
   std::string requestMethod(UCL::SystemEnvironment::GetVariable(s_const_reqMethod));
+  printf("requestMethod=[%s]\n", requestMethod.c_str());
 
   if ( 0 == requestMethod.compare(s_const_get_reqMethod) )
   {
@@ -83,6 +84,8 @@ void CEnvironment::Extract_GET_Environment()
 {
   std::string argumentList( UCL::SystemEnvironment::GetVariable(s_const_parameters) );
 
+  printf("QueryString=%s\n", argumentList.c_str());
+
   UCL::CTokenizer nameValuePairTokens(argumentList, "&");
   UInt8 variableCount( nameValuePairTokens.GetTokenCount() );
 
@@ -91,7 +94,7 @@ void CEnvironment::Extract_GET_Environment()
     UCL::CTokenizer nameValueTokens( nameValuePairTokens.GetToken(index) ,"=");
     if ( 2 == nameValueTokens.GetTokenCount() )
     {
-      printf("Extracted correct values [%s] [%s]<//br>", nameValueTokens.GetToken(0).c_str(), nameValueTokens.GetToken(1).c_str());
+      printf("Extracted correct values [%s] [%s]\n", nameValueTokens.GetToken(0).c_str(), nameValueTokens.GetToken(1).c_str());
       m_name2valueVariableMap.insert( tVariablesMap::value_type(nameValueTokens.GetToken(0), nameValueTokens.GetToken(1) ) );
     }
   }

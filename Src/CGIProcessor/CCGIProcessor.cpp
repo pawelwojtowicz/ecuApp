@@ -21,7 +21,9 @@ CCGIProcessor::~CCGIProcessor()
 
 void CCGIProcessor::Initialize()
 {
-printf("Content-type: text/plain\r\n");
+  // there has to be written those 2 lines to be able to see something on the
+  printf("Content-type: text/plain\r\n");
+  printf("\r\n");
   m_environment.Initialize();
 }
 
