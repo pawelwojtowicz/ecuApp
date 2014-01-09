@@ -7,9 +7,6 @@ namespace CGIProcessor
 {
 class CEnvironment
 {
-  typedef std::map<std::string, std::string> tVariablesMap;
-  typedef tVariablesMap::const_iterator tVariablesConstIter;
-
 public:
   CEnvironment();
   virtual ~CEnvironment();
