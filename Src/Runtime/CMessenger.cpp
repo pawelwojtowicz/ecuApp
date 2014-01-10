@@ -35,7 +35,14 @@ bool CMessenger::Initialize(const std::string& runtimeUnitName)
 	queueAttributes.mq_maxmsg = MAX_QUEUE_SIZE;
 	queueAttributes.mq_msgsize = MAX_MSG_SIZE;
 
-	m_ownQueueDescriptor = mq_open( runtimeUnitName.c_str() , O_RDWR|O_CREAT, S_IRWXU, &queueAttributes);
+  // set the umask suitable to be able to open the queues by other users ( ex. Apache plugins )
+  mode_t omask;
+  omask = umask(0);   /* use permissions as specified */
+	m_ownQueueDescriptor = mq_open( runtimeUnitName.c_str() , O_RDWR|O_CREAT, 0666, &queueAttributes);
+
+  //restore the original umask
+  umask(omask);
+
 	if(-1 != m_ownQueueDescriptor)
 	{
 		// initialize the own QUEUE
@@ -110,7 +117,7 @@ bool CMessenger::SetMaxMessageSize( const Int32& maxMsgSize)
 		mq_attr queueAttributes;
 		if ( 0 == mq_getattr(m_ownQueueDescriptor,&queueAttributes) )
 		{
-			queueAttributes.mq_msgsize = maxMsgSize ;
+			queueAttributes.mq_msgsize = maxMsgSize ;// set the umask suitable to be able to open the queues by other users ( ex. Apache plugins )
 			if ( 0 == mq_setattr(m_ownQueueDescriptor,&queueAttributes, NULL) )
 			{
 				retVal = true;
@@ -133,7 +140,14 @@ Int32 CMessenger::ConnectQueue(const std::string& queueName)
 		queueAttributes.mq_maxmsg = MAX_QUEUE_SIZE;
 		queueAttributes.mq_msgsize = MAX_MSG_SIZE;
 
-		mqd_t queueDescriptor = mq_open( queueName.c_str() , O_WRONLY|O_CREAT|O_NONBLOCK, S_IRWXU, &queueAttributes);
+    // set the umask suitable to be able to open the queues by other users ( ex. Apache plugins )
+    mode_t omask;
+    omask = umask(0);   /* use permissions as specified */
+
+		mqd_t queueDescriptor = mq_open( queueName.c_str() , O_WRONLY|O_CREAT|O_NONBLOCK, 0666, &queueAttributes);
+    
+    // restore the original umasl    
+    umask(omask);
 
 		if ( -1 != queueDescriptor )
 		{
@@ -145,6 +159,11 @@ Int32 CMessenger::ConnectQueue(const std::string& queueName)
 			queueID = m_currentID++;
 			m_queueName2QueueDescMap.insert(tQueueId2QueueDescriptorMap::value_type(queueID,qd));
 		}
+    else
+    {
+      printf("zjebane otwieranie kolejki\n");
+      printf("blad %s\n", strerror(errno));
+    }
 	}
 	else
 	{

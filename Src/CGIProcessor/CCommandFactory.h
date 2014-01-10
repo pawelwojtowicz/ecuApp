@@ -5,6 +5,7 @@
 #include "ICommand.h"
 namespace CGIProcessor
 {
+class CProxyProvider;
 
 class CCommandFactory
 {
@@ -12,7 +13,7 @@ class CCommandFactory
   typedef std::map< std::string , tCommandInterface* > tItemFactoryMap;
   typedef tItemFactoryMap::iterator tItemFactoryMapIterator;
 public:
-  CCommandFactory();
+  CCommandFactory(CProxyProvider&);
   virtual ~CCommandFactory();
 
   ICommand* GetCommand( const std::string& commandName );

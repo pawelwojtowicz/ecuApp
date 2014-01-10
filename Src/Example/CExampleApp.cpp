@@ -36,7 +36,7 @@ void CExampleApp::Initialize()
   GetTimerManager().StartTimer(m_timer1Id);
 
   m_shutdownTimer = GetTimerManager().CreateTimer(this);
-  GetTimerManager().SetTimer(m_shutdownTimer, 10, 0 );
+  GetTimerManager().SetTimer(m_shutdownTimer, 20, 0 );
   GetTimerManager().StartTimer(m_shutdownTimer);
 
   m_iddleTimer = GetTimerManager().CreateTimer(this);

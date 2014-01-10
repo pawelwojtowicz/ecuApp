@@ -4,13 +4,15 @@
 
 namespace CGIProcessor
 {
+class CEnvironment;
+
 class ICommand
 {
 public:
   ICommand() {};
   virtual ~ICommand() {};
 
-  virtual bool Execute(const tVariablesMap& variables) = 0;
+  virtual bool Execute(const CEnvironment& environment) = 0;
 
 private:
   ICommand(const ICommand&);

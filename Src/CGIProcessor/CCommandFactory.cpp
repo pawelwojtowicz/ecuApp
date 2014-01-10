@@ -1,12 +1,12 @@
 #include "CCommandFactory.h"
-#include "CDummyCommand.h"
+#include "CControllerCommand.h"
 
 namespace CGIProcessor
 {
 
-CCommandFactory::CCommandFactory()
+CCommandFactory::CCommandFactory( CProxyProvider& rProxyProvider)
 {
-  m_factoryMap.insert( tItemFactoryMap::value_type("dummy" , new CFactoryItemObject<ICommand, CDummyCommand>()));
+  m_factoryMap.insert( tItemFactoryMap::value_type("controller" , new CFactoryItemObject<ICommand, CControllerCommand>(rProxyProvider)));
 }
 
 CCommandFactory::~CCommandFactory()

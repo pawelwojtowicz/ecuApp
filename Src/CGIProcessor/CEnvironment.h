@@ -1,7 +1,6 @@
 #ifndef CGIPROCESSOR_CENVIRONMENT_H
 #define CGIPROCESSOR_CENVIRONMENT_H
 #include <Global/GlobalTypes.h>
-#include <map>
 
 namespace CGIProcessor
 {
@@ -13,7 +12,7 @@ public:
 
   void Initialize();
 
-  const std::string& GetVariable(const std::string& variableName );
+  const std::string& GetVariable(const std::string& variableName ) const;
 
 private:
   void Extract_POST_Environment();

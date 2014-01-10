@@ -22,18 +22,22 @@ variables, that are not yet used at the moment
  */
 
 /** holds the size of the input buffer */
-static char const s_const_contentLength[] = "CONTENT_LENGTH";
-static  char const s_const_contentType[]   = "CONTENT_TYPE";
+static char const s_const_contentLength[]   = "CONTENT_LENGTH";
+static  char const s_const_contentType[]    = "CONTENT_TYPE";
 
 /** holds the parameters of the http request */
-static char const s_const_parameters[]    = "QUERY_STRING";
+static char const s_const_parameters[]      = "QUERY_STRING";
 
 /** holds the type of the request [ "GET" | "HEAD" | "POST" ]*/
-static char const s_const_reqMethod[]     = "REQUEST_METHOD";
+static char const s_const_reqMethod[]       = "REQUEST_METHOD";
 static char const s_const_get_reqMethod[]   = "GET";
 static char const s_const_post_reqMethod[]  = "POST";
 
+static char const s_const_sv_commandName[]  = "command_name";
+static char const s_const_sv_apiName []     = "api_name";
 
+/** Available commands */
+static char const s_const_controllerAPI[] = "controller";
 }
 
 #endif //CGIPROCESSOR_CONST

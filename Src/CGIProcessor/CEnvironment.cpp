@@ -36,7 +36,7 @@ void CEnvironment::Initialize()
   }
 }
 
-const std::string& CEnvironment::GetVariable(const std::string& variableName )
+const std::string& CEnvironment::GetVariable(const std::string& variableName ) const
 {
   tVariablesConstIter pCIter = m_name2valueVariableMap.find(variableName);
 

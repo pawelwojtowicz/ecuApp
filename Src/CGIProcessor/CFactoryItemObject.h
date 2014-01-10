@@ -3,6 +3,7 @@
 
 namespace CGIProcessor
 {
+class CProxyProvider;
 
 template <class INTERFACE>
 class IFactoryItemObject
@@ -21,8 +22,9 @@ template <class INTERFACE, class ITEM>
 class CFactoryItemObject : public IFactoryItemObject<INTERFACE>
 {
 public:
-  CFactoryItemObject()
+  CFactoryItemObject(CProxyProvider& rProxyProvider)
   : m_objectInterface(0)
+  , m_rProxyProvider(rProxyProvider)
   {
   }
 
@@ -30,7 +32,7 @@ public:
   {
     if ( 0 == m_objectInterface )
     {
-      m_objectInterface = new ITEM(); 
+      m_objectInterface = new ITEM(m_rProxyProvider); 
     }
     
     return m_objectInterface;
@@ -43,6 +45,8 @@ public:
 
 private:
   INTERFACE* m_objectInterface;
+
+  CProxyProvider& m_rProxyProvider;
 };
 }
 

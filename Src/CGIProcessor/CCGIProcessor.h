@@ -2,6 +2,8 @@
 #define CGIPROCESSOR_CCGIPROCESSOR_H
 
 #include <Runtime/CExecutable.h>
+#include "CProxyProvider.h"
+#include "CCommandFactory.h"
 #include "CEnvironment.h"
 
 namespace CGIProcessor
@@ -21,8 +23,12 @@ private:
   CCGIProcessor(const CCGIProcessor&);
   CCGIProcessor& operator=(const CCGIProcessor&);
 
+  CProxyProvider m_proxyProvider;
+
+  CCommandFactory m_commandFactory;
 
   CEnvironment m_environment;
+
 };
 
 }
