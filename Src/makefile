@@ -31,7 +31,6 @@ cleanup:
 	$(MAKE) -C XMLParser clean
 	$(MAKE) -C UCL clean
 	$(MAKE) -C Runtime clean
-	$(MAKE) -C CGIProcessor
 	$(MAKE) -C ControllerInterface clean
 	$(MAKE) -C Configuration clean
 	$(MAKE) -C Logger clean
