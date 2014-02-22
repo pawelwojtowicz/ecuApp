@@ -1,5 +1,5 @@
 OUTPUT= libUCL
-OBJ= SystemEnvironment.o FileSystem.o CTokenizer.o CFile.o CThread.o
+OBJ= SystemEnvironment.o FileSystem.o CTokenizer.o CFile.o CThread.o CSerialPort.o
 
 include ../../DevEnv/sharedLibSettings
 
@@ -8,3 +8,4 @@ CTokenizer.o:	CTokenizer.cpp CTokenizer.h
 CFile.o:	CFile.h CFile.cpp
 CThread.o:	CThread.h CThread.cpp
 SystemEnvironment.o: SystemEnvironment.cpp SystemEnvironment.h
+CSerialPort.o:	CSerialPort.cpp CSerialPort.h
