@@ -2,3 +2,4 @@
 *.o
 _install
 Bin
+3rdParty/gtest-1.7.0
