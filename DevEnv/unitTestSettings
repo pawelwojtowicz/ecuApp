@@ -1,0 +1,35 @@
+export CC:=g++
+export BIN_PATH:= ../../Bin
+export INTERMEDIATE_PATH=$(BIN_PATH)/Intermediate
+export TARGET_PATH=$(BIN_PATH)/unitTests
+export SUBJ_PATH=../../Src
+export CFLAGS:= -c -Wall -pedantic -I$(SUBJ_PATH) -I$(SUBJ_PATH)/Global -I$(GOOGLE_TEST)/include
+export LFLAGS:= -pthread
+export OBJ_DIR=$(INTERMEDIATE_PATH)/$(OUTPUT)
+export LINKER_INPUT= $(addprefix $(OBJ_DIR)/, $(OBJ))
+
+.cpp.o:
+	@echo $<
+	$(CC) $(CFLAGS) $< -o $(OBJ_DIR)/$@
+
+.c.o:
+	$(CC) $(CFLAGS) $< -o $(OBJ_DIR)/$@
+
+default: DirStructure gtest-all.o gtest_main.o $(OBJ)
+	$(CC) $(LINKER_INPUT) $(OBJ_DIR)/gtest-all.o $(OBJ_DIR)/gtest_main.o -o $(TARGET_PATH)/$(OUTPUT) $(LFLAGS) 
+
+DirStructure:
+	-mkdir -p $(BIN_PATH)
+	-mkdir -p $(INTERMEDIATE_PATH)
+	-mkdir -p $(OBJ_DIR)
+	-mkdir -p $(TARGET_PATH)
+
+clean:
+	-rm -f $(OBJ_DIR)/*.o
+	-rm -f $(TARGET_PATH)/$(OUTPUT)
+
+gtest-all.o:  $(GOOGLE_TEST)/src/gtest-all.cc
+	      $(CC) -isystem ${GOOGLE_TEST}/include -I${GOOGLE_TEST} -pthread -c ${GOOGLE_TEST}/src/gtest-all.cc -o $(OBJ_DIR)/gtest-all.o $(CFLAGS)
+
+gtest_main.o: $(GOOGLE_TEST)/src/gtest_main.cc
+	      $(CC) -isystem ${GOOGLE_TEST}/include -I${GOOGLE_TEST} -pthread -c ${GOOGLE_TEST}/src/gtest_main.cc -o $(OBJ_DIR)/gtest_main.o $(CFLAGS)
