@@ -26,7 +26,9 @@ class CSerialPort
   bool ClearRx();
   bool ClearTx();
 
+#ifndef UNIT_TEST
  private:
+#endif
   bool ParseConfigurationString( const std::string& configurationString, struct termios& portConfig);
   
 
