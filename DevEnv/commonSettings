@@ -1,4 +1,5 @@
-export CC:=g++
+export TOOLCHAIN_PREFIX=arm-unknown-linux-gnueabi-
+export CC:=$(TOOLCHAIN_PREFIX)g++
 export ARCHIVER:=ar
 export BIN_PATH:= ../../Bin
 export INTERMEDIATE_PATH=$(BIN_PATH)/Intermediate
