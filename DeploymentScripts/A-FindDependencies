@@ -1,0 +1,50 @@
+#!/bin/bash
+source deploymentPaths
+
+FILES_COPIED=true
+echo --------------------------------------------------------
+echo Begining to build the dependencies
+while $FILES_COPIED;
+do
+FILES_COPIED=false
+
+echo ----------New Stage started
+declare -A dependencies
+
+while read binaryName; do
+	while read line;
+	do
+		dependencies["$line"]="used"
+	done < <(readelf -a $binaryName | grep NEEDED | awk '{ print substr($5,2,length($5)-2) }')
+done < <( find $TARGET_BIN_PATH/* )
+
+while read binaryName; do
+	while read line;
+	do
+		dependencies["$line"]="used"
+	done < <(readelf -a $binaryName | grep NEEDED | awk '{ print substr($5,2,length($5)-2) }')
+done < <( find $TARGET_SHARED_LIBS_PATH/* )
+
+
+for file in "${!dependencies[@]}"
+do
+	if [ -f $TARGET_SHARED_LIBS_PATH/$file ];
+	then
+		echo "$file -> exists"
+	else
+		echo "$file -> does not exist"
+		if [ -L $TOOLCHAIN_LIB_PATHS/$file ]
+		then
+			fileName=`ls -la $TOOLCHAIN_LIB_PATHS/$file | awk '{ print $NF }'`
+			echo "$file is a link to the $fileName"
+			cp $TOOLCHAIN_LIB_PATHS/$fileName $TARGET_SHARED_LIBS_PATH/$fileName
+			cp -s $TARGET_SHARED_LIBS_PATH/$fileName $TARGET_SHARED_LIBS_PATH/$file
+		else
+			echo Regular File
+			cp $TOOLCHAIN_LIB_PATHS/$file $TARGET_SHARED_LIBS_PATH/$file
+		fi
+		FILES_COPIED=true
+	fi
+done
+
+done
