@@ -3,7 +3,7 @@ source deploymentPaths
 
 mkdir -p $ROOT_FILE_SYSTEM_IMAGE_PATH
 
-IMAGE_OUTPUT=$ROOT_FILE_SYSTEM_IMAGE_PATH/rootfs.cpio
+IMAGE_OUTPUT=$ROOT_FILE_SYSTEM_IMAGE
 BACK_DIR=$(pwd)
 cd $TARGET_PATH
 find . | cpio -o -H newc > $IMAGE_OUTPUT
