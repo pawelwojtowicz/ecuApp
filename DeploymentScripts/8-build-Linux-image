@@ -1,0 +1,51 @@
+#!/bin/bash
+source deploymentPaths
+
+export KERNEL_ARCHIVE=$KERNEL_VERSION.tar.bz2
+export KRISTECH_KERNEL_PATCH=$KERNEL_VERSION-kristech.patch
+export KRISTECH_KERNEL_PATCH_ARCHIVE=$KRISTECH_KERNEL_PATCH.gz
+
+if [ ! -f $THIRD_PARTY_COMPONENTS/$KERNEL_ARCHIVE ];
+then
+	wget  https://www.kernel.org/pub/linux/kernel/v3.x/$KERNEL_ARCHIVE -P $THIRD_PARTY_COMPONENTS
+else
+	echo "Kernel archive [$THIRD_PARTY_COMPONENTS/$KERNEL_ARCHIVE] found"
+fi
+
+if [ ! -d $THIRD_PARTY_COMPONENTS/$KERNEL_VERSION ];
+then
+	echo Extracting the Kernel sources
+	tar xvf $THIRD_PARTY_COMPONENTS/$KERNEL_ARCHIVE -C $THIRD_PARTY_COMPONENTS
+else
+	echo Kernel Sources Extracted
+fi
+
+if [ $BUILD_PLATFORM = "QEMU" ]; then
+	echo "Preparing Kernel image for QEMU"
+
+	#enable versatile configuration
+	make -C $THIRD_PARTY_COMPONENTS/$KERNEL_VERSION CROSS_COMPILE=$TOOLCHAIN_PREFIX ARCH=arm versatile_defconfig
+
+	# build zImage ( qemu uses it )
+	make -C $THIRD_PARTY_COMPONENTS/$KERNEL_VERSION CROSS_COMPILE=$TOOLCHAIN_PREFIX ARCH=arm zImage
+
+elif [ $BUILD_PLATFORM = "KRISTECH" ]; then
+	echo "Preparing Kernel image for Kristech evaluation board"
+	# extract the kernel patch
+	gunzip $THIRD_PARTY_COMPONENTS/$KRISTECH_KERNEL_PATCH_ARCHIVE > $THIRD_PARTY_COMPONENTS/$KRISTECH_KERNEL_PATCH
+
+	# apply the kernel patch
+	BACK_DIR=$(pwd)
+	cd $THIRD_PARTY_COMPONENTS/$KERNEL_VERSION
+	patch -p1 < $THIRD_PARTY_COMPONENTS/$KRISTECH_KERNEL_PATCH
+	cd $BACK_DIR
+
+	# activate the Kristech konfiguration
+	make -C $THIRD_PARTY_COMPONENTS/$KERNEL_VERSION CROSS_COMPILE=$TOOLCHAIN_PREFIX ARCH=arm kt-sbc-sam9-1_defconfig
+
+	# make uImage ( Kristech uses the u-Boot )
+	make -C $THIRD_PARTY_COMPONENTS/$KERNEL_VERSION CROSS_COMPILE=$TOOLCHAIN_PREFIX ARCH=arm uImage
+
+else
+	echo "Building the kernel not required for DESKTOP CONFIGS"
+fi

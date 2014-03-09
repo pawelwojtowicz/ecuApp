@@ -1,4 +1,22 @@
-#!/bin/bash
+#!/bin/bash 
+
+export BUILD_PLATFORM=DESKTOP
+
+if [ $#=1 ];
+then
+	if [ $1 = "QEMU" ]
+	then
+		echo "Deployment prepared for QEMU"
+		export BUILD_PLATFORM=$1
+		
+	elif [ $1 = "KRISTECH" ]
+	then
+		echo "Deployment prepared for Kristech evaluation board"
+		export BUILD_PLATFORM=$1
+	else
+		echo Invalid target - assuming DESKTOP
+	fi
+fi
 
 export KERNEL_VERSION=linux-3.4.4
 export PROJECT_ROOT=$(pwd)
@@ -11,8 +29,9 @@ export DEPLOYMENT_SCRIPTS=$PROJECT_ROOT/DeploymentScripts
 export MAKEFILE_RULES=$PROJECT_ROOT/DevEnv
 export DEPLOYMENT_SETTINGS=$DEPLOYMENT_SCRIPTS/deploymentPaths
 export THIRD_PARTY_COMPONENTS=$PROJECT_ROOT/3rdParty
-export TOOLCHAIN_PREFIX=arm-unknown-linux-gnueabi-
+export TOOLCHAIN_PREFIX=/home/pawel/x-tools/arm-unknown-linux-gnueabi/bin/arm-unknown-linux-gnueabi-
 export TOOLCHAIN_LIB_PATHS=/home/pawel/x-tools/arm-unknown-linux-gnueabi/arm-unknown-linux-gnueabi/lib
+export SYSTEM_CONFIGURATION_DIRECTORY=$DEPLOYMENT_SCRIPTS/ConfigurationFiles
 
 echo "export PROJECT_ROOT=$PROJECT_ROOT" > $DEPLOYMENT_SETTINGS
 echo "export TARGET_PATH=$TARGET_PATH" >> $DEPLOYMENT_SETTINGS
@@ -24,3 +43,5 @@ echo "export TOOLCHAIN_PREFIX=$TOOLCHAIN_PREFIX" >> $DEPLOYMENT_SETTINGS
 echo "export ROOT_FILE_SYSTEM_IMAGE_PATH=$ROOT_FILE_SYSTEM_IMAGE_PATH" >> $DEPLOYMENT_SETTINGS
 echo "export ROOT_FILE_SYSTEM_IMAGE=$ROOT_FILE_SYSTEM_IMAGE" >> $DEPLOYMENT_SETTINGS
 echo "export KERNEL_VERSION=$KERNEL_VERSION" >> $DEPLOYMENT_SETTINGS
+echo "export BUILD_PLATFORM=$BUILD_PLATFORM" >> $DEPLOYMENT_SETTINGS
+echo "export SYSTEM_CONFIGURATION_DIRECTORY=$SYSTEM_CONFIGURATION_DIRECTORY" >> $DEPLOYMENT_SETTINGS
