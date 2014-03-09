@@ -25,7 +25,8 @@ while read binaryName; do
 	done < <(readelf -a $binaryName | grep NEEDED | awk '{ print substr($5,2,length($5)-2) }')
 done < <( find $TARGET_SHARED_LIBS_PATH/* )
 
-
+export BACK_DIR=$(pwd)
+cd $TARGET_SHARED_LIBS_PATH
 for file in "${!dependencies[@]}"
 do
 	if [ -f $TARGET_SHARED_LIBS_PATH/$file ];
@@ -38,7 +39,7 @@ do
 			fileName=`ls -la $TOOLCHAIN_LIB_PATHS/$file | awk '{ print $NF }'`
 			echo "$file is a link to the $fileName"
 			cp $TOOLCHAIN_LIB_PATHS/$fileName $TARGET_SHARED_LIBS_PATH/$fileName
-			cp -s $TARGET_SHARED_LIBS_PATH/$fileName $TARGET_SHARED_LIBS_PATH/$file
+			ln -s $fileName $file
 		else
 			echo Regular File
 			cp $TOOLCHAIN_LIB_PATHS/$file $TARGET_SHARED_LIBS_PATH/$file
@@ -46,5 +47,6 @@ do
 		FILES_COPIED=true
 	fi
 done
+cd $BACK_DIR
 
 done

@@ -3,7 +3,8 @@ source deploymentPaths
 
 LINUX_IMG_PATH=$THIRD_PARTY_COMPONENTS/$KERNEL_VERSION/arch/arm/boot/zImage
 
-echo "starting qemu with "$LINUX_IMG_PATH
+echo starting up the qemu
+echo "kernel=[$LINUX_IMG_PATH]"
+echo "rootfs=[$ROOT_FILE_SYSTEM_IMAGE]"
 
-
-qemu-system-arm -m 128 -M versatilepb -kernel $LINUX_IMG_PATH -nographic -append "console=ttyAMA0,115200 root=dev/ram"
+qemu-system-arm -m 128 -M versatilepb -kernel $LINUX_IMG_PATH -initrd $ROOT_FILE_SYSTEM_IMAGE -nographic -append "console=ttyAMA0,115200 root=/dev/ram init=linuxrc"
