@@ -74,7 +74,7 @@ void CPOSIXMessageQueue::Shutdown()
 
 bool CPOSIXMessageQueue::IsValid()
 {
-  return ( -1 != m_msgQueueHandle
+  return ( -1 != m_msgQueueHandle );
 }
   
 size_t CPOSIXMessageQueue::SendData( const Int8* buffer, size_t bufferSize)
