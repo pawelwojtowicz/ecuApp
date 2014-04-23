@@ -33,14 +33,14 @@ export TARGET_PATH=$PROJECT_ROOT/Bin/Target
 export TARGET_SHARED_LIBS_PATH=$TARGET_PATH/lib
 export TARGET_BIN_PATH=$TARGET_PATH/bin
 export THIRD_PARTY_COMPONENTS=$PROJECT_ROOT/3rdParty
+export DEPLOYMENT_SCRIPTS=$PROJECT_ROOT/DeploymentScripts
+export DEPLOYMENT_SETTINGS=$DEPLOYMENT_SCRIPTS/deploymentPaths
 export SYSTEM_CONFIGURATION_DIRECTORY=$DEPLOYMENT_SCRIPTS/ConfigurationFiles
 
 #preparing the filenames and paths for the makefile common settings
 export MAKEFILE_RULES=$PROJECT_ROOT/DevEnv
 export COMMON_MAKE_SETTINGS=$MAKEFILE_RULES/commonSettings
 #preparing the filenames and paths for deployment scripts
-export DEPLOYMENT_SCRIPTS=$PROJECT_ROOT/DeploymentScripts
-export DEPLOYMENT_SETTINGS=$DEPLOYMENT_SCRIPTS/deploymentPaths
 
 # generate the common deployment script variable set
 echo "export PROJECT_ROOT=$PROJECT_ROOT" > $DEPLOYMENT_SETTINGS
