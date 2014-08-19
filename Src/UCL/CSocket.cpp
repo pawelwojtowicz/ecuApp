@@ -1,7 +1,5 @@
 #include "CSocket.h"
-#include <sys/socket.h>
-#include <sys/un.h>
-#include <unistd.h>
+#include <stdio.h>
 
 namespace UCL
 {
@@ -34,12 +32,15 @@ bool CSocket::Bind(const std::string& queueName)
 	memset(&toBindAddress,0,sizeof(toBindAddress));
 	toBindAddress.sun_family = AF_UNIX;
 	strcpy(toBindAddress.sun_path,m_socketName.c_str());
+	toBindAddress.sun_path[0] = 0;
 	
-	if ( bind(m_socketFileDescriptor, (const struct sockaddr*)&toBindAddress, sizeof(toBindAddress)) < 0 )
+	if ( bind(m_socketFileDescriptor, (const struct sockaddr*)&toBindAddress, SUN_LEN(&toBindAddress)) < 0 )
 	{
+		printf("failure\n");
 		Close();
 	}
 	
+	printf("success\n");
 	return (-1 != m_socketFileDescriptor );
 }
 
@@ -53,5 +54,21 @@ void CSocket::Close()
 	close(m_socketFileDescriptor);
 	m_socketFileDescriptor = -1;
 }
+
+Int32 CSocket::Send(CSocketAddress& sockAddress, Int8* buffer, const Int32& bytestToSend)
+{
+	socklen_t addressFieldSize(SUN_LEN(sockAddress.GetAddressStructure()));
+	printf("Rozmiar %d\n", addressFieldSize);
+	return sendto(m_socketFileDescriptor, buffer, bytestToSend, 0, (struct sockaddr*)sockAddress.GetAddressStructure(), addressFieldSize );
+}
+
+
+Int32 CSocket::Receive(CSocketAddress& sockAddress, Int8* buffer, const Int32& bytesToSend)
+{
+	socklen_t addressFieldSize(sizeof(struct sockaddr_un));
+	return recvfrom(m_socketFileDescriptor, buffer, bytesToSend, 0, (struct sockaddr*)sockAddress.GetAddressStructure(), &addressFieldSize );
+}
+
+
 
 }
