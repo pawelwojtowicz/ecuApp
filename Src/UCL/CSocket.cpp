@@ -1,5 +1,6 @@
 #include "CSocket.h"
 #include <stdio.h>
+#include <errno.h>
 
 namespace UCL
 {
@@ -18,7 +19,7 @@ bool CSocket::Bind(const std::string& queueName)
 {
 	m_socketFileDescriptor = socket(AF_UNIX,SOCK_DGRAM,0);
 	
-	if ( -1 != m_socketFileDescriptor )
+	if ( 0 > m_socketFileDescriptor )
 	{
 		return false;
 	}
@@ -32,15 +33,12 @@ bool CSocket::Bind(const std::string& queueName)
 	memset(&toBindAddress,0,sizeof(toBindAddress));
 	toBindAddress.sun_family = AF_UNIX;
 	strcpy(toBindAddress.sun_path,m_socketName.c_str());
-	toBindAddress.sun_path[0] = 0;
 	
 	if ( bind(m_socketFileDescriptor, (const struct sockaddr*)&toBindAddress, SUN_LEN(&toBindAddress)) < 0 )
 	{
-		printf("failure\n");
 		Close();
 	}
-	
-	printf("success\n");
+
 	return (-1 != m_socketFileDescriptor );
 }
 
@@ -58,7 +56,6 @@ void CSocket::Close()
 Int32 CSocket::Send(CSocketAddress& sockAddress, Int8* buffer, const Int32& bytestToSend)
 {
 	socklen_t addressFieldSize(SUN_LEN(sockAddress.GetAddressStructure()));
-	printf("Rozmiar %d\n", addressFieldSize);
 	return sendto(m_socketFileDescriptor, buffer, bytestToSend, 0, (struct sockaddr*)sockAddress.GetAddressStructure(), addressFieldSize );
 }
 

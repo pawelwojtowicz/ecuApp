@@ -16,7 +16,6 @@ public:
 		memset(&m_addressStruct,0,sizeof(m_addressStruct));
 		m_addressStruct.sun_family = AF_UNIX;
 		strcpy(m_addressStruct.sun_path,address.c_str());
-		m_addressStruct.sun_path[0]=0;
 	}
 	
 	struct sockaddr_un* GetAddressStructure()
