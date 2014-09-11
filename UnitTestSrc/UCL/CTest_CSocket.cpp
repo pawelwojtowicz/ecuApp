@@ -73,5 +73,32 @@ TEST(CSocket,SendReceive)
   socket.Close();
 }
 
+TEST(CSocketAddress,CopyConstructor)
+{
+	UCL::CSocketAddress address1("testAddress");
+	UCL::CSocketAddress address2(address1);
+	
+	ASSERT_EQ(address1.GetAddressSize(), address2.GetAddressSize());
+	ASSERT_STREQ(address1.GetAddressStructure()->sun_path, address2.GetAddressStructure()->sun_path);
+}
+
+TEST(CSocketAddress,AssignmentOperator)
+{
+	UCL::CSocketAddress address1("testAddress");
+	UCL::CSocketAddress address2 = address1;
+
+	ASSERT_EQ(address1.GetAddressSize(), address2.GetAddressSize());
+	ASSERT_STREQ(address1.GetAddressStructure()->sun_path, address2.GetAddressStructure()->sun_path);
+}
+
+TEST(CSocketAddress,ComparisonOperator)
+{
+	UCL::CSocketAddress address1("testAddress");
+	UCL::CSocketAddress address2("testAddress");
+	UCL::CSocketAddress address3("otherTestAddress");
+	ASSERT_EQ(address1==address2, true);
+	ASSERT_EQ(address1==address3, false);
+
+}
 
 

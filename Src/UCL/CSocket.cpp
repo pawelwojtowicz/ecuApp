@@ -55,14 +55,13 @@ void CSocket::Close()
 
 Int32 CSocket::Send(CSocketAddress& sockAddress, Int8* buffer, const Int32& bytestToSend)
 {
-	socklen_t addressFieldSize(SUN_LEN(sockAddress.GetAddressStructure()));
-	return sendto(m_socketFileDescriptor, buffer, bytestToSend, 0, (struct sockaddr*)sockAddress.GetAddressStructure(), addressFieldSize );
+	return sendto(m_socketFileDescriptor, buffer, bytestToSend, 0, (struct sockaddr*)sockAddress.GetAddressStructure(), sockAddress.GetAddressSize() );
 }
 
 
 Int32 CSocket::Receive(CSocketAddress& sockAddress, Int8* buffer, const Int32& bytesToSend)
 {
-	socklen_t addressFieldSize(sizeof(struct sockaddr_un));
+	socklen_t addressFieldSize( sizeof(struct sockaddr_un) );
 	return recvfrom(m_socketFileDescriptor, buffer, bytesToSend, 0, (struct sockaddr*)sockAddress.GetAddressStructure(), &addressFieldSize );
 }
 
