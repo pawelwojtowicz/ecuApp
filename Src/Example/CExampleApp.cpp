@@ -10,7 +10,7 @@ namespace ExampleApp
 
 CExampleApp::CExampleApp()
 //important - queue name of the unit must start with the /
-: Runtime::CRuntimeUnit("ExampleApp", "/ExQueue")
+: Runtime::CRuntimeUnit("ExampleApp", "ExQueue")
 , m_timer1Id(0)
 , m_shutdownTimer(0)
 {

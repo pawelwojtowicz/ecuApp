@@ -2,12 +2,6 @@
 #include "CMessage.h"
 #include "ISubscriber.h"
 #include <RuntimeConst.h>
-#include <fcntl.h>
-#include <sys/stat.h>
-
-#include <stdio.h>
-#include <errno.h>
-#include <string.h>
 
 
 namespace Runtime
@@ -16,7 +10,6 @@ namespace Runtime
 CMessenger::CMessenger()
 : m_run( true )
 , m_currentID( 2 ) // 0 = broadcast queue, 1 = own queue.
-, m_ownQueueDescriptor(-1)
 {
 }
 
@@ -28,34 +21,20 @@ CMessenger::~CMessenger()
 bool CMessenger::Initialize(const std::string& runtimeUnitName)
 {
 	bool retVal(false);
-// create own message queue - R/W writes
 
-	mq_attr queueAttributes;
-	queueAttributes.mq_flags = 0;
-	queueAttributes.mq_maxmsg = MAX_QUEUE_SIZE;
-	queueAttributes.mq_msgsize = MAX_MSG_SIZE;
-
-  // set the umask suitable to be able to open the queues by other users ( ex. Apache plugins )
-  mode_t omask;
-  omask = umask(0);   /* use permissions as specified */
-	m_ownQueueDescriptor = mq_open( runtimeUnitName.c_str() , O_RDWR|O_CREAT, 0666, &queueAttributes);
-
-  //restore the original umask
-  umask(omask);
-
-	if(-1 != m_ownQueueDescriptor)
+	retVal = m_socket.Bind( runtimeUnitName );
+	
+	if ( retVal )
 	{
-		// initialize the own QUEUE
-		QueueDetails qd;
-		qd.QueueName = runtimeUnitName;
-		qd.QueueDescriptor = m_ownQueueDescriptor;
-		qd.UsageCount = 1;
-		m_queueName2QueueDescMap.insert(tQueueId2QueueDescriptorMap::value_type(OWN_QUEUE_ID,qd));
-		retVal = true;
+		QueueInfo queueInfo;
+		queueInfo.QueueName = runtimeUnitName;
+		queueInfo.Address= UCL::CSocketAddress(runtimeUnitName);
+		
+		m_queueName2QueueDescMap.insert(tQueueId2QueueInfoMap::value_type(OWN_QUEUE_ID,queueInfo));
 	}
 	else
 	{
-		printf("blad %s\n", strerror(errno));
+		m_socket.Close();
 	}
 
 	return retVal;
@@ -63,70 +42,11 @@ bool CMessenger::Initialize(const std::string& runtimeUnitName)
 
 bool CMessenger::Shutdown()
 {
-	bool retVal(false);
-// unregister broadcast queue
-
-	// trzeba zrobic unlink na kolejce
-// deattach from broadcast queue
-
-// dispose own queue
-	return retVal;
+	m_socket.Close();
+	m_queueName2QueueDescMap.clear();
+	
+	return true;
 }
-
-bool CMessenger::GetQueueParameters(Int32& maxNoMsg, Int32& maxMsgSize, Int32& currentQueueSize)
-{
-	bool retVal(false);
-	if ( -1 != m_ownQueueDescriptor )
-	{
-		mq_attr queueAttributes;
-		if ( 0 == mq_getattr(m_ownQueueDescriptor,&queueAttributes) )
-		{
-			maxNoMsg = queueAttributes.mq_maxmsg;
-			maxMsgSize = queueAttributes.mq_msgsize;
-			currentQueueSize = queueAttributes.mq_curmsgs;
-			retVal = true;
-		}
-	}
-
-	return retVal;
-}
-
-bool CMessenger::SetQueueCapacity( const Int32& queueCapacity)
-{
-	bool retVal(false);
-	if ( -1 != m_ownQueueDescriptor )
-	{
-		mq_attr queueAttributes;
-		if ( 0 == mq_getattr(m_ownQueueDescriptor,&queueAttributes) )
-		{
-			queueAttributes.mq_maxmsg = queueCapacity ;
-			if ( 0 == mq_setattr(m_ownQueueDescriptor,&queueAttributes , NULL) )
-			{
-				retVal = true;
-			}
-		}
-	}
-	return retVal;
-}
-
-bool CMessenger::SetMaxMessageSize( const Int32& maxMsgSize)
-{
-	bool retVal(false);
-	if ( -1 != m_ownQueueDescriptor )
-	{
-		mq_attr queueAttributes;
-		if ( 0 == mq_getattr(m_ownQueueDescriptor,&queueAttributes) )
-		{
-			queueAttributes.mq_msgsize = maxMsgSize ;// set the umask suitable to be able to open the queues by other users ( ex. Apache plugins )
-			if ( 0 == mq_setattr(m_ownQueueDescriptor,&queueAttributes, NULL) )
-			{
-				retVal = true;
-			}
-		}
-	}
-	return retVal;
-}
-
 
 //initialization of the transmitter
 Int32 CMessenger::ConnectQueue(const std::string& queueName)
@@ -135,39 +55,14 @@ Int32 CMessenger::ConnectQueue(const std::string& queueName)
 	tQueueMapIter pIter = FindQueueByName(queueName);
 	if ( m_queueName2QueueDescMap.end() == pIter )
 	{
-		mq_attr queueAttributes;
-		queueAttributes.mq_flags = 0;
-		queueAttributes.mq_maxmsg = MAX_QUEUE_SIZE;
-		queueAttributes.mq_msgsize = MAX_MSG_SIZE;
-
-    // set the umask suitable to be able to open the queues by other users ( ex. Apache plugins )
-    mode_t omask;
-    omask = umask(0);   /* use permissions as specified */
-
-		mqd_t queueDescriptor = mq_open( queueName.c_str() , O_WRONLY|O_CREAT|O_NONBLOCK, 0666, &queueAttributes);
-    
-    // restore the original umasl    
-    umask(omask);
-
-		if ( -1 != queueDescriptor )
-		{
-			QueueDetails qd;
-			qd.QueueName = queueName;
-			qd.QueueDescriptor = queueDescriptor;
-			qd.UsageCount = 1;
-
-			queueID = m_currentID++;
-			m_queueName2QueueDescMap.insert(tQueueId2QueueDescriptorMap::value_type(queueID,qd));
-		}
-    else
-    {
-      printf("zjebane otwieranie kolejki\n");
-      printf("blad %s\n", strerror(errno));
-    }
+		QueueInfo queueInfo;
+		queueInfo.QueueName = queueName;
+		queueInfo.Address= UCL::CSocketAddress(queueName);
+		queueID = m_currentID++;
+		m_queueName2QueueDescMap.insert(tQueueId2QueueInfoMap::value_type(queueID,queueInfo));
 	}
 	else
 	{
-		++pIter->second.UsageCount;
 		queueID = pIter->first;
 	}
 	return queueID;
@@ -178,15 +73,7 @@ bool CMessenger::DisconnectQueue(const std::string& queueName)
 	tQueueMapIter pIter = FindQueueByName( queueName );
 	if ( m_queueName2QueueDescMap.end() == pIter )
 	{
-			--pIter->second.UsageCount;
-			if (pIter->second.UsageCount <= 0 )
-			{
-				if ( mq_close( pIter->second.QueueDescriptor ) )
-				{
-					m_queueName2QueueDescMap.erase(pIter);
-				}
-				return true;
-			}
+		m_queueName2QueueDescMap.erase(pIter);
 	}
 	return false;
 }
@@ -239,7 +126,7 @@ bool CMessenger::PostMessage( CMessage& message )
 				tQueueMapIter pIter = m_queueName2QueueDescMap.find( *queueIdIter );
 				if ( m_queueName2QueueDescMap.end() != pIter )
 				{
-					mq_send( pIter->second.QueueDescriptor , message.GetBuffer() , message.GetBufferSize(), message.GetMessagePrio() );
+					m_socket.Send(pIter->second.Address,message.GetBuffer() , message.GetBufferSize());
 				}
 			}
 		}		
@@ -249,7 +136,7 @@ bool CMessenger::PostMessage( CMessage& message )
 		tQueueMapIter pIter = m_queueName2QueueDescMap.find( message.GetTargetId() );
 		if ( m_queueName2QueueDescMap.end() != pIter )
 		{
-			if ( 0 == mq_send( pIter->second.QueueDescriptor , message.GetBuffer() , message.GetBufferSize(), message.GetMessagePrio() ) )
+			if ( message.GetBufferSize() == m_socket.Send(pIter->second.Address,message.GetBuffer() , message.GetBufferSize()))
 			{
 				return true;
 			}
@@ -260,15 +147,16 @@ bool CMessenger::PostMessage( CMessage& message )
 
 void CMessenger::StartMsgProcessor()
 {
-	if ( -1 != m_ownQueueDescriptor )
+	if ( m_socket.IsValid() )
 	{	
 		char messageBuffer[MAX_MSG_SIZE];
 		Int32 messageSize(0);
 		UInt32 priority(0);
+		UCL::CSocketAddress address;
 
 		do
 		{
-			messageSize = mq_receive( m_ownQueueDescriptor, messageBuffer, MAX_MSG_SIZE, &priority );
+			messageSize = m_socket.Receive(address, messageBuffer, MAX_MSG_SIZE );
 			if ( messageSize > 0 )
 			{
 				CMessage message(messageBuffer, messageSize);
@@ -331,7 +219,6 @@ void CMessenger::StartMsgProcessor()
 			} 
 			else
 			{
-				printf("blad %s\n", strerror(errno));
 			}
 		} while( m_run );
 	}

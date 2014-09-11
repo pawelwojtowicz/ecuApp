@@ -1,13 +1,13 @@
 #ifndef RUNTIME_CMESSENGER_H
 #define RUNTIME_CMESSENGER_H
 
-#include <mqueue.h>
 #include <map>
 #include <set>
 #include <string>
 #include "GlobalTypes.h"
 #include "RuntimeConst.h"
 #include "IMessenger.h"
+#include <UCL/CSocket.h>
 
 namespace Runtime
 {
@@ -17,18 +17,17 @@ class CMessage;
 
 class CMessenger : public IMessenger
 {
-	struct QueueDetails
+	struct QueueInfo
 	{
 		std::string QueueName;
-		mqd_t QueueDescriptor;
-		UInt8 UsageCount;
+		UCL::CSocketAddress Address;
 	};
 
 	// creates an association between QueueID and the QueueDetails structure. Used during PostingMessage
 	// to select right Queue descriptor depending on the TargetId
-	typedef std::map<Int32, QueueDetails> 							tQueueId2QueueDescriptorMap;
-	typedef tQueueId2QueueDescriptorMap::const_iterator tQueueMapConstIter;
-	typedef tQueueId2QueueDescriptorMap::iterator 			tQueueMapIter;
+	typedef std::map<Int32, QueueInfo> tQueueId2QueueInfoMap;
+	typedef tQueueId2QueueInfoMap::const_iterator tQueueMapConstIter;
+	typedef tQueueId2QueueInfoMap::iterator 			tQueueMapIter;
 
 	// matches the MsgId with the subscriber.
 	typedef std::map<tMsgIds, ISubscriber*> 			tMsgId2SubscriberMap;
@@ -47,10 +46,6 @@ public:
 	//general initialization
 	bool Initialize(const std::string& runtimeUnitName);
 	bool Shutdown();
-
-	bool GetQueueParameters(Int32& maxNoMsg, Int32& maxMsgSize, Int32& currentQueueSize);
-	bool SetQueueCapacity( const Int32& queueCapacity);
-	bool SetMaxMessageSize( const Int32& maxMsgSize);
 
 	//initialization of the transmitter
 	Int32 ConnectQueue(const std::string& queueName);
@@ -73,7 +68,7 @@ private:
 	bool PostSubscriptionMessage( const Int32& supplierQueueId, tMsgIds, bool subscribe );
 
 private:
-	tQueueId2QueueDescriptorMap m_queueName2QueueDescMap;
+	tQueueId2QueueInfoMap m_queueName2QueueDescMap;
 
 	tMsgId2SubscriberMap m_msgId2SubscriberMap;
 
@@ -82,7 +77,8 @@ private:
 	bool m_run;
 
 	UInt32 m_currentID;
-	mqd_t m_ownQueueDescriptor;
+	
+	UCL::CSocket m_socket;
 
 };
 

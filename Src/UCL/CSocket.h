@@ -51,6 +51,7 @@ public:
 		this->m_addressStruct.sun_family = AF_UNIX;
 		strcpy( this->m_addressStruct.sun_path,rhs.m_addressStruct.sun_path );
 		this->m_addressStructSize = SUN_LEN(&this->m_addressStruct);
+		return *this;
 	}
 	
 	bool operator==(const CSocketAddress& rhs)
