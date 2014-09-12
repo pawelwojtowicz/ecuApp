@@ -21,6 +21,7 @@ class CMessenger : public IMessenger
 	{
 		std::string QueueName;
 		UCL::CSocketAddress Address;
+		UInt32 RefCount;
 	};
 
 	// creates an association between QueueID and the QueueDetails structure. Used during PostingMessage

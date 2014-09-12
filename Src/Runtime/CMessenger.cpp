@@ -2,6 +2,7 @@
 #include "CMessage.h"
 #include "ISubscriber.h"
 #include <RuntimeConst.h>
+#include <stdio.h>
 
 
 namespace Runtime
@@ -58,11 +59,13 @@ Int32 CMessenger::ConnectQueue(const std::string& queueName)
 		QueueInfo queueInfo;
 		queueInfo.QueueName = queueName;
 		queueInfo.Address= UCL::CSocketAddress(queueName);
+		queueInfo.RefCount = 1;
 		queueID = m_currentID++;
 		m_queueName2QueueDescMap.insert(tQueueId2QueueInfoMap::value_type(queueID,queueInfo));
 	}
 	else
 	{
+		++pIter->second.RefCount;
 		queueID = pIter->first;
 	}
 	return queueID;
@@ -71,9 +74,14 @@ Int32 CMessenger::ConnectQueue(const std::string& queueName)
 bool CMessenger::DisconnectQueue(const std::string& queueName)
 {
 	tQueueMapIter pIter = FindQueueByName( queueName );
-	if ( m_queueName2QueueDescMap.end() == pIter )
+	if ( m_queueName2QueueDescMap.end() != pIter )
 	{
-		m_queueName2QueueDescMap.erase(pIter);
+		--pIter->second.RefCount;
+		if ( 0 == pIter->second.RefCount )
+		{
+			m_queueName2QueueDescMap.erase(pIter);
+		}
+		return true;
 	}
 	return false;
 }
@@ -238,7 +246,7 @@ CMessenger::tQueueMapIter CMessenger::FindQueueByName( const std::string& queueN
 			return iter;
 		}
 	}
-
+	
 	return m_queueName2QueueDescMap.end();
 }
 
