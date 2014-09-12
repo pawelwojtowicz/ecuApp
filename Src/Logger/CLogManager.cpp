@@ -49,9 +49,6 @@ bool CLogManager::Initialize(const Configuration::CConfigNode* configNode)
 
 	m_socket.Bind(s_LoggerQueue);
 	
-	printf("Inicjalizacja kolejki logera %s error[%s]\n", s_LoggerQueue, strerror(errno));
-
-
 	if ( m_socket.IsValid() )
 	{
 		Start();
@@ -69,35 +66,27 @@ void CLogManager::Shutdown()
 	m_running = false;
 	WaitFor();
 	
-	m_socket.Close();
-
-	/**check how many log entries is waiting in the queue
-	mq_attr queueAttributes;
-	if ( 0 == mq_getattr(m_loggerQueueDescriptor,&queueAttributes) )
+	CLogMsg logMessage;
+	Int8 logMsgBuffer[MAX_LOGGER_MSG_SIZE];
+	Int32 logMsgSize(0);
+	tTargetIterator logTargetIter;
+  UCL::CSocketAddress address;
+	
+	while (	!m_socket.IsEmpty() )
 	{
-		Int32 currentQueueSize = queueAttributes.mq_curmsgs;
-		CLogMsg logMessage;
-		Int8 logMsgBuffer[MAX_LOGGER_MSG_SIZE];
-		Int32 logMsgSize(0);
-		UInt32 priority(0);
-		tTargetIterator logTargetIter;
-
-		for (Int32 i = 0 ; i < currentQueueSize ; ++i )
+		logMsgSize = m_socket.Receive(address, logMsgBuffer, MAX_LOGGER_MSG_SIZE );
+		if (logMessage.Deserialize(logMsgBuffer, logMsgSize ) )
 		{
-			logMsgSize = mq_receive( m_loggerQueueDescriptor, (char*)logMsgBuffer, MAX_LOGGER_MSG_SIZE, &priority );
-			if (logMessage.Deserialize(logMsgBuffer, logMsgSize ) )
+			logMessage.SetSourceShortName(m_runtimeDictionary[ logMessage.GetLogSrcRuntimeId()].c_str());
+			for(logTargetIter = m_targetList.begin() ; m_targetList.end() != logTargetIter ; ++logTargetIter)
 			{
-				logMessage.SetSourceShortName(m_runtimeDictionary[ logMessage.GetLogSrcRuntimeId()].c_str());
-				for(logTargetIter = m_targetList.begin() ; m_targetList.end() != logTargetIter ; ++logTargetIter)
-				{
-					(*logTargetIter)->LogToTarget( logMessage );
-				}
-			}	
-		}
+				(*logTargetIter)->LogToTarget( logMessage );
+			}
+		}	
 	}
 
-	mq_unlink(s_LoggerQueue);
-*/
+	m_socket.Close();
+
 //stop the threads
 	for(tTargetIterator logTargetIter = m_targetList.begin() ; m_targetList.end() != logTargetIter ; ++logTargetIter)
 	{

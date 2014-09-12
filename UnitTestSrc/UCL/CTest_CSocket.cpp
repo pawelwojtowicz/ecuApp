@@ -73,6 +73,38 @@ TEST(CSocket,SendReceive)
   socket.Close();
 }
 
+TEST(CSocket,DetectEmptyBuffer)
+{
+  UCL::CSocket socket;
+  socket.Bind(address);
+  UCL::CSocketAddress testAddress(address);
+  
+  Int8 testInput1[] = {"TestInput1"};
+  Int8 testInput2[] = {"TestInputTestInput2"};
+  Int8 testInput1Size = sizeof(testInput1);
+  Int8 testInput2Size = sizeof(testInput2);
+
+	Int8 sentBytes(0);  
+  
+  sentBytes = socket.Send(testAddress, testInput1, testInput1Size);
+  sentBytes = socket.Send(testAddress, testInput2, testInput2Size);
+
+	ASSERT_EQ( false ,socket.IsEmpty() );
+
+	Int8 output[100];
+	
+  memset(output,0,100);
+  socket.Receive(testAddress,output,100);
+	ASSERT_EQ( false ,socket.IsEmpty() );
+
+  memset(output,0,100);
+  socket.Receive(testAddress,output,100);
+	ASSERT_EQ( true ,socket.IsEmpty() );
+
+  socket.Close();
+}
+
+
 TEST(CSocketAddress,CopyConstructor)
 {
 	UCL::CSocketAddress address1("testAddress");
@@ -100,5 +132,3 @@ TEST(CSocketAddress,ComparisonOperator)
 	ASSERT_EQ(address1==address3, false);
 
 }
-
-

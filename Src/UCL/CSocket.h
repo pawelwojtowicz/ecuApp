@@ -77,6 +77,8 @@ public:
 	
 	bool IsValid();
 	
+	bool IsEmpty();
+	
 	Int32 Send(CSocketAddress& sockAddress, Int8* buffer, const Int32& bytestToSend);
 	Int32 Receive(CSocketAddress& sockAddress, Int8* buffer, const Int32& bytestToSend);
 
