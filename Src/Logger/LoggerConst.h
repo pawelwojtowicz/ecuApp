@@ -7,6 +7,6 @@
 
 namespace Logger
 {
-static const char s_LoggerQueue[] = {"/LoggerQueue"};
+static const char s_LoggerQueue[] = {"LoggerQueue"};
 }
 #endif

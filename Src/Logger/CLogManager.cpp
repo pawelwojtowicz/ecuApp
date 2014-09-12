@@ -4,6 +4,7 @@
 #include "Configuration/CConfiguration.h"
 #include "CConsoleTarget.h"
 #include <stdio.h>
+#include <errno.h>
 
 static const char sConstCfg_DefaultLogLevelNodeName[] = {"DefaultDebugLevel"};
 static const char sConstCfg_InfoZoneName[]						=	{"Info"};
@@ -21,7 +22,6 @@ namespace Logger
 {
 CLogManager::CLogManager()
 : m_running(true)
-, m_loggerQueueDescriptor(-1)
 , m_defaultLogLevel(0)
 {
 	m_runtimeDictionary.resize(1);
@@ -47,31 +47,31 @@ bool CLogManager::Initialize(const Configuration::CConfigNode* configNode)
 		printf("No Logger configuration available - using very basic defaults\n");
 	}
 
-	mq_attr queueAttributes;
-	queueAttributes.mq_flags = 0;
-	queueAttributes.mq_maxmsg = MAX_LOGGER_QUEUE_SIZE;
-	queueAttributes.mq_msgsize = MAX_LOGGER_MSG_SIZE;
+	m_socket.Bind(s_LoggerQueue);
+	
+	printf("Inicjalizacja kolejki logera %s error[%s]\n", s_LoggerQueue, strerror(errno));
 
-	m_loggerQueueDescriptor = mq_open( s_LoggerQueue , O_RDWR|O_CREAT, S_IRWXU, &queueAttributes);
 
-	if ( -1 != m_loggerQueueDescriptor )
+	if ( m_socket.IsValid() )
 	{
 		Start();
 	}
 	else
 	{
-		printf("Failed to initialize Logger Queue - no logging dude");
+		printf("Failed to initialize Logger Queue - no logging dude\n");
 	}
 
-	return ( -1 != m_loggerQueueDescriptor );
+	return ( m_socket.IsValid() );
 }
 
 void CLogManager::Shutdown()
 {
 	m_running = false;
 	WaitFor();
+	
+	m_socket.Close();
 
-	//check how many log entries is waiting in the queue
+	/**check how many log entries is waiting in the queue
 	mq_attr queueAttributes;
 	if ( 0 == mq_getattr(m_loggerQueueDescriptor,&queueAttributes) )
 	{
@@ -97,7 +97,7 @@ void CLogManager::Shutdown()
 	}
 
 	mq_unlink(s_LoggerQueue);
-
+*/
 //stop the threads
 	for(tTargetIterator logTargetIter = m_targetList.begin() ; m_targetList.end() != logTargetIter ; ++logTargetIter)
 	{
@@ -112,10 +112,16 @@ void CLogManager::Run()
 	Int32 logMsgSize(0);
 	UInt32 priority(0);
 	tTargetIterator logTargetIter;
+	UCL::CSocketAddress address;
+	
+	if ( !m_socket.IsValid() )
+	{
+		return;
+	}
 
 	while ( m_running )
 	{
-		logMsgSize = mq_receive( m_loggerQueueDescriptor, (char*)logMsgBuffer, MAX_LOGGER_MSG_SIZE, &priority );
+		m_socket.Receive(address, (char*)logMsgBuffer, MAX_LOGGER_MSG_SIZE );
 		if (logMessage.Deserialize(logMsgBuffer, logMsgSize ) )
 		{
 			logMessage.SetSourceShortName(m_runtimeDictionary[ logMessage.GetLogSrcRuntimeId()].c_str());

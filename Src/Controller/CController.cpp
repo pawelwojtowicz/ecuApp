@@ -2,6 +2,7 @@
 #include "Logger/Logger.h"
 #include "Runtime/CMessage.h"
 #include <UCL/SystemEnvironment.h>
+#include <ControllerInterface/ControllerInterfaceConst.h>
 #include <Configuration/CConfiguration.h>
 
 static const char sCfg_WatchdogConfig[] = {"Watchdog"};
@@ -16,7 +17,7 @@ CController::CController()
 : CExecutable("Controller")
 , m_deviceState(eWaitingForInit)
 , m_loggerManager()
-, m_loggingAgent()
+, m_loggingAgent(s_ControllerQueueName)
 , m_messenger()
 , m_timerMessage(0)
 , m_controllerStub( m_messenger )

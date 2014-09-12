@@ -4,10 +4,12 @@
 
 namespace Logger
 {
-CLoggingAgent::CLoggingAgent()
-:	m_loggerQueueDescriptor(-1)
+CLoggingAgent::CLoggingAgent(const std::string& unitQueueName)
+: m_ownUnitQueueName(unitQueueName)
+, m_loggerQueue(s_LoggerQueue)
 {
 }
+
 CLoggingAgent::~CLoggingAgent()
 {
 }
@@ -18,22 +20,22 @@ void CLoggingAgent::Initialize(const UInt32& unitId)
 	CLogMsg::SetUnitId(unitId);
 	CLogMsg::SetDebugLevel(0xFF);
 
-	m_loggerQueueDescriptor = mq_open( s_LoggerQueue , O_WRONLY|O_NONBLOCK, S_IRWXU, 0);
+	m_socket.Bind(m_ownUnitQueueName);
 }
 
 void CLoggingAgent::Shutdown()
 {
-	mq_close(m_loggerQueueDescriptor);
+	m_socket.Close();
 }
 
 void CLoggingAgent::IssueLog( const CLogMsg& msg )
 {
-	if (-1 != m_loggerQueueDescriptor )
+	if ( m_socket.IsValid() )
 	{
 		Int8 logBuffer[MAX_LOGGER_MSG_SIZE];
 		size_t msgSize(msg.Serialize(logBuffer));
   
-		mq_send( m_loggerQueueDescriptor , logBuffer , msgSize, 0 );
+		m_socket.Send(m_loggerQueue, logBuffer , msgSize);
 	}
 }
 

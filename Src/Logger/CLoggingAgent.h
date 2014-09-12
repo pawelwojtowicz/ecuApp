@@ -1,14 +1,14 @@
 #ifndef LOGGER_CLOGGINGAGENT_H
 #define LOGGER_CLOGGINGAGENT_H
 #include "ILogAgent.h"
-#include <mqueue.h>
 #include <GlobalTypes.h>
+#include <UCL/CSocket.h>
 namespace Logger
 {
 class CLoggingAgent : public ILogAgent
 {
 public:
-	CLoggingAgent();
+	CLoggingAgent(const std::string& unitQueueName);
 	virtual ~CLoggingAgent();
 
 	void Initialize(const UInt32& unitId);
@@ -20,9 +20,12 @@ public:
 	virtual void IssueLog( const CLogMsg& msg );
 
 private:
+	UCL::CSocketAddress m_loggerQueue;
 
-	//logger queue descriptor
-	mqd_t m_loggerQueueDescriptor;
+	UCL::CSocket m_socket;
+	
+	std::string m_ownUnitQueueName;
 };
+
 }
 #endif

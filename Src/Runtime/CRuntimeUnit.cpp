@@ -6,7 +6,7 @@ namespace Runtime
 {
 CRuntimeUnit::CRuntimeUnit( const std::string& runtimeUnitName , const std::string& unitQueueName )
 : CExecutable(runtimeUnitName)
-, m_loggingAgent()
+, m_loggingAgent(unitQueueName)
 , m_controllerProxy(m_messenger)
 , m_healthReporter(m_timerManager,m_controllerProxy)
 , m_timerMessage(0)

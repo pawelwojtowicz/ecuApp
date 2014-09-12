@@ -1,11 +1,11 @@
 #ifndef LOGGER_CLOGMANAGER_H
 #define LOGGER_CLOGMANAGER_H
-#include <mqueue.h>
+
 #include <GlobalTypes.h>
 #include <UCL/CThread.h>
 #include <list>
 #include <vector>
-
+#include <UCL/CSocket.h>
 namespace Configuration
 {
 class CConfigNode;
@@ -47,7 +47,7 @@ private:
 	bool m_running;
 
 	//logger queue descriptor
-	mqd_t m_loggerQueueDescriptor;
+	UCL::CSocket m_socket;
 
 	//the list of configured/active log targets targets
 	tTargetList m_targetList;
