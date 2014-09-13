@@ -3,7 +3,7 @@ export BIN_PATH:= ../../Bin
 export INTERMEDIATE_PATH=$(BIN_PATH)/Intermediate
 export TARGET_PATH=$(BIN_PATH)/unitTests
 export SUBJ_PATH=../../Src
-export CFLAGS:= -c -Wall -pedantic -I$(SUBJ_PATH) -I$(SUBJ_PATH)/Global -I$(GOOGLE_TEST)/include -DUNIT_TEST
+export CFLAGS:= -c -Wall -pedantic -I$(SUBJ_PATH) -I$(SUBJ_PATH)/Global -I$(GOOGLE_TEST)/include -I$(GMOCK_DIR)/include -DUNIT_TEST
 export LFLAGS:= -pthread -L$(LD_LIBRARY_PATH)
 export OBJ_DIR=$(INTERMEDIATE_PATH)/$(OUTPUT)
 export LINKER_INPUT= $(addprefix $(OBJ_DIR)/, $(OBJ))
@@ -15,8 +15,8 @@ export LINKER_INPUT= $(addprefix $(OBJ_DIR)/, $(OBJ))
 .c.o:
 	$(CC) $(CFLAGS) $< -o $(OBJ_DIR)/$@
 
-default: DirStructure gtest-all.o gtest_main.o $(OBJ)
-	$(CC) $(LINKER_INPUT) $(OBJ_DIR)/gtest-all.o $(OBJ_DIR)/gtest_main.o -o $(TARGET_PATH)/$(OUTPUT) $(LFLAGS) 
+default: DirStructure gtest-all.o gmock_main.o gmock-all.o $(OBJ)
+	$(CC) $(LINKER_INPUT) $(OBJ_DIR)/gtest-all.o $(OBJ_DIR)/gmock-all.o $(OBJ_DIR)/gtest_main.o -o $(TARGET_PATH)/$(OUTPUT) $(LFLAGS) 
 
 DirStructure:
 	-mkdir -p $(BIN_PATH)
@@ -27,9 +27,12 @@ DirStructure:
 clean:
 	-rm -f $(OBJ_DIR)/*.o
 	-rm -f $(TARGET_PATH)/$(OUTPUT)
-
+	
+gmock-all.o: $(GMOCK_DIR)/src/gmock-all.cc
+	      $(CC) -isystem ${GMOCK_DIR}/include -I${GMOCK_DIR} -pthread -c ${GMOCK_DIR}/src/gmock-all.cc -o $(OBJ_DIR)/gmock-all.o $(CFLAGS)
+	
 gtest-all.o:  $(GOOGLE_TEST)/src/gtest-all.cc
 	      $(CC) -isystem ${GOOGLE_TEST}/include -I${GOOGLE_TEST} -pthread -c ${GOOGLE_TEST}/src/gtest-all.cc -o $(OBJ_DIR)/gtest-all.o $(CFLAGS)
 
-gtest_main.o: $(GOOGLE_TEST)/src/gtest_main.cc
-	      $(CC) -isystem ${GOOGLE_TEST}/include -I${GOOGLE_TEST} -pthread -c ${GOOGLE_TEST}/src/gtest_main.cc -o $(OBJ_DIR)/gtest_main.o $(CFLAGS)
+gmock_main.o: $(GMOCK_DIR)/src/gmock_main.cc
+	      $(CC) -isystem ${GMOCK_DIR}/include -I${GMOCK_DIR} -pthread -c ${GMOCK_DIR}/src/gmock_main.cc -o $(OBJ_DIR)/gmock_main.o $(CFLAGS)
