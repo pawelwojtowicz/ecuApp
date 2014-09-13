@@ -7,7 +7,7 @@
 #include "GlobalTypes.h"
 #include "RuntimeConst.h"
 #include "IMessenger.h"
-#include <UCL/CSocket.h>
+#include <UCL/CUnixDomainSocket.h>
 
 namespace Runtime
 {
@@ -41,7 +41,7 @@ class CMessenger : public IMessenger
 	typedef tMsgIdToInterestedQueues::iterator tMsgIdToInterestedQueuesIterator;
 public:
 	//construction/destruction
-	CMessenger();
+	CMessenger(UCL::IUnixDomainSocket* pUnixDomainSocket = 0);
 	virtual ~CMessenger();
 
 	//general initialization
@@ -79,7 +79,7 @@ private:
 
 	UInt32 m_currentID;
 	
-	UCL::CSocket m_socket;
+	UCL::IUnixDomainSocket* m_pSocket;
 
 };
 

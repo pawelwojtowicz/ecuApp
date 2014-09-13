@@ -2,7 +2,9 @@
 #define LOGGER_CLOGGINGAGENT_H
 #include "ILogAgent.h"
 #include <GlobalTypes.h>
-#include <UCL/CSocket.h>
+#include <UCL/CUnixDomainSocket.h>
+
+
 namespace Logger
 {
 class CLoggingAgent : public ILogAgent
@@ -22,7 +24,7 @@ public:
 private:
 	UCL::CSocketAddress m_loggerQueue;
 
-	UCL::CSocket m_socket;
+	UCL::IUnixDomainSocket* m_socket;
 	
 	std::string m_ownUnitQueueName;
 };

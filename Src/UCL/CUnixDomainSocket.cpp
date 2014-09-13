@@ -1,4 +1,4 @@
-#include "CSocket.h"
+#include "CUnixDomainSocket.h"
 #include <stdio.h>
 #include <errno.h>
 #include <sys/ioctl.h>
@@ -6,17 +6,17 @@
 namespace UCL
 {
 
-CSocket::CSocket()
+CUnixDomainSocket::CUnixDomainSocket()
 : m_socketFileDescriptor(-1)
 , m_socketName()
 {
 }
 
-CSocket::~CSocket()
+CUnixDomainSocket::~CUnixDomainSocket()
 {
 }
 	
-bool CSocket::Bind(const std::string& queueName)
+bool CUnixDomainSocket::Bind(const std::string& queueName)
 {
 	m_socketFileDescriptor = socket(AF_UNIX,SOCK_DGRAM,0);
 	
@@ -43,30 +43,30 @@ bool CSocket::Bind(const std::string& queueName)
 	return (-1 != m_socketFileDescriptor );
 }
 
-bool CSocket::IsValid()
+bool CUnixDomainSocket::IsValid()
 {
 	return ( -1 != m_socketFileDescriptor );
 }
 
-void CSocket::Close()
+void CUnixDomainSocket::Close()
 {
 	close(m_socketFileDescriptor);
 	m_socketFileDescriptor = -1;
 }
 
-Int32 CSocket::Send(CSocketAddress& sockAddress, Int8* buffer, const Int32& bytestToSend)
+Int32 CUnixDomainSocket::Send(CSocketAddress& sockAddress, Int8* buffer, const Int32& bytestToSend)
 {
 	return sendto(m_socketFileDescriptor, buffer, bytestToSend, 0, (struct sockaddr*)sockAddress.GetAddressStructure(), sockAddress.GetAddressSize() );
 }
 
 
-Int32 CSocket::Receive(CSocketAddress& sockAddress, Int8* buffer, const Int32& bytesToSend)
+Int32 CUnixDomainSocket::Receive(CSocketAddress& sockAddress, Int8* buffer, const Int32& bytesToSend)
 {
 	socklen_t addressFieldSize( sizeof(struct sockaddr_un) );
 	return recvfrom(m_socketFileDescriptor, buffer, bytesToSend, 0, (struct sockaddr*)sockAddress.GetAddressStructure(), &addressFieldSize );
 }
 
-bool CSocket::IsEmpty()
+bool CUnixDomainSocket::IsEmpty()
 {
 	bool retVal(false);
 	

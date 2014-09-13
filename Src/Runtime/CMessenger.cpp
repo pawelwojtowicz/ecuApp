@@ -8,14 +8,20 @@
 namespace Runtime
 {
 
-CMessenger::CMessenger()
+CMessenger::CMessenger(UCL::IUnixDomainSocket* pUnixDomainSocket)
 : m_run( true )
 , m_currentID( 2 ) // 0 = broadcast queue, 1 = own queue.
+, m_pSocket(pUnixDomainSocket)
 {
+	if ( 0 == m_pSocket )
+	{
+		m_pSocket = new UCL::CUnixDomainSocket();
+	}
 }
 
 CMessenger::~CMessenger()
 {
+	delete m_pSocket;
 }
 
 	//general initialization
@@ -23,7 +29,7 @@ bool CMessenger::Initialize(const std::string& runtimeUnitName)
 {
 	bool retVal(false);
 
-	retVal = m_socket.Bind( runtimeUnitName );
+	retVal = m_pSocket->Bind( runtimeUnitName );
 	
 	if ( retVal )
 	{
@@ -35,7 +41,7 @@ bool CMessenger::Initialize(const std::string& runtimeUnitName)
 	}
 	else
 	{
-		m_socket.Close();
+		m_pSocket->Close();
 	}
 
 	return retVal;
@@ -43,7 +49,7 @@ bool CMessenger::Initialize(const std::string& runtimeUnitName)
 
 bool CMessenger::Shutdown()
 {
-	m_socket.Close();
+	m_pSocket->Close();
 	m_queueName2QueueDescMap.clear();
 	
 	return true;
@@ -134,7 +140,7 @@ bool CMessenger::PostMessage( CMessage& message )
 				tQueueMapIter pIter = m_queueName2QueueDescMap.find( *queueIdIter );
 				if ( m_queueName2QueueDescMap.end() != pIter )
 				{
-					m_socket.Send(pIter->second.Address,message.GetBuffer() , message.GetBufferSize());
+					m_pSocket->Send(pIter->second.Address,message.GetBuffer() , message.GetBufferSize());
 				}
 			}
 		}		
@@ -144,7 +150,7 @@ bool CMessenger::PostMessage( CMessage& message )
 		tQueueMapIter pIter = m_queueName2QueueDescMap.find( message.GetTargetId() );
 		if ( m_queueName2QueueDescMap.end() != pIter )
 		{
-			if ( message.GetBufferSize() == m_socket.Send(pIter->second.Address,message.GetBuffer() , message.GetBufferSize()))
+			if ( message.GetBufferSize() == m_pSocket->Send(pIter->second.Address,message.GetBuffer() , message.GetBufferSize()))
 			{
 				return true;
 			}
@@ -155,7 +161,7 @@ bool CMessenger::PostMessage( CMessage& message )
 
 void CMessenger::StartMsgProcessor()
 {
-	if ( m_socket.IsValid() )
+	if ( m_pSocket->IsValid() )
 	{	
 		char messageBuffer[MAX_MSG_SIZE];
 		Int32 messageSize(0);
@@ -164,7 +170,7 @@ void CMessenger::StartMsgProcessor()
 
 		do
 		{
-			messageSize = m_socket.Receive(address, messageBuffer, MAX_MSG_SIZE );
+			messageSize = m_pSocket->Receive(address, messageBuffer, MAX_MSG_SIZE );
 			if ( messageSize > 0 )
 			{
 				CMessage message(messageBuffer, messageSize);

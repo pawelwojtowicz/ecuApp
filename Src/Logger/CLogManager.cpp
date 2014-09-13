@@ -1,7 +1,8 @@
 #include "CLogManager.h"
 #include "LoggerConst.h"
 #include "Logger.h"
-#include "Configuration/CConfiguration.h"
+#include <Configuration/CConfiguration.h>
+#include <UCL/CUnixDomainSocket.h>
 #include "CConsoleTarget.h"
 #include <stdio.h>
 #include <errno.h>
@@ -22,6 +23,7 @@ namespace Logger
 {
 CLogManager::CLogManager()
 : m_running(true)
+, m_pSocket(new UCL::CUnixDomainSocket)
 , m_defaultLogLevel(0)
 {
 	m_runtimeDictionary.resize(1);
@@ -47,9 +49,9 @@ bool CLogManager::Initialize(const Configuration::CConfigNode* configNode)
 		printf("No Logger configuration available - using very basic defaults\n");
 	}
 
-	m_socket.Bind(s_LoggerQueue);
+	m_pSocket->Bind(s_LoggerQueue);
 	
-	if ( m_socket.IsValid() )
+	if ( m_pSocket->IsValid() )
 	{
 		Start();
 	}
@@ -58,7 +60,7 @@ bool CLogManager::Initialize(const Configuration::CConfigNode* configNode)
 		printf("Failed to initialize Logger Queue - no logging dude\n");
 	}
 
-	return ( m_socket.IsValid() );
+	return ( m_pSocket->IsValid() );
 }
 
 void CLogManager::Shutdown()
@@ -72,9 +74,9 @@ void CLogManager::Shutdown()
 	tTargetIterator logTargetIter;
   UCL::CSocketAddress address;
 	
-	while (	!m_socket.IsEmpty() )
+	while (	!m_pSocket->IsEmpty() )
 	{
-		logMsgSize = m_socket.Receive(address, logMsgBuffer, MAX_LOGGER_MSG_SIZE );
+		logMsgSize = m_pSocket->Receive(address, logMsgBuffer, MAX_LOGGER_MSG_SIZE );
 		if (logMessage.Deserialize(logMsgBuffer, logMsgSize ) )
 		{
 			logMessage.SetSourceShortName(m_runtimeDictionary[ logMessage.GetLogSrcRuntimeId()].c_str());
@@ -85,7 +87,7 @@ void CLogManager::Shutdown()
 		}	
 	}
 
-	m_socket.Close();
+	m_pSocket->Close();
 
 //stop the threads
 	for(tTargetIterator logTargetIter = m_targetList.begin() ; m_targetList.end() != logTargetIter ; ++logTargetIter)
@@ -103,14 +105,14 @@ void CLogManager::Run()
 	tTargetIterator logTargetIter;
 	UCL::CSocketAddress address;
 	
-	if ( !m_socket.IsValid() )
+	if ( !m_pSocket->IsValid() )
 	{
 		return;
 	}
 
 	while ( m_running )
 	{
-		m_socket.Receive(address, (char*)logMsgBuffer, MAX_LOGGER_MSG_SIZE );
+		m_pSocket->Receive(address, (char*)logMsgBuffer, MAX_LOGGER_MSG_SIZE );
 		if (logMessage.Deserialize(logMsgBuffer, logMsgSize ) )
 		{
 			logMessage.SetSourceShortName(m_runtimeDictionary[ logMessage.GetLogSrcRuntimeId()].c_str());

@@ -1,7 +1,8 @@
-#ifndef UCL_CSOCKET_H
-#define UCL_CSOCKET_H
+#ifndef UCL_CUnixDomainSocket_H
+#define UCL_CUnixDomainSocket_H
 
-#include "GlobalTypes.h"
+#include <GlobalTypes.h>
+#include "IUnixDomainSocket.h"
 #include <sys/un.h>
 #include <sys/socket.h>
 #include <unistd.h>
@@ -66,11 +67,11 @@ private:
 	Int32 m_addressStructSize;
 };
 
-class CSocket
+class CUnixDomainSocket : public IUnixDomainSocket
 {
 public:
-	CSocket();
-	virtual ~CSocket();
+	CUnixDomainSocket();
+	virtual ~CUnixDomainSocket();
 	
 	bool Bind(const std::string& queueName);
 	void Close();
@@ -83,8 +84,8 @@ public:
 	Int32 Receive(CSocketAddress& sockAddress, Int8* buffer, const Int32& bytestToSend);
 
 private:
-	CSocket(const CSocket&);
-	CSocket& operator=(const CSocket&);
+	CUnixDomainSocket(const CUnixDomainSocket&);
+	CUnixDomainSocket& operator=(const CUnixDomainSocket&);
 	
 	Int32 m_socketFileDescriptor;
 	

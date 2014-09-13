@@ -9,60 +9,6 @@ std::string testQueue2name("TestQueue2");
 std::string testQueue3name("TestQueue3");
 std::string testQueue4name("TestQueue4");
 
-class SampleReceiver: public Runtime::ISubscriber
-{
-public:
-
-	SampleReceiver( int receiverId )
-	: m_gotMessage(false)
-	{
-		char queueName[100];
-		sprintf(queueName,"%s%d",receiverQueueName.c_str(),receiverId);
-		m_queueName=queueName;
-	}
-	
-	bool Init() 
-	{ 
-		return true; 
-	}
-	
-	bool Shutdown()
-	{
-		return true; 
-	};
-	
-	bool SubscribeTestMessage()
-	{
-		return true;
-	};
-	
-	bool UnsubscribeTestMessage()
-	{
-		return true;
-	};
-	
-	bool ClearGotFlag() 
-	{
-		m_gotMessage=false;
-	};
-	
-  bool GetGotFlag()
-  {
-  	return m_gotMessage;
-  }
-
-private:
-	virtual void HandleMessage( Runtime::CMessage& message )
-	{
-		
-	}
-private:
-	std::string m_queueName;
-	
-	bool m_gotMessage;
-};
-
-
 TEST( CMessenger,ConnectQeue_Basic )
 {
 	Runtime::CMessenger messenger;
@@ -136,5 +82,4 @@ TEST( CMessenger,ConnectQeue_RefCount )
  	EXPECT_EQ( q1fourthPassId,q1fifthPassId );
   
 	messenger.Shutdown();
-
 }

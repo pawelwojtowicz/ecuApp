@@ -5,10 +5,14 @@
 #include <UCL/CThread.h>
 #include <list>
 #include <vector>
-#include <UCL/CSocket.h>
 namespace Configuration
 {
 class CConfigNode;
+}
+
+namespace UCL
+{
+class IUnixDomainSocket;
 }
 
 namespace Logger
@@ -47,7 +51,7 @@ private:
 	bool m_running;
 
 	//logger queue descriptor
-	UCL::CSocket m_socket;
+	UCL::IUnixDomainSocket* m_pSocket;
 
 	//the list of configured/active log targets targets
 	tTargetList m_targetList;

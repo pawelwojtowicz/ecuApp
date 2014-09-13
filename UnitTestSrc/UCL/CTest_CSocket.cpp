@@ -1,19 +1,19 @@
 #include <gtest/gtest.h>
 #include <errno.h>
-#include "UCL/CSocket.h"
+#include "UCL/CUnixDomainSocket.h"
 
 std::string address("./testOfTheQueue");
 
-TEST(CSocket,Basic_NonInitialized)
+TEST(CUnixDomainSocket,Basic_NonInitialized)
 { 
-  UCL::CSocket socket;
+  UCL::CUnixDomainSocket socket;
   ASSERT_FALSE(socket.IsValid() );
 }
 
-TEST(CSocket,Basic_Bound)
+TEST(CUnixDomainSocket,Basic_Bound)
 {
   
-  UCL::CSocket socket;
+  UCL::CUnixDomainSocket socket;
   socket.Bind(address);
   
   ASSERT_TRUE(socket.IsValid() );
@@ -22,9 +22,9 @@ TEST(CSocket,Basic_Bound)
 	ASSERT_FALSE(socket.IsValid() );
 }
 
-TEST(CSocket,Basic_BoundAgain)
+TEST(CUnixDomainSocket,Basic_BoundAgain)
 {
-  UCL::CSocket socket;
+  UCL::CUnixDomainSocket socket;
   socket.Bind(address);
   ASSERT_TRUE(socket.IsValid() );
   
@@ -35,9 +35,9 @@ TEST(CSocket,Basic_BoundAgain)
   socket.Close();
 }
 
-TEST(CSocket,SendReceive)
+TEST(CUnixDomainSocket,SendReceive)
 {
-  UCL::CSocket socket;
+  UCL::CUnixDomainSocket socket;
   socket.Bind(address);
   ASSERT_TRUE(socket.IsValid() );
   UCL::CSocketAddress testAddress(address);
@@ -73,9 +73,9 @@ TEST(CSocket,SendReceive)
   socket.Close();
 }
 
-TEST(CSocket,DetectEmptyBuffer)
+TEST(CUnixDomainSocket,DetectEmptyBuffer)
 {
-  UCL::CSocket socket;
+  UCL::CUnixDomainSocket socket;
   socket.Bind(address);
   UCL::CSocketAddress testAddress(address);
   
