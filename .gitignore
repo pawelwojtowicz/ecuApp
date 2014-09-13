@@ -2,6 +2,6 @@
 *.o
 _install
 Bin
-3rdParty/gtest-1.7.0
+3rdParty/gmock-1.7.0
 DeploymentScripts/deploymentPaths
 DevEnv/commonSettings
