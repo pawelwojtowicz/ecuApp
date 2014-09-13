@@ -245,6 +245,93 @@ TEST( CMessenger, Receiving )
 	EXPECT_CALL(UDSMock, Close() ).Times(1);
 	// shutdown the messenger
 	messenger.Shutdown();
+}
+
+TEST( CMessenger, Broadcasting )
+{
+	// instantiate the mocks
+	// Own Queue mock
+	UCL::UnixDomainSocketMock UDSMock;
+	UCL::CUDSMockHelper testSocket(&UDSMock);
+	{
+		Runtime::CMessage testMsg(200);
+		testMsg.SetMessageId(msgId_Runtime_SubscribeMessage);
+		testMsg.SetMsgPrio(255);
+		testMsg.SetTargetId(1);
+		testMsg.SetValue(testQueue1name);
+		UInt32 integerMsgId(static_cast<UInt32>(msgId_Controller_Heartbeat));
+		testMsg.SetValue(integerMsgId);
+
+		testSocket.EnqueueTestMsg(testMsg);
+	}
+	
+	{
+		Runtime::CMessage testMsg(200);
+		testMsg.SetMessageId(msgId_Runtime_SubscribeMessage);
+		testMsg.SetMsgPrio(255);
+		testMsg.SetTargetId(1);
+		testMsg.SetValue(testQueue2name);
+		UInt32 integerMsgId(static_cast<UInt32>(msgId_Controller_Heartbeat));
+		testMsg.SetValue(integerMsgId);
+
+		testSocket.EnqueueTestMsg(testMsg);
+	}
+
+	{
+		Runtime::CMessage testMsg(200);
+		testMsg.SetMessageId(msgId_Runtime_SubscribeMessage);
+		testMsg.SetMsgPrio(255);
+		testMsg.SetTargetId(1);
+		testMsg.SetValue(testQueue3name);
+		UInt32 integerMsgId(static_cast<UInt32>(msgId_Controller_Heartbeat));
+		testMsg.SetValue(integerMsgId);
+
+		testSocket.EnqueueTestMsg(testMsg);
+	}
+	
+	{
+		Runtime::CMessage testMsg(200);
+		testMsg.SetMessageId(msgId_Runtime_SubscribeMessage);
+		testMsg.SetMsgPrio(255);
+		testMsg.SetTargetId(1);
+		testMsg.SetValue(testQueue4name);
+		UInt32 integerMsgId(static_cast<UInt32>(msgId_Controller_Heartbeat));
+		testMsg.SetValue(integerMsgId);
+
+		testSocket.EnqueueTestMsg(testMsg);
+	}
+	testSocket.ResetMockState();
+	
+	//ReceiverMock
+	Runtime::SubscriberMock subscriberMock;
+	Runtime::CSubscriberMock subscriberMockHelper(&subscriberMock);
+	
+	EXPECT_CALL(UDSMock, Bind(ownQueueName) ).Times(1);
+	EXPECT_CALL(UDSMock, Receive() ).Times(5);
+	EXPECT_CALL(UDSMock, IsValid() ).Times(1);
+	EXPECT_CALL(UDSMock, Send(testQueue1name, msgId_Controller_Heartbeat ) ).Times(1);
+	EXPECT_CALL(UDSMock, Send(testQueue2name, msgId_Controller_Heartbeat ) ).Times(1);
+	EXPECT_CALL(UDSMock, Send(testQueue3name, msgId_Controller_Heartbeat ) ).Times(1);
+	EXPECT_CALL(UDSMock, Send(testQueue4name, msgId_Controller_Heartbeat ) ).Times(1);
 
 
+	// initialize the messenger with the mocs
+	Runtime::CMessenger messenger(&testSocket);
+	messenger.Initialize(ownQueueName);
+
+	messenger.StartMsgProcessor();
+	messenger.StopMsgProcessor();
+	
+	{
+		Runtime::CMessage testMsg(256);
+		testMsg.SetMessageId(msgId_Controller_Heartbeat);
+		testMsg.SetMsgPrio(255);
+		testMsg.SetTargetId(BROADCAST_QUEUE_ID);
+		
+		messenger.PostMessage(testMsg);
+	}	
+
+	EXPECT_CALL(UDSMock, Close() ).Times(1);
+	// shutdown the messenger
+	messenger.Shutdown();
 }
