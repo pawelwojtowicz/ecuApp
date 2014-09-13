@@ -2,6 +2,10 @@
 #define UCL_CUDSMOCKHELPER_H
 #include <UCL/IUnixDomainSocket.h>
 
+namespace Runtime
+{
+class CMessage;
+}
 
 namespace UCL
 {
@@ -25,6 +29,10 @@ class CUDSMockHelper : public IUnixDomainSocket
 public:
 	CUDSMockHelper(ISocketMockHelper* pSocketMockHelper );
 	virtual ~CUDSMockHelper();
+	
+	void EnqueueTestMsg( Runtime::CMessage& message );
+	
+	void ResetMockState();
 
 private:
 	virtual bool Bind(const std::string& queueName);

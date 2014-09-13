@@ -222,7 +222,12 @@ void CMessenger::StartMsgProcessor()
 						case msgId_Runtime_UnsubscribeMessage:
 						{
 						};break;
-
+#ifdef UNIT_TEST
+						case msgId_InvalidMsgId:
+						{
+							m_run = false;
+						};break;
+#endif
 						default:
 						{
 							message.SetMsgPrio(static_cast<UInt8>(priority));

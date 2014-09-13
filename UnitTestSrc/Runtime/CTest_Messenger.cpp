@@ -5,6 +5,8 @@
 #include <Runtime/ISubscriber.h>
 #include "CUDSMockHelper.h"
 #include "ISocketMockHelper.h"
+#include "ISubscriberMockHelper.h"
+#include "CSubscriberMock.h"
 #include <gmock/gmock.h>
 
 using ::testing::AtLeast;
@@ -206,3 +208,43 @@ TEST( CMessenger , Subscription_Msg )
 	messenger.Shutdown();
 } 
 
+TEST( CMessenger, Receiving )
+{
+	// instantiate the mocks
+	// Own Queue mock
+	UCL::UnixDomainSocketMock UDSMock;
+	UCL::CUDSMockHelper testSocket(&UDSMock);
+	{
+		Runtime::CMessage testMsg(0);
+		testMsg.SetMessageId(msgId_Runtime_Timer_1000);
+		testMsg.SetMsgPrio(255);
+		testMsg.SetTargetId(1);
+
+		testSocket.EnqueueTestMsg(testMsg);
+	}
+	testSocket.ResetMockState();
+	
+	//ReceiverMock
+	Runtime::SubscriberMock subscriberMock;
+	Runtime::CSubscriberMock subscriberMockHelper(&subscriberMock);
+	
+	EXPECT_CALL(UDSMock, Bind(ownQueueName) ).Times(1);
+	EXPECT_CALL(UDSMock, Receive() ).Times(2);
+	EXPECT_CALL(UDSMock, IsValid() ).Times(1);
+
+	// initialize the messenger with the mocs
+	Runtime::CMessenger messenger(&testSocket);
+	messenger.Initialize(ownQueueName);
+
+	messenger.SubscribeMessage(0, msgId_Runtime_Timer_1000, &subscriberMockHelper);
+	 
+	EXPECT_CALL(subscriberMock,TimerReceived() ).Times(1);
+	
+	messenger.StartMsgProcessor();
+	messenger.StopMsgProcessor();
+	EXPECT_CALL(UDSMock, Close() ).Times(1);
+	// shutdown the messenger
+	messenger.Shutdown();
+
+
+}

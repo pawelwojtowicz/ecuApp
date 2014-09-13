@@ -121,11 +121,36 @@ Int32 CUDSMockHelper::Receive(CSocketAddress& sockAddress, Int8* buffer, const I
 	if ( m_currentDataPacketIter != m_dataPacketList.end() )
 	{
 		memcpy( buffer, m_currentDataPacketIter->Data, m_currentDataPacketIter->DataSize);
+		receivedData = m_currentDataPacketIter->DataSize;
 		
 		++m_currentDataPacketIter;
 	}
+	else
+	{
+		Runtime::CMessage testMsg(256);
+		testMsg.SetMessageId(msgId_InvalidMsgId);
+		testMsg.SetMsgPrio(255);
+		testMsg.SetTargetId(0);
+
+		testMsg.SerializeHeader();
+		
+		memcpy( buffer, testMsg.GetBuffer(), testMsg.GetBufferSize() );
+		receivedData = testMsg.GetBufferSize();
+	}
 	
 	return receivedData;
+}
+
+void CUDSMockHelper::EnqueueTestMsg( Runtime::CMessage& message )
+{
+	message.SerializeHeader();
+	CUDSMockHelper::DataPacket dataPacket(message.GetBuffer() , message.GetBufferSize() );
+	m_dataPacketList.push_back(dataPacket);
+}
+
+void CUDSMockHelper::ResetMockState()
+{
+	m_currentDataPacketIter = m_dataPacketList.begin();
 }
 
 }
