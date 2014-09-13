@@ -66,7 +66,7 @@ public:
 private:
 	tQueueMapIter FindQueueByName( const std::string& queueName );
 
-	bool PostSubscriptionMessage( const Int32& supplierQueueId, tMsgIds, bool subscribe );
+	bool PostSubscriptionMessage( const Int32 supplierQueueId, tMsgIds, bool subscribe );
 
 private:
 	tQueueId2QueueInfoMap m_queueName2QueueDescMap;

@@ -250,7 +250,7 @@ CMessenger::tQueueMapIter CMessenger::FindQueueByName( const std::string& queueN
 	return m_queueName2QueueDescMap.end();
 }
 
-bool CMessenger::PostSubscriptionMessage( const Int32& supplierQueueId, tMsgIds messageId, bool subscribe )
+bool CMessenger::PostSubscriptionMessage( const Int32 supplierQueueId, tMsgIds messageId, bool subscribe )
 {
 	tQueueMapConstIter pCIter = m_queueName2QueueDescMap.find(OWN_QUEUE_ID);
 	if ( m_queueName2QueueDescMap.end() != pCIter )
