@@ -80,6 +80,7 @@ private:
 	UInt32 m_currentID;
 	
 	UCL::IUnixDomainSocket* m_pSocket;
+	bool m_externalSocket;
 
 };
 

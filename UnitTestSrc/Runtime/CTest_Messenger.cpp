@@ -3,6 +3,14 @@
 #include <Runtime/CMessenger.h>
 #include <Runtime/CMessage.h>
 #include <Runtime/ISubscriber.h>
+#include "CUDSMockHelper.h"
+#include "ISocketMockHelper.h"
+#include <gmock/gmock.h>
+
+using ::testing::AtLeast;
+using ::testing::Return;
+
+
 std::string ownQueueName("ownQueue");
 std::string receiverQueueName("receiverQueue");
 std::string testQueue1name("TestQueue1");
@@ -85,78 +93,116 @@ TEST( CMessenger,ConnectQeue_RefCount )
 	messenger.Shutdown();
 }
 
+//   EXPECT_CALL(mok, PierwszaMetoda()).Times(3).WillOnce(Return(0)).WillRepeatedly(Return(1));
 
- 
- using ::testing::AtLeast;
- using ::testing::Return;
- 
- class CMokowana
- {
- public
- :
-     virtual int PierwszaMetoda() = 0;
-     virtual float DrugaMetoda( int tmp ) = 0;
-     virtual float TrzeciaMetodaConst( int tmp ) const = 0;
- 
- };
- 
- class MockMokowanej: public CMokowana
- {
- public:
-     MOCK_METHOD0(PierwszaMetoda, int() );
-     MOCK_METHOD1(DrugaMetoda,float( int tmp ) );
-     MOCK_CONST_METHOD1(TrzeciaMetodaConst,float( int tmp ) );
- };
- 
- 
- class Testowana
- {
- public:
-     Testowana( CMokowana& referencja ):m_ref(referencja) {}
- 
-     int Metoda1()
-     {
-         return m_ref.PierwszaMetoda();
-     }
- 
-     float Metoda2( int tmp )
-     {
-         return m_ref.DrugaMetoda(tmp);
-     }
- 
-     float Metoda3( int tmp )
-     {
-         return m_ref.TrzeciaMetodaConst( tmp );
-     }
- 
- private:
-     CMokowana& m_ref;
- };
- 
- TEST(PainterTest, CanDrawSomething)
- {
-   MockMokowanej mok;                          // #2
-   EXPECT_CALL(mok, PierwszaMetoda())              // #3
-       .Times(3).WillOnce(Return(0)).WillRepeatedly(Return(1));
- 
-   Testowana tmp(mok);// #4
-   EXPECT_FALSE(tmp.Metoda1());
-   EXPECT_TRUE(tmp.Metoda1());
- 
-   EXPECT_TRUE( tmp.Metoda1() );
- }
- 
- TEST(PainterTest, Argumentowana)
- {
-   MockMokowanej mok;                          // #2
-   EXPECT_CALL(mok, DrugaMetoda(123))              // #3
-       .Times(1).WillOnce(Return(13));
- 
-   Testowana tmp(mok);// #4
- 
-   ASSERT_FLOAT_EQ(13,tmp.Metoda2(123));
- }
- 
- 
- 
+TEST( CMessenger , Bind_Close )
+{
+	UCL::UnixDomainSocketMock UDSMock;
+	UCL::CUDSMockHelper testSocket(&UDSMock);
+	
+	Runtime::CMessenger messenger(&testSocket);
+	
+	EXPECT_CALL(UDSMock, Bind(ownQueueName) ).Times(1);
+	EXPECT_CALL(UDSMock, Close() ).Times(1);
+	
+	messenger.Initialize(ownQueueName);
+	messenger.Shutdown();
+} 
+
+TEST( CMessenger , Sending_ToMultipleQueues )
+{
+	UCL::UnixDomainSocketMock UDSMock;
+	UCL::CUDSMockHelper testSocket(&UDSMock);
+	
+	Runtime::CMessenger messenger(&testSocket);
+	EXPECT_CALL(UDSMock, Bind(ownQueueName) ).Times(1);
+
+	messenger.Initialize(ownQueueName);
+
+	
+	Int32 testQueue1Id(0);
+	Int32 testQueue2Id(0);
+	Int32 testQueue3Id(0);
+	Int32 testQueue4Id(0);
+	
+	testQueue1Id = messenger.ConnectQueue(testQueue1name);
+	testQueue2Id = messenger.ConnectQueue(testQueue2name);
+	testQueue3Id = messenger.ConnectQueue(testQueue3name);
+	testQueue4Id = messenger.ConnectQueue(testQueue4name);
+
+	
+	EXPECT_CALL(UDSMock, Send(testQueue4name, msgId_Controller_InitDone ) ).Times(1);
+	EXPECT_CALL(UDSMock, Send(testQueue3name, msgId_Controller_Heartbeat ) ).Times(1);
+	EXPECT_CALL(UDSMock, Send(testQueue2name, msgId_Controller_RestartRequest ) ).Times(1);
+	EXPECT_CALL(UDSMock, Send(testQueue1name, msgId_Controller_ShutdownRequest ) ).Times(1);
+	EXPECT_CALL(UDSMock, Close() ).Times(1);
+	
+	{
+		Runtime::CMessage testMsg(256);
+		testMsg.SetMessageId(msgId_Controller_InitDone);
+		testMsg.SetMsgPrio(255);
+		testMsg.SetTargetId(testQueue4Id);
+		
+		messenger.PostMessage(testMsg);
+	}
+
+	{
+		Runtime::CMessage testMsg(256);
+		testMsg.SetMessageId(msgId_Controller_Heartbeat);
+		testMsg.SetMsgPrio(255);
+		testMsg.SetTargetId(testQueue3Id);
+		
+		messenger.PostMessage(testMsg);
+	}
+
+	{
+		Runtime::CMessage testMsg(256);
+		testMsg.SetMessageId(msgId_Controller_RestartRequest);
+		testMsg.SetMsgPrio(255);
+		testMsg.SetTargetId(testQueue2Id);
+		
+		messenger.PostMessage(testMsg);
+	}
+
+	{
+		Runtime::CMessage testMsg(256);
+		testMsg.SetMessageId(msgId_Controller_ShutdownRequest);
+		testMsg.SetMsgPrio(255);
+		testMsg.SetTargetId(testQueue1Id);
+		
+		messenger.PostMessage(testMsg);
+	}
+	
+	messenger.Shutdown();
+} 
+
+TEST( CMessenger , Subscription_Msg )
+{
+	// instantiate the mocks
+	UCL::UnixDomainSocketMock UDSMock;
+	UCL::CUDSMockHelper testSocket(&UDSMock);
+
+	EXPECT_CALL(UDSMock, Bind(ownQueueName) ).Times(1);
+
+	// initialize the messenger with the mocs
+	Runtime::CMessenger messenger(&testSocket);
+	messenger.Initialize(ownQueueName);
+	
+	// gets the QueueID
+	Int32 testQueue1Id(0);	
+	testQueue1Id = messenger.ConnectQueue(testQueue1name);
+
+	// setup the GMOCK requirements
+	EXPECT_CALL(UDSMock, Send(testQueue1name, msgId_Runtime_SubscribeMessage ) ).Times(1);	
+	EXPECT_CALL(UDSMock, Close() ).Times(1);
+
+	// need non-zero pointer - won't use it	
+	Runtime::ISubscriber* pSubscriber = reinterpret_cast<Runtime::ISubscriber*>(0x423423F);
+
+	// check if the thing is sent correctly
+	messenger.SubscribeMessage( testQueue1Id, msgId_Controller_Heartbeat, pSubscriber );
+
+	// shutdown the messenger
+	messenger.Shutdown();
+} 
 

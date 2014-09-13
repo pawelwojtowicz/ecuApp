@@ -12,19 +12,23 @@ CMessenger::CMessenger(UCL::IUnixDomainSocket* pUnixDomainSocket)
 : m_run( true )
 , m_currentID( 2 ) // 0 = broadcast queue, 1 = own queue.
 , m_pSocket(pUnixDomainSocket)
+, m_externalSocket(true)
 {
 	if ( 0 == m_pSocket )
 	{
 		m_pSocket = new UCL::CUnixDomainSocket();
+		m_externalSocket = false;
 	}
 }
 
 CMessenger::~CMessenger()
 {
-	delete m_pSocket;
+	if ( !m_externalSocket )
+	{
+		delete m_pSocket;
+	}
 }
 
-	//general initialization
 bool CMessenger::Initialize(const std::string& runtimeUnitName)
 {
 	bool retVal(false);
