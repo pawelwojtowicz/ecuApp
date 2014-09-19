@@ -23,8 +23,11 @@ fi
 if [ $BUILD_PLATFORM = "QEMU" ]; then
 	echo "Preparing Kernel image for QEMU"
 
+	#copy the kernel configuration for QEMU
+	cp -r $THIRD_PARTY_COMPONENTS/linux-3.4.4-qemu-config/.config $THIRD_PARTY_COMPONENTS/$KERNEL_VERSION
+
 	#enable versatile configuration
-	make -C $THIRD_PARTY_COMPONENTS/$KERNEL_VERSION CROSS_COMPILE=$TOOLCHAIN_PREFIX ARCH=arm versatile_defconfig
+	#make -C $THIRD_PARTY_COMPONENTS/$KERNEL_VERSION CROSS_COMPILE=$TOOLCHAIN_PREFIX ARCH=arm versatile_defconfig
 
 	# build zImage ( qemu uses it )
 	make -C $THIRD_PARTY_COMPONENTS/$KERNEL_VERSION CROSS_COMPILE=$TOOLCHAIN_PREFIX ARCH=arm zImage
