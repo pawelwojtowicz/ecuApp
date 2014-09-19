@@ -1,0 +1,6 @@
+#!/bin/bash
+source deploymentPaths
+
+cp $PROJECT_ROOT/HTMLSource/* $TARGET_WWW_PATH
+
+ln -s $TARGET_BIN_PATH/cgiprocessor $TARGET_WWW_PATH/cgi-bin/controller 
