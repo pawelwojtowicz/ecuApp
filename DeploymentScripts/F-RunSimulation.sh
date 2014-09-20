@@ -7,4 +7,4 @@ echo starting up the qemu
 echo "kernel=[$LINUX_IMG_PATH]"
 echo "rootfs=[$ROOT_FILE_SYSTEM_IMAGE]"
 
-qemu-system-arm -m 128 -M versatilepb -kernel $LINUX_IMG_PATH -initrd $ROOT_FILE_SYSTEM_IMAGE -nographic -append "console=ttyAMA0,115200 root=/dev/ram init=linuxrc"
+qemu-system-arm -m 128 -M versatilepb -net nic -net user,hostfwd=tcp::8080-:80 -kernel $LINUX_IMG_PATH -initrd $ROOT_FILE_SYSTEM_IMAGE -nographic -append "console=ttyAMA0,115200 root=/dev/ram init=linuxrc" 
