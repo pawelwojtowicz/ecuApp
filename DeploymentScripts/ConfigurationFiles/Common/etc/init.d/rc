@@ -6,5 +6,4 @@ mount -t devpts devpts /dev/pts
 echo "lnxdev" > /proc/kernel/hostname
 
 /sbin/mdev -s
-ifconfig eth0 192.168.0.75
-route add default gw 192.168.0.1
+ifconfig eth0 10.0.2.1
