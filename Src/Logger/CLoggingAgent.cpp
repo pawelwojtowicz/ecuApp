@@ -2,12 +2,13 @@
 #include "CLogMsg.h"
 #include "LoggerConst.h"
 #include <UCL/CUnixDomainSocket.h>
+#include <UCL/SystemEnvironment.h>
 
 namespace Logger
 {
 CLoggingAgent::CLoggingAgent(const std::string& unitQueueName)
-: m_ownUnitQueueName(unitQueueName)
-, m_loggerQueue(s_LoggerQueue)
+: m_ownUnitQueueName(UCL::SystemEnvironment::ResolvePath(UCL::SystemEnvironment::Dir_Runtime,unitQueueName))
+, m_loggerQueue(UCL::SystemEnvironment::ResolvePath(UCL::SystemEnvironment::Dir_Runtime,s_LoggerQueue))
 {
 	m_socket = new UCL::CUnixDomainSocket();
 }

@@ -2,6 +2,7 @@
 #include "CMessage.h"
 #include "ISubscriber.h"
 #include <RuntimeConst.h>
+#include <UCL/SystemEnvironment.h>
 #include <stdio.h>
 
 
@@ -32,14 +33,16 @@ CMessenger::~CMessenger()
 bool CMessenger::Initialize(const std::string& runtimeUnitName)
 {
 	bool retVal(false);
+	
+	std::string queueName(UCL::SystemEnvironment::ResolvePath(UCL::SystemEnvironment::Dir_Runtime,runtimeUnitName));
 
-	retVal = m_pSocket->Bind( runtimeUnitName );
+	retVal = m_pSocket->Bind( queueName );
 	
 	if ( retVal )
 	{
 		QueueInfo queueInfo;
-		queueInfo.QueueName = runtimeUnitName;
-		queueInfo.Address= UCL::CSocketAddress(runtimeUnitName);
+		queueInfo.QueueName = queueName;
+		queueInfo.Address= UCL::CSocketAddress(queueName);
 		
 		m_queueName2QueueDescMap.insert(tQueueId2QueueInfoMap::value_type(OWN_QUEUE_ID,queueInfo));
 	}
@@ -60,9 +63,11 @@ bool CMessenger::Shutdown()
 }
 
 //initialization of the transmitter
-Int32 CMessenger::ConnectQueue(const std::string& queueName)
+Int32 CMessenger::ConnectQueue(const std::string& targetUnitName)
 {
 	Int32 queueID(-1);
+	
+	std::string queueName(UCL::SystemEnvironment::ResolvePath(UCL::SystemEnvironment::Dir_Runtime,targetUnitName));
 	tQueueMapIter pIter = FindQueueByName(queueName);
 	if ( m_queueName2QueueDescMap.end() == pIter )
 	{
@@ -81,8 +86,10 @@ Int32 CMessenger::ConnectQueue(const std::string& queueName)
 	return queueID;
 }
 
-bool CMessenger::DisconnectQueue(const std::string& queueName)
+bool CMessenger::DisconnectQueue(const std::string& targetUnitName)
 {
+	std::string queueName(UCL::SystemEnvironment::ResolvePath(UCL::SystemEnvironment::Dir_Runtime,targetUnitName));
+
 	tQueueMapIter pIter = FindQueueByName( queueName );
 	if ( m_queueName2QueueDescMap.end() != pIter )
 	{

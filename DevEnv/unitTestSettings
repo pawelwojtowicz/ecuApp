@@ -16,7 +16,7 @@ export LINKER_INPUT= $(addprefix $(OBJ_DIR)/, $(OBJ))
 	$(CC) $(CFLAGS) $< -o $(OBJ_DIR)/$@
 
 default: DirStructure gtest-all.o gmock_main.o gmock-all.o $(OBJ)
-	$(CC) $(LINKER_INPUT) $(OBJ_DIR)/gtest-all.o $(OBJ_DIR)/gmock-all.o $(OBJ_DIR)/gtest_main.o -o $(TARGET_PATH)/$(OUTPUT) $(LFLAGS) 
+	$(CC) $(LINKER_INPUT) $(OBJ_DIR)/gtest-all.o $(OBJ_DIR)/gmock-all.o $(OBJ_DIR)/gmock_main.o -o $(TARGET_PATH)/$(OUTPUT) $(LFLAGS) 
 
 DirStructure:
 	-mkdir -p $(BIN_PATH)

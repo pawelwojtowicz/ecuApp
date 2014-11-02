@@ -3,6 +3,7 @@
 #include <Runtime/CMessenger.h>
 #include <Runtime/CMessage.h>
 #include <Runtime/ISubscriber.h>
+#include <UCL/SystemEnvironment.h>
 #include "CUDSMockHelper.h"
 #include "ISocketMockHelper.h"
 #include "ISubscriberMockHelper.h"
@@ -104,7 +105,7 @@ TEST( CMessenger , Bind_Close )
 	
 	Runtime::CMessenger messenger(&testSocket);
 	
-	EXPECT_CALL(UDSMock, Bind(ownQueueName) ).Times(1);
+	EXPECT_CALL(UDSMock, Bind(UCL::SystemEnvironment::ResolvePath(UCL::SystemEnvironment::Dir_Runtime,ownQueueName ) ) ).Times(1);
 	EXPECT_CALL(UDSMock, Close() ).Times(1);
 	
 	messenger.Initialize(ownQueueName);
@@ -117,7 +118,7 @@ TEST( CMessenger , Sending_ToMultipleQueues )
 	UCL::CUDSMockHelper testSocket(&UDSMock);
 	
 	Runtime::CMessenger messenger(&testSocket);
-	EXPECT_CALL(UDSMock, Bind(ownQueueName) ).Times(1);
+	EXPECT_CALL(UDSMock, Bind(UCL::SystemEnvironment::ResolvePath(UCL::SystemEnvironment::Dir_Runtime,ownQueueName ) ) ).Times(1);
 
 	messenger.Initialize(ownQueueName);
 
@@ -133,10 +134,10 @@ TEST( CMessenger , Sending_ToMultipleQueues )
 	testQueue4Id = messenger.ConnectQueue(testQueue4name);
 
 	
-	EXPECT_CALL(UDSMock, Send(testQueue4name, msgId_Controller_InitDone ) ).Times(1);
-	EXPECT_CALL(UDSMock, Send(testQueue3name, msgId_Controller_Heartbeat ) ).Times(1);
-	EXPECT_CALL(UDSMock, Send(testQueue2name, msgId_Controller_RestartRequest ) ).Times(1);
-	EXPECT_CALL(UDSMock, Send(testQueue1name, msgId_Controller_ShutdownRequest ) ).Times(1);
+	EXPECT_CALL(UDSMock, Send(UCL::SystemEnvironment::ResolvePath(UCL::SystemEnvironment::Dir_Runtime,testQueue4name ), msgId_Controller_InitDone ) ).Times(1);
+	EXPECT_CALL(UDSMock, Send(UCL::SystemEnvironment::ResolvePath(UCL::SystemEnvironment::Dir_Runtime,testQueue3name), msgId_Controller_Heartbeat ) ).Times(1);
+	EXPECT_CALL(UDSMock, Send(UCL::SystemEnvironment::ResolvePath(UCL::SystemEnvironment::Dir_Runtime,testQueue2name ), msgId_Controller_RestartRequest ) ).Times(1);
+	EXPECT_CALL(UDSMock, Send(UCL::SystemEnvironment::ResolvePath(UCL::SystemEnvironment::Dir_Runtime,testQueue1name ), msgId_Controller_ShutdownRequest ) ).Times(1);
 	EXPECT_CALL(UDSMock, Close() ).Times(1);
 	
 	{
@@ -184,7 +185,7 @@ TEST( CMessenger , Subscription_Msg )
 	UCL::UnixDomainSocketMock UDSMock;
 	UCL::CUDSMockHelper testSocket(&UDSMock);
 
-	EXPECT_CALL(UDSMock, Bind(ownQueueName) ).Times(1);
+	EXPECT_CALL(UDSMock, Bind(UCL::SystemEnvironment::ResolvePath(UCL::SystemEnvironment::Dir_Runtime,ownQueueName ) ) ).Times(1);
 
 	// initialize the messenger with the mocs
 	Runtime::CMessenger messenger(&testSocket);
@@ -195,7 +196,7 @@ TEST( CMessenger , Subscription_Msg )
 	testQueue1Id = messenger.ConnectQueue(testQueue1name);
 
 	// setup the GMOCK requirements
-	EXPECT_CALL(UDSMock, Send(testQueue1name, msgId_Runtime_SubscribeMessage ) ).Times(1);	
+	EXPECT_CALL(UDSMock, Send(UCL::SystemEnvironment::ResolvePath(UCL::SystemEnvironment::Dir_Runtime,testQueue1name ), msgId_Runtime_SubscribeMessage ) ).Times(1);	
 	EXPECT_CALL(UDSMock, Close() ).Times(1);
 
 	// need non-zero pointer - won't use it	
@@ -228,7 +229,7 @@ TEST( CMessenger, Receiving )
 	Runtime::SubscriberMock subscriberMock;
 	Runtime::CSubscriberMock subscriberMockHelper(&subscriberMock);
 	
-	EXPECT_CALL(UDSMock, Bind(ownQueueName) ).Times(1);
+	EXPECT_CALL(UDSMock, Bind(UCL::SystemEnvironment::ResolvePath(UCL::SystemEnvironment::Dir_Runtime,ownQueueName ) ) ).Times(1);
 	EXPECT_CALL(UDSMock, Receive() ).Times(2);
 	EXPECT_CALL(UDSMock, IsValid() ).Times(1);
 
@@ -306,13 +307,13 @@ TEST( CMessenger, Broadcasting )
 	Runtime::SubscriberMock subscriberMock;
 	Runtime::CSubscriberMock subscriberMockHelper(&subscriberMock);
 	
-	EXPECT_CALL(UDSMock, Bind(ownQueueName) ).Times(1);
+	EXPECT_CALL(UDSMock, Bind(UCL::SystemEnvironment::ResolvePath(UCL::SystemEnvironment::Dir_Runtime,ownQueueName ) ) ).Times(1);
 	EXPECT_CALL(UDSMock, Receive() ).Times(5);
 	EXPECT_CALL(UDSMock, IsValid() ).Times(1);
-	EXPECT_CALL(UDSMock, Send(testQueue1name, msgId_Controller_Heartbeat ) ).Times(1);
-	EXPECT_CALL(UDSMock, Send(testQueue2name, msgId_Controller_Heartbeat ) ).Times(1);
-	EXPECT_CALL(UDSMock, Send(testQueue3name, msgId_Controller_Heartbeat ) ).Times(1);
-	EXPECT_CALL(UDSMock, Send(testQueue4name, msgId_Controller_Heartbeat ) ).Times(1);
+	EXPECT_CALL(UDSMock, Send(UCL::SystemEnvironment::ResolvePath(UCL::SystemEnvironment::Dir_Runtime,testQueue1name ), msgId_Controller_Heartbeat ) ).Times(1);
+	EXPECT_CALL(UDSMock, Send(UCL::SystemEnvironment::ResolvePath(UCL::SystemEnvironment::Dir_Runtime,testQueue2name ), msgId_Controller_Heartbeat ) ).Times(1);
+	EXPECT_CALL(UDSMock, Send(UCL::SystemEnvironment::ResolvePath(UCL::SystemEnvironment::Dir_Runtime,testQueue3name ), msgId_Controller_Heartbeat ) ).Times(1);
+	EXPECT_CALL(UDSMock, Send(UCL::SystemEnvironment::ResolvePath(UCL::SystemEnvironment::Dir_Runtime,testQueue4name ), msgId_Controller_Heartbeat ) ).Times(1);
 
 
 	// initialize the messenger with the mocs

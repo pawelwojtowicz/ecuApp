@@ -3,6 +3,7 @@
 #include "Logger.h"
 #include <Configuration/CConfiguration.h>
 #include <UCL/CUnixDomainSocket.h>
+#include <UCL/SystemEnvironment.h>
 #include "CConsoleTarget.h"
 #include <stdio.h>
 #include <errno.h>
@@ -49,7 +50,7 @@ bool CLogManager::Initialize(const Configuration::CConfigNode* configNode)
 		printf("No Logger configuration available - using very basic defaults\n");
 	}
 
-	m_pSocket->Bind(s_LoggerQueue);
+	m_pSocket->Bind(UCL::SystemEnvironment::ResolvePath(UCL::SystemEnvironment::Dir_Runtime,s_LoggerQueue));
 	
 	if ( m_pSocket->IsValid() )
 	{

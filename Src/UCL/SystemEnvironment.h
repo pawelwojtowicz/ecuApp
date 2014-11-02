@@ -12,7 +12,8 @@ public:
 		Dir_App,
 		Dir_Config,
 		Dir_Log,
-		Dir_Temp
+		Dir_Temp,
+		Dir_Runtime
 	} tPathType;
 	static const std::string GetVariable( const std::string& variableName );
 

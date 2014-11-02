@@ -11,12 +11,13 @@ static char sDflt_ApplicationPath[] = {"/bin"};
 static char sDflt_ConfigPath[]			= {"/etc/opt"};
 static char sDflt_LogPath[]			= {"/var/log"};
 static char sDflt_TempPath[]			= {"/tmp"};
+static char sDflt_VarRuntime[]		= {"/var/run"};
 
 static char sVarName_AppPath[]			= {"APP_DIR"};
 static char sVarName_Config[]			= {"CONFIG_DIR"};
 static char sVarName_LogPath[]			= {"LOG_DIR"};
 static char sVarName_TempPath[]			= {"TMP_DIR"};
-
+static char sVarName_VarRuntime[]			= {"VAR_RUN"};
 namespace UCL
 {
 const std::string SystemEnvironment::GetVariable(const std::string& variableName)
@@ -113,6 +114,14 @@ std::string SystemEnvironment::ResolvePath(const tPathType& pathType, const std:
 				path = sDflt_TempPath;
 			}
 		};break;
+	case Dir_Runtime:
+		{
+			path = GetVariable(sVarName_VarRuntime);
+			if ( path.empty() )
+			{
+				path = sDflt_VarRuntime;
+			}
+		}
 	default:;
 	}
 	
