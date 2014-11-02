@@ -6,6 +6,7 @@ mkdir -p $TARGET_PATH
 echo "Creating basic directory structure"
 mkdir -p $TARGET_PATH/dev
 mkdir -p $TARGET_PATH/dev/pts
+mkdir -p $TARGET_PATH/dev/shm
 mkdir -p $TARGET_PATH/etc
 mkdir -p $TARGET_PATH/etc/opt
 mkdir -p $TARGET_PATH/etc/init.d
