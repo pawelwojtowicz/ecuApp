@@ -18,6 +18,7 @@ mkdir -p $TARGET_PATH/lib
 mkdir -p $TARGET_PATH/srv
 mkdir -p $TARGET_PATH/srv/www
 mkdir -p $TARGET_PATH/srv/www/cgi-bin
+mkdir -p $TARGET_PATH/var/run
 
 echo "creating device files"
 mknod $TARGET_PATH/dev/console c 5 1
