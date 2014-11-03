@@ -2,8 +2,11 @@
 #include <Configuration/CConfigNode.h>
 #include <Logger/Logger.h>
 #include "CProcessHandler.h"
+#include <algorithm>
+
 namespace Controller
 {
+
 CProcessManager::CProcessManager( Runtime::ITimerManager& rTimerManager )
 :	m_rTimerManager(rTimerManager)
 , m_processMonitorTimerId(-1)
@@ -98,34 +101,22 @@ void CProcessManager::GetRuntimeUnitShortnameList( tStringVector& runtimeShortna
 
 bool CProcessManager::IsBusy()
 {
-	bool processBusy(false);
+	tProcessIterator pIter = std::find_if(	m_processList.begin() , m_processList.end(), HasState(eStatus_Busy) );
 
-	for (tProcessIterator pIter = m_processList.begin() ; m_processList.end() != pIter && !processBusy; ++pIter)
-	{
-		processBusy = ( eStatus_Busy == pIter->second->GetUnitStatus() );
-	}
-
-	return processBusy;
+	return ( m_processList.end() != pIter );
 }
 
 void CProcessManager::SwitchOffProcessHandlers()
 {
-	for (tProcessIterator pIter = m_processList.begin() ; m_processList.end() != pIter ; ++pIter)
-	{
-		pIter->second->StopProcessHandler();
-	}
+	std::for_each(m_processList.begin() , m_processList.end(), StopProcessHandler() );
 }
 
 bool CProcessManager::Stopped()
 {
-	bool stopped(true);
+	
+	tProcessIterator pIter = std::find_if(	m_processList.begin() , m_processList.end(), DoesNotHaveState(eStatus_Stopped) );
 
-	for (tProcessIterator pIter = m_processList.begin() ; m_processList.end() != pIter && stopped ; ++pIter)
-	{
-		stopped = ( eStatus_Stopped == pIter->second->GetUnitStatus());
-	}
-
-	return stopped;
+	return ( m_processList.end() == pIter );
 }
 
 }

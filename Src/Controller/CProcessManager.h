@@ -4,6 +4,7 @@
 #include <ControllerInterface/ControllerTypes.h>
 #include <Runtime/ITimerManager.h>
 #include <Runtime/ITimerListener.h>
+#include "CProcessHandler.h"
 
 
 namespace Configuration
@@ -13,7 +14,6 @@ namespace Configuration
 
 namespace Controller
 {
-class CProcessHandler;
 
 class CProcessManager : public Runtime::ITimerListener
 {
@@ -27,6 +27,50 @@ class CProcessManager : public Runtime::ITimerListener
 	};
 	typedef std::map< UInt32, RuntimeUnitGroup > tTimerToGroupMap;
 	typedef tTimerToGroupMap::const_iterator tGroupIterator;
+	
+	class HasState
+	{
+	public:
+		HasState(const tProcessStatus& value)
+		: m_desiredUnitState(value)
+		{
+		};
+		
+		bool operator()(const tProcessMap::value_type& processPair) const
+		{
+			return ( m_desiredUnitState == processPair.second->GetUnitStatus() );
+		};
+	
+	private:
+		tProcessStatus m_desiredUnitState;
+	};
+	
+	class DoesNotHaveState
+	{
+	public:
+		DoesNotHaveState(const tProcessStatus& value)
+		: m_desiredUnitState(value)
+		{
+		};
+		
+		bool operator()(const tProcessMap::value_type& processPair) const
+		{
+			return ( m_desiredUnitState != processPair.second->GetUnitStatus() );
+		};
+	
+	private:
+		tProcessStatus m_desiredUnitState;
+	};
+	
+	class StopProcessHandler
+	{
+	public:
+		void operator()(const tProcessMap::value_type& processPair)
+		{
+			processPair.second->StopProcessHandler();
+		};
+	};
+
 public:
 	CProcessManager( Runtime::ITimerManager& rTimerManager );
 	virtual ~CProcessManager();
