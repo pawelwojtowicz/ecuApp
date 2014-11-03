@@ -3,5 +3,8 @@
 _install
 Bin
 3rdParty/gmock-1.7.0
+3rdParty/BusyBox/busybox-1.22.1
+3rdParty/linux-3.4.4.tar.bz2
+3rdParty/linux-3.4.4
 DeploymentScripts/deploymentPaths
 DevEnv/commonSettings
