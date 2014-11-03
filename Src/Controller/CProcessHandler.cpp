@@ -1,6 +1,4 @@
 #include "CProcessHandler.h"
-#include <Configuration/CConfigNode.h>
-#include <UCL/SystemEnvironment.h>
 #include <Logger/CLogManager.h>
 #include <Logger/Logger.h>
 #include <sys/wait.h>
@@ -10,115 +8,74 @@
 #include <errno.h>
 #include <string.h>
 
-static char sCfg_ExecutableName[] 	= {"CommandLine"};
-static char sCfg_StartupGroup[] 		= {"StartupGroup"};
-static char sCfg_ShutdownGroup[] 		= {"ShutdownGroup"};
-static char sCfg_HeartbeatPeriod[]	= {"HeartbeatPeriod"};
-static char sCfg_ProcessDebugLevel[]= {"DebugLevel"};
-static char cCfg_ProcessShortname[]	= {"Shortname"};
 namespace Controller
 {
-CProcessHandler::CProcessHandler( const UInt32& unitId, 
-																	const UInt32& defaultDebugZones,
-																	const Configuration::CConfigNode* pConfigNode )
-: UCL::CThread( pConfigNode->GetConfigNodeName() )
-, m_processID(unitId)
-, m_executableFileName()
-, m_startupGroup(0)
-, m_shutdownGroup(0)
-, m_debugZoneSettings(defaultDebugZones)
-, m_running(true)
-, m_processStatus(eStatus_None)
-, m_queueName()
-, m_versionInformation()
-, m_shortName()
-, m_lastHeartbeat(0)
-, m_hearbeatTimeout(5)
+CProcessHandler::CProcessHandler( const std::string& processName,
+																	const UInt32& processID, 
+																	const std::string& executableName,
+																	const UInt32& heartbeatPeriod,
+																	const UInt32& debugZoneSetting )
+: UCL::CThread( processName )
+, m_processID(processID)
+, m_executableFileName(executableName)
+, m_processIDString()
+, m_heartbeatPeriodString()
+, m_debugZoneSettingString()
+, m_processId(0)
 {
-	std::string executableFileName = pConfigNode->GetParameter(sCfg_ExecutableName)->GetString(std::string());
-	m_executableFileName = UCL::SystemEnvironment::ResolvePath(UCL::SystemEnvironment::Dir_App, executableFileName);
-	m_startupGroup = pConfigNode->GetParameter(sCfg_StartupGroup)->GetUInt8(0);
-	m_shutdownGroup = pConfigNode->GetParameter(sCfg_ShutdownGroup)->GetUInt8(0);
-	m_hearbeatTimeout = pConfigNode->GetParameter(sCfg_HeartbeatPeriod)->GetUInt32(m_hearbeatTimeout);
-	m_shortName	= pConfigNode->GetParameter(cCfg_ProcessShortname)->GetString("tmp");
-	const Configuration::CConfigNode* pDebugLevelConfig = pConfigNode->GetConfigNode(sCfg_ProcessDebugLevel);
-	if ( 0 != pDebugLevelConfig )
-	{
-		m_debugZoneSettings = Logger::CLogManager::ReadDebugLevelConfig(pDebugLevelConfig);
-	}
+	char helperBuffer[20];
+	
+	sprintf(helperBuffer, "%d", m_processID );
+	m_processIDString = helperBuffer;
+
+	sprintf(helperBuffer, "%d", heartbeatPeriod );
+	m_heartbeatPeriodString = helperBuffer;
+
+	sprintf(helperBuffer, "%d", debugZoneSetting );
+	m_debugZoneSettingString = helperBuffer;
 }
 
 CProcessHandler::~CProcessHandler()
 {
 }
 
-bool CProcessHandler::IsValid()
-{
-	// check if file exists, check the heartbeat period, 
-	return true;
-}
-
-void CProcessHandler::NotifyHeartbeat(const tProcessStatus& status)
-{
-	m_processStatus = status;
-	RETAILMSG(INFO, ("Heartbeat from process [%s] received - status = [%d]", GetThreadName().c_str(), m_processStatus));	
-}
-
-void CProcessHandler::NotifyInitDone(const std::string& queueName, const std::string& versionInformation)
-{
-	m_queueName = queueName;
-	m_versionInformation = versionInformation;
-
-	RETAILMSG(INFO, ("InitDone received from [%s]. Queue=%s, VersionInfo=%s", GetThreadName().c_str(), m_queueName.c_str(), m_versionInformation.c_str() ) );
-}
-
-
 void CProcessHandler::Run()
 {
-	pid_t processId;
 	Int32 returnValue(0);
 
-	char runtimeIdStringBuffer[10];
-	char heartbeatPeriodStringBuffer[10];
-	char debugZoneSettingBuffer[10];
-	sprintf(runtimeIdStringBuffer, "%d", m_processID );
-	sprintf(heartbeatPeriodStringBuffer, "%d", m_hearbeatTimeout );
-	sprintf(debugZoneSettingBuffer, "%d", m_debugZoneSettings );
-
-	while ( m_running )
-	{
-		processId = fork();
+	m_processId = fork();
 		
-		if ( 0 == processId )
-		{
-			RETAILMSG(INFO, ( "Starting process %s", GetThreadName().c_str() ) );
-			execlp(	m_executableFileName.c_str(),
-							m_executableFileName.c_str(), 
-							runtimeIdStringBuffer, 
-							heartbeatPeriodStringBuffer,
-							debugZoneSettingBuffer,
-							NULL);
-			RETAILMSG(ERROR, ("Failed to start [%s], error=[%s]", GetThreadName().c_str(), strerror(errno)));
-			exit(-1);
-		}
-		else
-		{
-			RETAILMSG(INFO,("Process [%s] is started", GetThreadName().c_str()));
-			waitpid(processId, &returnValue, 0 );
-			RETAILMSG(INFO,("Process [%s] is finished - return Value [%d]",GetThreadName().c_str(), returnValue));
-			sleep(10);
-		}
+	if ( 0 == m_processId )
+	{
+		RETAILMSG(INFO, ( "Starting process %s", GetThreadName().c_str() ) );
+		execlp(	m_executableFileName.c_str(),
+						m_executableFileName.c_str(), 
+						m_processIDString.c_str(), 
+						m_heartbeatPeriodString.c_str(),
+						m_debugZoneSettingString.c_str(),
+						NULL);
+		RETAILMSG(ERROR, ("Failed to start [%s], error=[%s]", GetThreadName().c_str(), strerror(errno)));
+		exit(-1);
 	}
-	
-	m_processStatus = eStatus_Stopped;
-	RETAILMSG(INFO,("ProcessHandler for [%s] is stopped",GetThreadName().c_str()));
-
+	else
+	{
+		RETAILMSG(INFO,("Process [%s] is started", GetThreadName().c_str()));
+		waitpid(m_processId, &returnValue, 0 );
+		m_processId = 0;
+		RETAILMSG(INFO,("Process [%s] is finished - return Value [%d]",GetThreadName().c_str(), returnValue));
+		sleep(10);
+	}
 }
 
-void CProcessHandler::StopProcessHandler()
+void CProcessHandler::TerminateProcess()
 {
-	RETAILMSG(INFO, ("Stopping process handler %s",GetThreadName().c_str()));
-	m_running = false;
+	if ( 0 != m_processId )
+	{
+		kill( m_processId , SIGTERM );
+		sleep(2);
+		kill( m_processId , SIGKILL );
+		m_processId = 0;
+	}
 }
 
 }

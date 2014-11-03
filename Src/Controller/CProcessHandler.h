@@ -4,10 +4,7 @@
 #include <UCL/CThread.h>
 #include <ControllerInterface/ControllerTypes.h>
 
-namespace Configuration
-{
-class CConfigNode;
-}
+
 
 namespace Controller
 {
@@ -15,46 +12,36 @@ namespace Controller
 class CProcessHandler: public UCL::CThread
 {
 public:
-	CProcessHandler(	const UInt32& unitId, 
-										const UInt32& defaultDebugZones,
-										const Configuration::CConfigNode* pConfigNode );
+	CProcessHandler(	const std::string& processName,
+										const UInt32& processID, 
+										const std::string& executableName,
+										const UInt32& heartbeatPeriod,
+										const UInt32& debugZoneSetting  );
 	virtual ~CProcessHandler();
-
-	bool IsValid();
-
-	void NotifyHeartbeat(const tProcessStatus& status);
-
-	void NotifyInitDone(const std::string& queueName, const std::string& versionInformation);
-
-	const std::string& GetShortname() { return m_shortName; };
-
-	tProcessStatus GetUnitStatus() { return m_processStatus; };
-
-	void StopProcessHandler();
+	
+	void TerminateProcess();
+	
+private:
 
 	virtual void Run();
-
-private:
-	UInt32 m_processID;
-	std::string m_executableFileName;
-	UInt8 m_startupGroup;
-	UInt8 m_shutdownGroup;
-	UInt32 m_debugZoneSettings;
-
-
-	bool m_running;
 	
-	tProcessStatus m_processStatus;
+private:
+	/** process ID, needed for status reporting*/
+	UInt32 m_processID;
+	
+	/** executable filename */
+	std::string m_executableFileName;
 
-	std::string m_queueName;
-
-	std::string m_versionInformation;
-
-	std::string m_shortName;
-
-	UInt32 m_lastHeartbeat;
-
-	UInt32 m_hearbeatTimeout;
+	/** processID rendered into the string */
+	std::string m_processIDString;
+	
+	/** heartbeat period string*/
+	std::string m_heartbeatPeriodString;
+	
+	/** debug zone settings string */
+	std::string m_debugZoneSettingString;
+	
+	pid_t m_processId;
 };
 }
 
