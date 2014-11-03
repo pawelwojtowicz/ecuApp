@@ -259,7 +259,7 @@ TEST( CMessenger, Broadcasting )
 		testMsg.SetMessageId(msgId_Runtime_SubscribeMessage);
 		testMsg.SetMsgPrio(255);
 		testMsg.SetTargetId(1);
-		testMsg.SetValue(testQueue1name);
+		testMsg.SetValue(UCL::SystemEnvironment::ResolvePath(UCL::SystemEnvironment::Dir_Runtime,testQueue1name));
 		UInt32 integerMsgId(static_cast<UInt32>(msgId_Controller_Heartbeat));
 		testMsg.SetValue(integerMsgId);
 
@@ -271,7 +271,7 @@ TEST( CMessenger, Broadcasting )
 		testMsg.SetMessageId(msgId_Runtime_SubscribeMessage);
 		testMsg.SetMsgPrio(255);
 		testMsg.SetTargetId(1);
-		testMsg.SetValue(testQueue2name);
+		testMsg.SetValue(UCL::SystemEnvironment::ResolvePath(UCL::SystemEnvironment::Dir_Runtime,testQueue2name));
 		UInt32 integerMsgId(static_cast<UInt32>(msgId_Controller_Heartbeat));
 		testMsg.SetValue(integerMsgId);
 
@@ -283,7 +283,7 @@ TEST( CMessenger, Broadcasting )
 		testMsg.SetMessageId(msgId_Runtime_SubscribeMessage);
 		testMsg.SetMsgPrio(255);
 		testMsg.SetTargetId(1);
-		testMsg.SetValue(testQueue3name);
+		testMsg.SetValue(UCL::SystemEnvironment::ResolvePath(UCL::SystemEnvironment::Dir_Runtime,testQueue3name));
 		UInt32 integerMsgId(static_cast<UInt32>(msgId_Controller_Heartbeat));
 		testMsg.SetValue(integerMsgId);
 
@@ -295,7 +295,7 @@ TEST( CMessenger, Broadcasting )
 		testMsg.SetMessageId(msgId_Runtime_SubscribeMessage);
 		testMsg.SetMsgPrio(255);
 		testMsg.SetTargetId(1);
-		testMsg.SetValue(testQueue4name);
+		testMsg.SetValue(UCL::SystemEnvironment::ResolvePath(UCL::SystemEnvironment::Dir_Runtime,testQueue4name));
 		UInt32 integerMsgId(static_cast<UInt32>(msgId_Controller_Heartbeat));
 		testMsg.SetValue(integerMsgId);
 

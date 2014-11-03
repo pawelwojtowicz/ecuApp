@@ -64,6 +64,10 @@ public:
 	void StopMsgProcessor();
 
 private:
+	Int32 InternalConnectQueue(const std::string& queueName);
+	
+	bool InternalDisconnectQueue(const std::string& queueName);
+
 	tQueueMapIter FindQueueByName( const std::string& queueName );
 
 	bool PostSubscriptionMessage( const Int32 supplierQueueId, tMsgIds, bool subscribe );

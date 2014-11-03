@@ -65,9 +65,15 @@ bool CMessenger::Shutdown()
 //initialization of the transmitter
 Int32 CMessenger::ConnectQueue(const std::string& targetUnitName)
 {
+	std::string queueName(UCL::SystemEnvironment::ResolvePath(UCL::SystemEnvironment::Dir_Runtime,targetUnitName));
+
+	return InternalConnectQueue(queueName);
+}
+
+Int32 CMessenger::InternalConnectQueue(const std::string& queueName)
+{
 	Int32 queueID(-1);
 	
-	std::string queueName(UCL::SystemEnvironment::ResolvePath(UCL::SystemEnvironment::Dir_Runtime,targetUnitName));
 	tQueueMapIter pIter = FindQueueByName(queueName);
 	if ( m_queueName2QueueDescMap.end() == pIter )
 	{
@@ -89,7 +95,12 @@ Int32 CMessenger::ConnectQueue(const std::string& targetUnitName)
 bool CMessenger::DisconnectQueue(const std::string& targetUnitName)
 {
 	std::string queueName(UCL::SystemEnvironment::ResolvePath(UCL::SystemEnvironment::Dir_Runtime,targetUnitName));
+	
+	return InternalDisconnectQueue(queueName);
+}
 
+bool CMessenger::InternalDisconnectQueue(const std::string& queueName)
+{
 	tQueueMapIter pIter = FindQueueByName( queueName );
 	if ( m_queueName2QueueDescMap.end() != pIter )
 	{
@@ -201,7 +212,7 @@ void CMessenger::StartMsgProcessor()
 								tMsgIds messageId = static_cast<tMsgIds>(integerMsgId);
 					
 								// connect to queue (increase reference count in case it's used already
-								Int32 queueId = ConnectQueue(interestedQueueName);
+								Int32 queueId = InternalConnectQueue(interestedQueueName);
 
 								// check if this message already exists in the map
 								tMsgIdToInterestedQueuesIterator iter = m_messageIdToQueueIdMap.find(messageId);
