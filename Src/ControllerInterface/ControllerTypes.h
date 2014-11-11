@@ -18,7 +18,7 @@ typedef enum
 	eSessionState_Init2,
 	eSessionState_Init3,
 	eSessionState_Running,
-	eSessionState_PendingShudown,
+	eSessionState_PendingShutdown,
 	eSessionState_Shutdown
 } tSessionState;
 }

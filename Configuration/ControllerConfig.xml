@@ -29,12 +29,12 @@
 		<Parameter Name="WatchdogRefreshPeriod" Type="UInt32">10</Parameter>
 		<Parameter Name="MaxWatchodCounter" Type="UInt32">3</Parameter>
 	</CNode>
-	<CNode Name="StartupGroups">
-		<CNode Name="FirstGroup">
-			<Parameter Name="GroupId" Type="UInt32">0</Parameter>
-			<Parameter Name="StartupDelay" Type="String">dupa</Parameter>
-			<Parameter Name="DeviceId" Type="String">dupa</Parameter>
-		</CNode>	
+	<CNode Name="SessionManagment">
+		<Parameter Name="Init1Timeout" Type="UInt32">10</Parameter>
+		<Parameter Name="Init2Timeout" Type="UInt32">10</Parameter>
+		<Parameter Name="Init3Timeout" Type="UInt32">10</Parameter>
+		<Parameter Name="PendingShutdownTimeout" Type="UInt32">10</Parameter>
+		<Parameter Name="ShutdownTimeout" Type="UInt32">10</Parameter>
 	</CNode>
 	<CNode Name="ProcessManager">
 		<CNode Name="Sample">

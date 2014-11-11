@@ -1,0 +1,9 @@
+<Configuration>
+	<CNode Name="SessionManagment">
+		<Parameter Name="Init1Timeout" Type="UInt32">1</Parameter>
+		<Parameter Name="Init2Timeout" Type="UInt32">2</Parameter>
+		<Parameter Name="Init3Timeout" Type="UInt32">3</Parameter>
+		<Parameter Name="PendingShutdownTimeout" Type="UInt32">4</Parameter>
+		<Parameter Name="ShutdownTimeout" Type="UInt32">5</Parameter>
+	</CNode>
+</Configuration>

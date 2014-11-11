@@ -7,11 +7,23 @@
 #include <Runtime/ITimerListener.h>
 #include <stdio.h>
 
+namespace Configuration
+{
+class CConfigNode;
+}
+
 namespace Controller
 {
 class CSessionManager	:	public ISessionManager
 											, public Runtime::ITimerListener
 {
+	typedef enum
+	{
+		eEvent_PhaseCompleted,
+		eEvent_TimeoutElapsed,
+		eEvent_ShutdownRequest
+	} tSessionEvents;
+	
 	struct SessionItem
 	{
 		ISessionStateListener* pSessionStateListener;
@@ -37,45 +49,19 @@ class CSessionManager	:	public ISessionManager
 		tSessionState m_currentSessionState;
 	};
 	
-	class BusyChecker
-	{
-	public:
-		BusyChecker()
-		: m_busy(false)
-		, i(123)
-		{
-			printf("Tworzy sie nowe\n");
-		}
-		
-		void operator()( tSessionItemMap::value_type& itemPair)
-		{
-			++i;
-			printf("m_busy=%d, current=%d\n", m_busy, i );
-			m_busy = m_busy || itemPair.second.SessionItemState;
-		};
-		
-		bool IsBusy()
-		{
-			printf("returning busy %d\n", i);
-			return m_busy;
-		}
-	private:
-	int i;
-		bool m_busy;
-	};
-
-	
 public:
 	CSessionManager(Runtime::ITimerManager& rTimerManager);
 	virtual ~CSessionManager();
 	
-	bool Initialize();
+	bool Initialize(const Configuration::CConfigNode* pConfigNode);
 	
 	void Shutdown();
 	
 	void NotifySessionStateListeners(const tSessionState sessionState );
 	
 	bool IsBusy();
+	
+	void ShutdownRequest();
 
 private:
 	//Implementation of ISessionManager
@@ -86,6 +72,14 @@ private:
 	virtual void NotifyTimer( const Int32& timerId );
 	
 private:
+	//Tooling Clases
+	void DispatchSessionEvent(tSessionEvents event);
+	
+	tSessionState EvaluateNextState( const tSessionEvents event );
+	
+	UInt32 GetPhaseTimeout(tSessionState sessionState);
+	
+private:
 	// timers manager
 	Runtime::ITimerManager& m_rTimerManager;
 	
@@ -93,13 +87,18 @@ private:
 	Int32 m_currentItemId;
 	
 	//timerIds
-	Int32 m_init1TimerId;
-	Int32 m_init2TimerId;
-	Int32 m_init3TimerId;
-	Int32 m_pendingShutdownTimerId;
+	Int32 m_timeoutTimerId;
+	
+	//timeout values
+	UInt32 m_init1Timeout;
+	UInt32 m_init2Timeout;
+	UInt32 m_init3Timeout;
+	UInt32 m_pendingShutdownTimeout;
+	UInt32 m_shutdownTimeout;
 
-
-	tSessionItemMap m_items;	
+	tSessionItemMap m_items;
+	
+	tSessionState m_currentSessionState;	
 };
 }
 
