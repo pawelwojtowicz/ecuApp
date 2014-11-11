@@ -2,14 +2,13 @@
 #define CONTROLLER_CSESSIONMANAGER_H
 #include <GlobalTypes.h>
 #include "ISessionManager.h"
+#include "ISessionStateListener.h"
 #include <Runtime/ITimerManager.h>
 #include <Runtime/ITimerListener.h>
-
+#include <stdio.h>
 
 namespace Controller
 {
-class ISessionStateListener;
-
 class CSessionManager	:	public ISessionManager
 											, public Runtime::ITimerListener
 {
@@ -22,6 +21,50 @@ class CSessionManager	:	public ISessionManager
 	typedef std::map<Int32, SessionItem> tSessionItemMap;
 	typedef tSessionItemMap::iterator tSessionItemIterator;	
 	
+	class NotifyAndUpdateItemState
+	{
+	public:
+		NotifyAndUpdateItemState(const tSessionState& sessionState)
+		: m_currentSessionState(sessionState)
+		{
+		}
+		
+		void operator()( tSessionItemMap::value_type& itemPair)
+		{
+			itemPair.second.SessionItemState = itemPair.second.pSessionStateListener->NotifySessionState(m_currentSessionState);
+		};
+	
+		tSessionState m_currentSessionState;
+	};
+	
+	class BusyChecker
+	{
+	public:
+		BusyChecker()
+		: m_busy(false)
+		, i(123)
+		{
+			printf("Tworzy sie nowe\n");
+		}
+		
+		void operator()( tSessionItemMap::value_type& itemPair)
+		{
+			++i;
+			printf("m_busy=%d, current=%d\n", m_busy, i );
+			m_busy = m_busy || itemPair.second.SessionItemState;
+		};
+		
+		bool IsBusy()
+		{
+			printf("returning busy %d\n", i);
+			return m_busy;
+		}
+	private:
+	int i;
+		bool m_busy;
+	};
+
+	
 public:
 	CSessionManager(Runtime::ITimerManager& rTimerManager);
 	virtual ~CSessionManager();
@@ -29,6 +72,10 @@ public:
 	bool Initialize();
 	
 	void Shutdown();
+	
+	void NotifySessionStateListeners(const tSessionState sessionState );
+	
+	bool IsBusy();
 
 private:
 	//Implementation of ISessionManager
