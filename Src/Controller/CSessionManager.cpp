@@ -4,7 +4,7 @@ namespace Controller
 {
 CSessionManager::CSessionManager(Runtime::ITimerManager& rTimerManager)
 : m_rTimerManager(rTimerManager)
-, m_currentItemId(1)
+, m_currentItemId(0)
 ,	m_init1TimerId(-1)
 , m_init2TimerId(-1)
 , m_init3TimerId(-1)
@@ -32,7 +32,16 @@ void CSessionManager::Shutdown()
 
 Int32 CSessionManager::RegisterSessionListener( ISessionStateListener* pListener )
 {
-	return 0;
+	++m_currentItemId;
+	
+	SessionItem item;
+	item.pSessionStateListener = pListener;
+	item.SessionItemState = true;
+	
+	
+	m_items.insert(tSessionItemMap::value_type(m_currentItemId,item));	
+	
+	return m_currentItemId;
 }
 
 void CSessionManager::ReportItemState(const Int32& itemId,const bool busy )

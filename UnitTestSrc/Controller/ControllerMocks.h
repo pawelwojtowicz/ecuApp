@@ -3,6 +3,7 @@
 
 #include <Runtime/ITimerManager.h>
 #include <Runtime/ITimerListener.h>
+#include <Controller/ISessionStateListener.h>
 
 namespace ControllerTest
 {
@@ -23,7 +24,14 @@ public:
 	
 	// Stops the timer, given by the Id	
 	MOCK_METHOD1(StopTimer, bool(const Int32 timerId) );
-}; 
+};
+
+class SessionStateListenerMock: public Controller::ISessionStateListener
+{
+public:
+	MOCK_METHOD1(NotifySessionState, bool(const Controller::tSessionState sessionState));
+};
+
 }
 
 #endif

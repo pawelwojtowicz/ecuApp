@@ -1,5 +1,6 @@
 #ifndef CONTROLLER_CSESSIONMANAGER_H
 #define CONTROLLER_CSESSIONMANAGER_H
+#include <GlobalTypes.h>
 #include "ISessionManager.h"
 #include <Runtime/ITimerManager.h>
 #include <Runtime/ITimerListener.h>
@@ -18,6 +19,8 @@ class CSessionManager	:	public ISessionManager
 		bool SessionItemState;
 	};
 	
+	typedef std::map<Int32, SessionItem> tSessionItemMap;
+	typedef tSessionItemMap::iterator tSessionItemIterator;	
 	
 public:
 	CSessionManager(Runtime::ITimerManager& rTimerManager);
@@ -49,7 +52,7 @@ private:
 	Int32 m_pendingShutdownTimerId;
 
 
-	
+	tSessionItemMap m_items;	
 };
 }
 
