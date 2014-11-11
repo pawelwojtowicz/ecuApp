@@ -31,16 +31,16 @@ private:
 	virtual Int32 CreateTimer( ITimerListener* timerListener );
 
 	// destroys the timer, given by the timerId
-	virtual void DisposeTimer(const Int32& timerId );	
+	virtual void DisposeTimer(const Int32 timerId );	
 
 	// sets the parameters for the timer, given by timerId
-	virtual bool SetTimer( const Int32& timerId, const UInt32 delay, const UInt32 period);
+	virtual bool SetTimer( const Int32 timerId, const UInt32 delay, const UInt32 period);
 	
 	// Starts the timer, given by the Id
-	virtual bool StartTimer(const Int32& timerId );
+	virtual bool StartTimer(const Int32 timerId );
 	
 	// Stops the timer, given by the Id	
-	virtual bool StopTimer(const Int32& timerId);
+	virtual bool StopTimer(const Int32 timerId);
 
 	// Receives the message notification from the queue - the timer message is being equeued with the highest
 	// prio every 1s.

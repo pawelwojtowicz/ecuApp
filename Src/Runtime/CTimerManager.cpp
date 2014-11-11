@@ -35,7 +35,7 @@ Int32 CTimerManager::CreateTimer( ITimerListener* timerListener )
 	return timerId;
 }
 
-void CTimerManager::DisposeTimer(const Int32& timerId )
+void CTimerManager::DisposeTimer(const Int32 timerId )
 {
 	tTimerInfoIterator timerIter = m_timerInfoMap.find(timerId);
 	if (m_timerInfoMap.end() != timerIter )
@@ -44,7 +44,7 @@ void CTimerManager::DisposeTimer(const Int32& timerId )
 	}
 }
 
-bool CTimerManager::SetTimer( const Int32& timerId, const UInt32 delay, const UInt32 period)
+bool CTimerManager::SetTimer( const Int32 timerId, const UInt32 delay, const UInt32 period)
 {
 	tTimerInfoIterator timerIter = m_timerInfoMap.find(timerId);
 	if (m_timerInfoMap.end() != timerIter )
@@ -56,7 +56,7 @@ bool CTimerManager::SetTimer( const Int32& timerId, const UInt32 delay, const UI
 	return false;
 }
 	
-bool CTimerManager::StartTimer(const Int32& timerId )
+bool CTimerManager::StartTimer(const Int32 timerId )
 {
 	tTimerInfoIterator timerIter = m_timerInfoMap.find(timerId);
 	if (m_timerInfoMap.end() != timerIter )
@@ -76,7 +76,7 @@ bool CTimerManager::StartTimer(const Int32& timerId )
 	return false;
 }
 	
-bool CTimerManager::StopTimer(const Int32& timerId)
+bool CTimerManager::StopTimer(const Int32 timerId)
 {
 	tTimerInfoIterator timerIter = m_timerInfoMap.find(timerId);
 	if (m_timerInfoMap.end() != timerIter )

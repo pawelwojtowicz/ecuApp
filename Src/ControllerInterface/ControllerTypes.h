@@ -10,5 +10,16 @@ typedef enum
 	eStatus_Error,
 	eStatus_Stopped
 } tProcessStatus;
+
+typedef enum
+{
+	eSessionState_Iddle,
+	eSessionState_Init1,
+	eSessionState_Init2,
+	eSessionState_Init3,
+	eSessionState_Running,
+	eSessionState_PendingShudown,
+	eSessionState_Shutdown
+} tSessionState;
 }
 #endif
