@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
+#include <UCL/SystemEnvironment.h>
 #include "Controller/CProcessInfo.h"
 #include "Configuration/CConfiguration.h"
 
@@ -11,7 +12,8 @@ using namespace Controller;
 
 TEST( CProcessInfo ,ConfigParsing )
 {
-	const Configuration::CConfigNode* pConfig = Configuration::CConfiguration::GetConfiguration("TestConfig_1.xml");
+	std::string configFile = UCL::SystemEnvironment::ResolveEnvironmentVariable("${UNITTEST_DIR}/Controller/TestCfg_CProcessInfo.xml");
+	const Configuration::CConfigNode* pConfig = Configuration::CConfiguration::GetConfiguration(configFile);
 	
 	EXPECT_EQ( 0 != pConfig , true );
 	
