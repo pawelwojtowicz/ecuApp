@@ -28,6 +28,7 @@ CProcessInfo::CProcessInfo(	const UInt32& unitId,
 , m_queueName()
 , m_versionInformation()
 {
+	m_processName = pConfigNode->GetConfigNodeName();
 	std::string executableFileName = pConfigNode->GetParameter(sCfg_ExecutableName)->GetString(std::string());
 	m_executableFileName = UCL::SystemEnvironment::ResolvePath(UCL::SystemEnvironment::Dir_App, executableFileName);
 	m_startupGroup = pConfigNode->GetParameter(sCfg_StartupGroup)->GetUInt8(0);
@@ -79,6 +80,11 @@ const UInt8 CProcessInfo::GetShutdownGroup() const
 const UInt32 CProcessInfo::GetHeartbeatTimeout() const
 {
 	return m_hearbeatTimeout;
+}
+
+const std::string& CProcessInfo::GetProcessName() const
+{
+	return m_processName;
 }
 
 }

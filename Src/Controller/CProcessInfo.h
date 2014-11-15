@@ -31,8 +31,12 @@ public:
 	const UInt8 GetShutdownGroup() const;
 	
 	const UInt32 GetHeartbeatTimeout() const;
+	
+	const std::string& GetProcessName() const;
 
 private:
+	std::string m_processName;
+	
 	UInt32 m_processID;
 	
 	std::string m_executableFileName;
