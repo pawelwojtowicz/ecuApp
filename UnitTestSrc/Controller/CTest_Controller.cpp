@@ -40,6 +40,8 @@ TEST( CProcessInfo ,ConfigParsing )
 	EXPECT_EQ( pProcessInfo->GetShutdownGroup(), 3U );
 	
 	EXPECT_EQ( pProcessInfo->GetHeartbeatTimeout() , 5U );
+	
+	Configuration::CConfiguration::ReleaseConfiguration();
 
 }
 

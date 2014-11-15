@@ -19,7 +19,7 @@ class CConfiguration
 	CConfigNode* ScanNode( const XMLNode& node );
 public:
 	static const CConfigNode* GetConfiguration(const std::string& configurationFileName);
-	void ReleaseConfiguration();
+	static void ReleaseConfiguration();
 private:
 	static CConfiguration* m_pConfiguration;
 

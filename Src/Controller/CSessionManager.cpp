@@ -14,10 +14,10 @@ CSessionManager::CSessionManager(Runtime::ITimerManager& rTimerManager)
 : m_rTimerManager(rTimerManager)
 , m_currentItemId(0)
 , m_timeoutTimerId(-1)
-,	m_init1Timeout(5)
-, m_init2Timeout(5)
-, m_init3Timeout(5)
-, m_pendingShutdownTimeout(60)
+,	m_init1Timeout(1)
+, m_init2Timeout(2)
+, m_init3Timeout(3)
+, m_pendingShutdownTimeout(4)
 ,	m_shutdownTimeout(5)
 , m_currentSessionState(eSessionState_Iddle)
 {
@@ -68,6 +68,17 @@ Int32 CSessionManager::RegisterSessionListener( ISessionStateListener* pListener
 
 void CSessionManager::ReportItemState(const Int32& itemId,const bool busy )
 {
+	bool was( IsBusy() );
+	tSessionItemIterator pIter(m_items.find(itemId));
+	if ( m_items.end() != pIter )
+	{
+		pIter->second.SessionItemState = busy;
+	}
+	
+	if (was && !IsBusy() )
+	{
+		DispatchSessionEvent(eEvent_PhaseCompleted);	
+	}
 }
 
 void CSessionManager::NotifyTimer( const Int32& timerId )
@@ -205,7 +216,7 @@ tSessionState CSessionManager::EvaluateNextState( const tSessionEvents event )
 		{
 			newState = eSessionState_Shutdown;
 		}
-	};
+	};break;
 	case eSessionState_Shutdown:
 		if ( eEvent_ShutdownRequest != event )
 		{
@@ -263,15 +274,19 @@ void CSessionManager::DispatchSessionEvent(tSessionEvents event)
 			NotifySessionStateListeners(m_currentSessionState);
 		}
 		
-		if ( ( eSessionState_Shutdown !=event ) && !IsBusy() )
+		if ( ( m_currentSessionState < eSessionState_Running || eSessionState_PendingShutdown == m_currentSessionState || eSessionState_Shutdown == m_currentSessionState) && !IsBusy() )
 		{
 			event = eEvent_PhaseCompleted;
 		}
-		printf("%d %d\n", event, m_currentSessionState);
+		else
+		{
+			break;
+		}
 	} 
 	while ( ( eSessionState_Iddle != m_currentSessionState )  && ( eSessionState_Running != m_currentSessionState ));
 	
 	UInt32 newTimeout( GetPhaseTimeout(m_currentSessionState));
+
 	if ( 0 != newTimeout )
 	{
 		m_rTimerManager.SetTimer(m_timeoutTimerId,newTimeout,0);

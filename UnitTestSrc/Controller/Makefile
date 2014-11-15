@@ -1,5 +1,5 @@
 OUTPUT=test_Controller
-OBJ=CTest_Controller.o CProcessInfo.o CProcessHandler.o CTest_CSessionManager.o CSessionManager.o
+OBJ=CTest_Controller.o CProcessInfo.o CProcessHandler.o CTest_CSessionManager_Logic.o CSessionManager.o CTest_CSessionManager_Helpers.o
 VPATH=$(SUBJ_PATH)/Controller
 
 include ../../DevEnv/unitTestSettings
@@ -8,5 +8,6 @@ LFLAGS+= -lUCL -lConfiguration -lLogger
 CTest_Controller.o:	CTest_Controller.cpp
 CProcessInfo.o:	CProcessInfo.cpp CProcessInfo.h
 CProcessHandler.o: CProcessHandler.cpp CProcessHandler.h
-CTest_CSessionManager.o: CTest_CSessionManager.cpp
+CTest_CSessionManager_Logic.o: CTest_CSessionManager_Logic.cpp
+CTest_CSessionManager_Helpers.o: CTest_CSessionManager_Helpers.cpp
 CSessionManager.o: CSessionManager.cpp CSessionManager.h
