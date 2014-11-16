@@ -4,7 +4,7 @@
 #include <ControllerInterface/ControllerTypes.h>
 #include <Runtime/ITimerManager.h>
 #include <Runtime/ITimerListener.h>
-#include "CProcessHandler.h"
+#include <Controller/ISessionStateListener.h>
 
 
 namespace Configuration
@@ -15,77 +15,28 @@ namespace Configuration
 namespace Controller
 {
 
-class CProcessManager : public Runtime::ITimerListener
-{
-	typedef std::map< UInt32, CProcessHandler* > tProcessMap;
-	typedef tProcessMap::iterator tProcessIterator;
+class CProcessInfo;
+class ISessionManager;
+class IProcessControl;
 
-	struct RuntimeUnitGroup
-	{
-		std::string GroupName;
-		UInt32 GroupId;
-	};
-	typedef std::map< UInt32, RuntimeUnitGroup > tTimerToGroupMap;
-	typedef tTimerToGroupMap::const_iterator tGroupIterator;
-	
-	class HasState
-	{
-	public:
-		HasState(const tProcessStatus& value)
-		: m_desiredUnitState(value)
-		{
-		};
-		
-		bool operator()(const tProcessMap::value_type& processPair) const
-		{
-			return ( m_desiredUnitState == processPair.second->GetUnitStatus() );
-		};
-	
-	private:
-		tProcessStatus m_desiredUnitState;
-	};
-	
-	class DoesNotHaveState
-	{
-	public:
-		DoesNotHaveState(const tProcessStatus& value)
-		: m_desiredUnitState(value)
-		{
-		};
-		
-		bool operator()(const tProcessMap::value_type& processPair) const
-		{
-			return ( m_desiredUnitState != processPair.second->GetUnitStatus() );
-		};
-	
-	private:
-		tProcessStatus m_desiredUnitState;
-	};
-	
-	class StopProcessHandler
-	{
-	public:
-		void operator()(const tProcessMap::value_type& processPair)
-		{
-			processPair.second->StopProcessHandler();
-		};
-	};
+class CProcessManager : public Runtime::ITimerListener
+											, public Controller::ISessionStateListener
+{
+	typedef std::map< UInt32, CProcessInfo* > tProcessInfoMap;
+	typedef tProcessInfoMap::iterator tProcessIterator;
 
 public:
-	CProcessManager( Runtime::ITimerManager& rTimerManager );
+	CProcessManager(Runtime::ITimerManager& rTimerManager, 
+									ISessionManager& rSessionManager,
+									IProcessControl* pProcessControl = 0 );
+									
 	virtual ~CProcessManager();
 
 	bool Initialize( const Configuration::CConfigNode* configNode, const UInt32& defaultDebugZones );
+	
+	void Shutdown();
 
 	void GetRuntimeUnitShortnameList( tStringVector& runtimrShortnameList);
-
-	bool IsBusy();
-
-	bool Stopped();
-
-	void SwitchOffProcessHandlers();
-
-	void Shutdown();
 
 public:
 
@@ -94,23 +45,39 @@ public:
 															const std::string& unitVersion);
 	void NotifyUnitHeartbeat(	const UInt32 unitId, 
 														const tProcessStatus& status );
-
+														
+private:
+	/** Controller::ISessionStateListener implementation */
+	virtual bool NotifySessionState(const tSessionState sessionState);
+	
 	/** Runtime::ITimerListener implementation */
 	virtual void NotifyTimer( const Int32& timerId );
 
 private:
 	CProcessManager(const CProcessManager&);
 	CProcessManager& operator=(const CProcessManager&);
-
-	tTimerToGroupMap m_timer2GroupMap;
-
-	tProcessMap m_processList;
-
+	
+	/** Session Manager interface */
+	ISessionManager& m_sessionManager;
+	
+	/** Timers manager */
 	Runtime::ITimerManager& m_rTimerManager;
+	
+	/** Process */
+	IProcessControl* m_processControl;
 
+	/** list of process info structures */
+	tProcessInfoMap m_processList;
+
+	/** timerID for the process monitor interval */
 	Int32 m_processMonitorTimerId;
 
+	/** process monitor interval*/
 	UInt32 m_processMonitorInterval;
+	
+	/** the Id, that will be assigned, when the process manager registers for the session
+		* notifications. Used for reporting to CSessionManager*/
+	Int32 m_sessionItemId;
 };
 }
 

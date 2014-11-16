@@ -1,16 +1,25 @@
 #include "CProcessManager.h"
 #include <Configuration/CConfigNode.h>
 #include <Logger/Logger.h>
-#include "CProcessHandler.h"
 #include <algorithm>
+#include "CProcessInfo.h"
+#include "ISessionManager.h"
+#include "IProcessControl.h"
+#include "CProcessHandler.h"
+#include <stdio.h>
 
 namespace Controller
 {
 
-CProcessManager::CProcessManager( Runtime::ITimerManager& rTimerManager )
-:	m_rTimerManager(rTimerManager)
+CProcessManager::CProcessManager( Runtime::ITimerManager& rTimerManager, 
+																	ISessionManager& rSessionManager,
+																	IProcessControl* pProcessControl )
+:	m_sessionManager(rSessionManager)
+, m_rTimerManager(rTimerManager)
+, m_processControl(pProcessControl)
 , m_processMonitorTimerId(-1)
 , m_processMonitorInterval(5)
+, m_sessionItemId(-1)
 {
 }
 
@@ -20,43 +29,60 @@ CProcessManager::~CProcessManager()
 
 bool CProcessManager::Initialize( const Configuration::CConfigNode* configNode, 
 																	const UInt32& defaultDebugLevelSettings )
-{
+{	
 	bool retVal(false);
+	if (0 == m_processControl)
+	{
+		return retVal;
+	}
+	
+	// register the session notifications
+	m_sessionItemId = m_sessionManager.RegisterSessionListener(this);
+	
+	// create and set up the timer for process monitoring
 	m_processMonitorTimerId = m_rTimerManager.CreateTimer(this);
 	m_rTimerManager.SetTimer( m_processMonitorTimerId , m_processMonitorInterval, m_processMonitorInterval);
 
-	const Configuration::CConfigNode* pProcessNode = configNode->GetFirstSubnode();
-
 	UInt32 unitId(1);
+	const Configuration::CConfigNode* pProcessNode = configNode->GetFirstSubnode();
 
 	while( 0 != pProcessNode )
 	{
-		CProcessHandler* pHandler = new CProcessHandler(unitId, defaultDebugLevelSettings ,pProcessNode);
-		if (0 != pHandler  )
+		CProcessInfo* pProcessInfo = new CProcessInfo(unitId, defaultDebugLevelSettings ,pProcessNode);
+		
+		if (0 != pProcessInfo)
 		{
-			if ( pHandler->IsValid() )
-			{
-				m_processList.insert(tProcessMap::value_type( unitId, pHandler ) );
+			if (m_processControl->AddProcessController( unitId, 
+																									pProcessInfo->GetExecutableFileName(),
+																									pProcessInfo->GetHeartbeatTimeout(),
+																									defaultDebugLevelSettings))
+			{			
+				m_processList.insert(tProcessInfoMap::value_type( unitId , pProcessInfo ));
+				// at least one process is configured
+				
 				++unitId;
+				retVal = true;
 			}
 			else
 			{
-				delete pHandler;
+				delete pProcessInfo;
 			}
 		}
+
 		pProcessNode = configNode->GetNextSubnode();
 	}
 
-	for (tProcessIterator pIter = m_processList.begin() ; m_processList.end() != pIter ; ++pIter)
-	{
-		pIter->second->Start();
-	}
 
 	return retVal;
 }
 
 void CProcessManager::Shutdown()
 {
+}
+
+bool CProcessManager::NotifySessionState(const tSessionState sessionState)
+{
+	return true;
 }
 
 void CProcessManager::NotifyTimer( const Int32& timerId )
@@ -70,22 +96,10 @@ void CProcessManager::NotifyTimer( const Int32& timerId )
 void CProcessManager::NotifyUnitInitialized(	const UInt32& unitId, const std::string& processQueue, 
 															const std::string& unitVersion)
 {
-	tProcessIterator pIter = m_processList.find( unitId );
-	
-	if ( m_processList.end() != pIter )
-	{
-		pIter->second->NotifyInitDone(processQueue, unitVersion);
-	}
 }
 
 void CProcessManager::NotifyUnitHeartbeat(	const UInt32 unitId, const tProcessStatus& status )
 {
-	tProcessIterator pIter = m_processList.find( unitId );
-	
-	if ( m_processList.end() != pIter )
-	{
-		pIter->second->NotifyHeartbeat(status);
-	}
 }
 
 void CProcessManager::GetRuntimeUnitShortnameList( tStringVector& runtimeShortnameList)
@@ -94,29 +108,10 @@ void CProcessManager::GetRuntimeUnitShortnameList( tStringVector& runtimeShortna
 
 	for (tProcessIterator pIter = m_processList.begin() ; m_processList.end() != pIter ; ++pIter)
 	{
-		runtimeShortnameList[pIter->first] = pIter->second->GetShortname() ;
+		runtimeShortnameList[pIter->first] = pIter->second->GetShortName() ;
 	}
 
 }
 
-bool CProcessManager::IsBusy()
-{
-	tProcessIterator pIter = std::find_if(	m_processList.begin() , m_processList.end(), HasState(eStatus_Busy) );
-
-	return ( m_processList.end() != pIter );
-}
-
-void CProcessManager::SwitchOffProcessHandlers()
-{
-	std::for_each(m_processList.begin() , m_processList.end(), StopProcessHandler() );
-}
-
-bool CProcessManager::Stopped()
-{
-	
-	tProcessIterator pIter = std::find_if(	m_processList.begin() , m_processList.end(), DoesNotHaveState(eStatus_Stopped) );
-
-	return ( m_processList.end() == pIter );
-}
 
 }

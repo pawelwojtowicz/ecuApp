@@ -170,6 +170,6 @@ TEST( CSessionManager_Logic , TimeoutOnEachStep )
 	EXPECT_CALL(timerManagerMock, StopTimer(1) ).Times(1);
 	
 	timerListener.NotifyTimer(1);
-
-
+	
+	Configuration::CConfiguration::ReleaseConfiguration();
 }

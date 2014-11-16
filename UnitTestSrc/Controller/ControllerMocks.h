@@ -4,6 +4,8 @@
 #include <Runtime/ITimerManager.h>
 #include <Runtime/ITimerListener.h>
 #include <Controller/ISessionStateListener.h>
+#include <Controller/ISessionManager.h>
+#include <Controller/IProcessControl.h>
 
 namespace ControllerTest
 {
@@ -32,6 +34,26 @@ public:
 	MOCK_METHOD1(NotifySessionState, bool(const Controller::tSessionState sessionState));
 };
 
+class SessionManagerMock: public Controller::ISessionManager
+{
+public:
+	MOCK_METHOD1( RegisterSessionListener, Int32( Controller::ISessionStateListener* pListener ) );
+	
+	MOCK_METHOD2(	ReportItemState, void(const Int32& itemId,const bool busy ) );
+};
+
+class ProcessControlMock: public Controller::IProcessControl
+{
+public:
+	MOCK_METHOD4(	AddProcessController, bool(	UInt32 processID, 
+																			std::string executableName,
+																			UInt32 heartbeatPeriod,
+																			UInt32 debugZoneSetting) );
+	
+	MOCK_METHOD1( StartProcess, void( Int32 processHandlerID ) );
+	
+	MOCK_METHOD1( TerminateProcess, void( Int32 processHandlerID ) );
+};
 }
 
 #endif
