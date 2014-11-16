@@ -27,9 +27,10 @@ TEST(CProcessManager, InitialEnvironmentTest)
 	ControllerTest::TimerManagerMock timerManagerMock;
 	ControllerTest::SessionManagerMock sessionManagerMock;
 	ControllerTest::ProcessControlMock processControlMock;
+	ControllerTest::ProcessorStatusReporterMock processStatusReporterMock;
 	UInt32 testGlobalLoggerMask(0x31);
 	
-	Controller::CProcessManager processManager(timerManagerMock, sessionManagerMock, &processControlMock );
+	Controller::CProcessManager processManager(timerManagerMock, sessionManagerMock,processStatusReporterMock, &processControlMock );
 
 	{
 		InSequence seq;
@@ -77,7 +78,7 @@ protected:
 	, timerManagerMock()
 	, sessionManagerMock()
 	, processControlMock()
-	, processManager(timerManagerMock, sessionManagerMock, &processControlMock)
+	, processManager(timerManagerMock, sessionManagerMock,processStatusReporterMock ,  &processControlMock)
 	{
 	}
 	
@@ -134,6 +135,8 @@ protected:
 	Int32 SessionItemID;
 	
 	Int32 ProcessMonitorTimerID;
+	
+	ControllerTest::ProcessorStatusReporterMock processStatusReporterMock;
 
 	ControllerTest::TimerManagerMock timerManagerMock;
 

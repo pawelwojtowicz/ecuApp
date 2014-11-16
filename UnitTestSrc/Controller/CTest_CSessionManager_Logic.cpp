@@ -31,7 +31,7 @@ TEST( CSessionManager_Logic , BasicSequence_AllIdle )
 	EXPECT_CALL(stateListenerMock, NotifySessionState(Controller::eSessionState_Init3)).Times(1).WillOnce(Return(false));
 	EXPECT_CALL(stateListenerMock, NotifySessionState(Controller::eSessionState_Running)).Times(1).WillOnce(Return(false));
 	EXPECT_CALL(stateListenerMock, NotifySessionState(Controller::eSessionState_Shutdown)).Times(1).WillOnce(Return(false));
-	EXPECT_CALL(stateListenerMock, NotifySessionState(Controller::eSessionState_Iddle)).Times(1).WillOnce(Return(false));
+	EXPECT_CALL(stateListenerMock, NotifySessionState(Controller::eSessionState_PowerOff)).Times(1).WillOnce(Return(false));
 
 	
 	Controller::ISessionManager& iSessionManager(manager);
@@ -100,7 +100,7 @@ TEST( CSessionManager_Logic , StepByStep )
 	
 	iSessionManager.ReportItemState(1,false);
 	
-	EXPECT_CALL(stateListenerMock, NotifySessionState(Controller::eSessionState_Iddle)).Times(1).WillOnce(Return(true));
+	EXPECT_CALL(stateListenerMock, NotifySessionState(Controller::eSessionState_PowerOff)).Times(1).WillOnce(Return(true));
 	EXPECT_CALL(timerManagerMock, StopTimer(1) ).Times(1);
 	
 	iSessionManager.ReportItemState(1,false);
@@ -166,7 +166,7 @@ TEST( CSessionManager_Logic , TimeoutOnEachStep )
 	
 	timerListener.NotifyTimer(1);
 	
-	EXPECT_CALL(stateListenerMock, NotifySessionState(Controller::eSessionState_Iddle)).Times(1).WillOnce(Return(true));
+	EXPECT_CALL(stateListenerMock, NotifySessionState(Controller::eSessionState_PowerOff)).Times(1).WillOnce(Return(true));
 	EXPECT_CALL(timerManagerMock, StopTimer(1) ).Times(1);
 	
 	timerListener.NotifyTimer(1);

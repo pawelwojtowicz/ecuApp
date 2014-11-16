@@ -6,6 +6,7 @@
 #include <Controller/ISessionStateListener.h>
 #include <Controller/ISessionManager.h>
 #include <Controller/IProcessControl.h>
+#include <ControllerInterface/IProcessStatusReporter.h>
 
 namespace ControllerTest
 {
@@ -57,6 +58,12 @@ public:
 	MOCK_METHOD1( StartProcess, void( Int32 processHandlerID ) );
 	
 	MOCK_METHOD1( TerminateProcess, void( Int32 processHandlerID ) );
+};
+
+class ProcessorStatusReporterMock: public Controller::IProcessStatusReporter
+{
+public:
+	MOCK_METHOD2( SendProcessStatus, bool(const UInt32 processId, const Controller::tProcessStatus& status ) );
 };
 }
 
