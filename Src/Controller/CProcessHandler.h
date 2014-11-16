@@ -12,8 +12,7 @@ namespace Controller
 class CProcessHandler: public UCL::CThread
 {
 public:
-	CProcessHandler(	const std::string& processName,
-										const UInt32& processID, 
+	CProcessHandler(	const UInt32& processID, 
 										const std::string& executableName,
 										const UInt32& heartbeatPeriod,
 										const UInt32& debugZoneSetting  );

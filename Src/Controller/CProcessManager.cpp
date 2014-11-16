@@ -25,6 +25,10 @@ CProcessManager::CProcessManager( Runtime::ITimerManager& rTimerManager,
 
 CProcessManager::~CProcessManager()
 {
+	for (tProcessIterator pIter = m_processList.begin() ; m_processList.end() != pIter ; ++pIter)
+	{
+		delete pIter->second;
+	}
 }
 
 bool CProcessManager::Initialize( const Configuration::CConfigNode* configNode, 

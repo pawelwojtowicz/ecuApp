@@ -1,5 +1,6 @@
 #ifndef CONTROLLER_IPROCESSCONTROL_H
 #define CONTROLLER_IPROCESSCONTROL_H
+#include <GlobalTypes.h>
 
 namespace Controller
 {

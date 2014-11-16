@@ -21,8 +21,9 @@ CController::CController()
 , m_messenger()
 , m_timerMessage(0)
 , m_controllerStub( m_messenger )
+, m_sessionManager( m_timerManager )
 , m_watchdogManager(m_timerManager)
-, m_processManager(m_timerManager)
+, m_processManager( m_timerManager, m_sessionManager )
 {
 	m_timerMessage.SetMessageId(msgId_Runtime_Timer_1000);
 	m_timerMessage.SetMsgPrio(255);
@@ -75,10 +76,6 @@ void CController::Initialize()
 	if ( m_messenger.SubscribeMessage( OWN_QUEUE_ID, msgId_Runtime_Timer_1000, &m_timerManager) )
 	{
 		InitializeTimer();
-		m_pendingShutdownTimerId = GetTimerManager().CreateTimer(this);
-		GetTimerManager().SetTimer(m_pendingShutdownTimerId, 60,0);
-		m_deviceShutdownTimerId  = GetTimerManager().CreateTimer(this);
-		GetTimerManager().SetTimer(m_deviceShutdownTimerId, 1,3);
 	}
 	m_deviceState = eOperation;
 }
@@ -88,7 +85,7 @@ Int32 CController::Run()
 {
 	m_messenger.StartMsgProcessor();
 
-	 return 0;
+	return 0;
 }
 
 	//called right before shutdown - release all the resources here
@@ -107,23 +104,6 @@ void CController::NotifyTimer()
 
 void CController::NotifyTimer( const Int32& timerId )
 {
-	if ( timerId == m_pendingShutdownTimerId)
-	{
-		RETAILMSG(WARNING, ("Pending Shutdown timeout elapsed - shutting down device"));
-		m_deviceState = eShutdown;
-		m_processManager.SwitchOffProcessHandlers();
-		m_controllerStub.BroadcastShutdown();
-		GetTimerManager().StartTimer(m_deviceShutdownTimerId);
-	}
-	else if ( timerId == m_deviceShutdownTimerId )
-	{
-		RETAILMSG(INFO, ("Checking if process manager is ready to shutdown"));
-		if ( m_processManager.Stopped() )
-		{
-			RETAILMSG(INFO, ("Stopping message processor"));
-			m_messenger.StopMsgProcessor();
-		}
-	}
 }
 
 void CController::NotifyUnitInitialized( const UInt32& unitId, const std::string& processQueue, const std::string& unitVersion)
@@ -134,25 +114,11 @@ void CController::NotifyUnitInitialized( const UInt32& unitId, const std::string
 void CController::NotifyUnitHeartbeat(	const UInt32 unitId, const Controller::tProcessStatus& status )
 {
 	m_processManager.NotifyUnitHeartbeat(	unitId, status );
-
-	if ( ePendingShutdown == m_deviceState )
-	{
-		ShutdownIfReady();
-	} 
 }
 
 
 void CController::NotifyShutdownRequest()
 {
-	RETAILMSG(INFO, ("Received shutdown request"));
-	if ( eOperation == m_deviceState )
-	{
-		m_deviceState = ePendingShutdown;
-		m_controllerStub.BroadcastPendingShutdown();
-		RETAILMSG(INFO, ("PendingShutdown procedure started"));
-		GetTimerManager().StartTimer(m_pendingShutdownTimerId);
-		ShutdownIfReady();	
-	}
 }
 
 void CController::NotifyRestartRequest()
@@ -161,18 +127,6 @@ void CController::NotifyRestartRequest()
 
 void CController::ShutdownIfReady()
 {
-	if ( !m_processManager.IsBusy() )
-	{
-		RETAILMSG(INFO, ("ProcessManager is iddle - immediate shutdown"));
-		m_deviceState = eShutdown;
-		m_processManager.SwitchOffProcessHandlers();
-		m_controllerStub.BroadcastShutdown();
-		GetTimerManager().StartTimer(m_deviceShutdownTimerId);
-	}
-	else
-	{
-		RETAILMSG(INFO, ("ProcessManager is busy - not ready for shutdown"));
-	}
 }
 
 }

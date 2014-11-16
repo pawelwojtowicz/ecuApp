@@ -15,6 +15,7 @@
 #include "ControllerInterface/IControllerServices.h"
 #include "CWatchdogManager.h"
 #include "CProcessManager.h"
+#include "CSessionManager.h"
 
 namespace Controller
 {
@@ -70,13 +71,12 @@ private:
 	Runtime::CMessage m_timerMessage;
 
 	CControllerStub m_controllerStub;
+	
+	CSessionManager m_sessionManager;
 
 	CWatchdogManager m_watchdogManager;
 
 	CProcessManager m_processManager;
-
-	Int32 m_pendingShutdownTimerId;
-	Int32 m_deviceShutdownTimerId;
 };
 
 }

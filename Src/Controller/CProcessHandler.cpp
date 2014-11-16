@@ -10,15 +10,13 @@
 
 namespace Controller
 {
-CProcessHandler::CProcessHandler( const std::string& processName,
-																	const UInt32& processID, 
+CProcessHandler::CProcessHandler( const UInt32& processID, 
 																	const std::string& executableName,
 																	const UInt32& heartbeatPeriod,
 																	const UInt32& debugZoneSetting )
-: UCL::CThread( processName )
+: UCL::CThread( executableName )
 , m_processID(processID)
 , m_executableFileName(executableName)
-, m_processIDString()
 , m_heartbeatPeriodString()
 , m_debugZoneSettingString()
 , m_processId(0)
