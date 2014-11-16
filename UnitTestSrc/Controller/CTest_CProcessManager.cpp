@@ -12,7 +12,7 @@ using ::testing::Return;
 using ::testing::EndsWith;
 using ::testing::NotNull;
 using ::testing::InSequence;
-
+using ::testing::_;
 using namespace Controller;
 
 TEST(CProcessManager, InitialEnvironmentTest)
@@ -184,4 +184,45 @@ TEST_F( CProcessManager_Test , NotifySessionState_Init3 )
 	EXPECT_CALL(processControlMock, StartProcess(1)).Times(0);
 
 	ASSERT_TRUE(!sessionStateListener.NotifySessionState(eSessionState_Init3));
+}
+
+TEST_F(CProcessManager_Test , HeartbeatOnTheProcessMissing )
+{
+	Int32 timestamp(10000);
+	Runtime::ITimerListener& timerListener(processManager);
+	EXPECT_CALL(timerManagerMock,GetCurrentTime()).Times(7).WillOnce(Return(timestamp)).WillOnce(Return(timestamp)).WillOnce(Return(timestamp)).WillOnce(Return(timestamp)).WillOnce(Return(timestamp+2000)).WillOnce(Return(timestamp+4000)).WillOnce(Return(timestamp+6000));
+	EXPECT_CALL(sessionManagerMock, ReportItemState( SessionItemID, true )).Times(4);
+
+	EXPECT_CALL(processControlMock, TerminateProcess(2)).Times(1);
+	
+	processManager.NotifyUnitHeartbeat(1,Controller::eStatus_Busy);
+	processManager.NotifyUnitHeartbeat(2,Controller::eStatus_Busy);
+	processManager.NotifyUnitHeartbeat(3,Controller::eStatus_Busy);
+	processManager.NotifyUnitHeartbeat(4,Controller::eStatus_Busy);
+
+	
+	timerListener.NotifyTimer(ProcessMonitorTimerID);
+	timerListener.NotifyTimer(ProcessMonitorTimerID);
+	timerListener.NotifyTimer(ProcessMonitorTimerID);
+}
+
+
+TEST_F(CProcessManager_Test , ProcessBusyIddle )
+{
+	Int32 timestamp(10000);
+	
+	Runtime::ITimerListener& timerListener(processManager);
+	EXPECT_CALL(timerManagerMock,GetCurrentTime()).Times(8).WillRepeatedly(Return(timestamp));
+	EXPECT_CALL(processControlMock, TerminateProcess(_)).Times(0);
+	EXPECT_CALL(sessionManagerMock, ReportItemState( SessionItemID, true )).Times(7);
+	EXPECT_CALL(sessionManagerMock, ReportItemState( SessionItemID, false )).Times(1);
+	
+	processManager.NotifyUnitHeartbeat(1,Controller::eStatus_Busy);
+	processManager.NotifyUnitHeartbeat(2,Controller::eStatus_Busy);
+	processManager.NotifyUnitHeartbeat(3,Controller::eStatus_Busy);
+	processManager.NotifyUnitHeartbeat(4,Controller::eStatus_Busy);
+	processManager.NotifyUnitHeartbeat(1,Controller::eStatus_Iddle);
+	processManager.NotifyUnitHeartbeat(2,Controller::eStatus_Iddle);
+	processManager.NotifyUnitHeartbeat(3,Controller::eStatus_Iddle);
+	processManager.NotifyUnitHeartbeat(4,Controller::eStatus_Iddle);
 }

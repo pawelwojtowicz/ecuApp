@@ -183,7 +183,6 @@ bool CProcessManager::CheckProcessManagerState()
 		}
 	}
 	return false;
-
 }
 
 }

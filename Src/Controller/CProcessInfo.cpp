@@ -3,6 +3,8 @@
 #include <UCL/SystemEnvironment.h>
 #include <Logger/CLogManager.h>
 
+#include <stdio.h>
+
 
 namespace Controller
 {
@@ -110,7 +112,7 @@ void CProcessInfo::UpdateHeartbeat(const UInt32 currentTickCount )
 
 bool CProcessInfo::HeartbeatTimeoutExpired(const UInt32 currentTickCount)
 {
-	if ( m_nextDeadlineForHeartbeat > currentTickCount )
+	if ( m_nextDeadlineForHeartbeat >= currentTickCount )
 	{
 		return false;
 	}
