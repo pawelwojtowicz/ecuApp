@@ -52,6 +52,10 @@ private:
 	
 	/** Runtime::ITimerListener implementation */
 	virtual void NotifyTimer( const Int32& timerId );
+	
+private:
+	/** returns aggregated status of all controlled processes */
+	bool CheckProcessManagerState();
 
 private:
 	CProcessManager(const CProcessManager&);

@@ -155,3 +155,33 @@ TEST_F( CProcessManager_Test , ShortNameList4Logger )
 	EXPECT_EQ(runtimeShortnameList[3], std::string("BKD") );
 	EXPECT_EQ(runtimeShortnameList[4], std::string("TMA") );
 }
+
+
+TEST_F( CProcessManager_Test , NotifySessionState_Init1 )
+{
+	ISessionStateListener& sessionStateListener(processManager);
+	
+	EXPECT_CALL(processControlMock, StartProcess(1)).Times(1);
+
+	ASSERT_TRUE(sessionStateListener.NotifySessionState(eSessionState_Init1));
+}
+
+TEST_F( CProcessManager_Test , NotifySessionState_Init2 )
+{
+	ISessionStateListener& sessionStateListener(processManager);
+	
+	EXPECT_CALL(processControlMock, StartProcess(2)).Times(1);
+	EXPECT_CALL(processControlMock, StartProcess(3)).Times(1);
+	EXPECT_CALL(processControlMock, StartProcess(4)).Times(1);
+
+	ASSERT_TRUE(sessionStateListener.NotifySessionState(eSessionState_Init2));
+}
+
+TEST_F( CProcessManager_Test , NotifySessionState_Init3 )
+{
+	ISessionStateListener& sessionStateListener(processManager);
+	
+	EXPECT_CALL(processControlMock, StartProcess(1)).Times(0);
+
+	ASSERT_TRUE(!sessionStateListener.NotifySessionState(eSessionState_Init3));
+}

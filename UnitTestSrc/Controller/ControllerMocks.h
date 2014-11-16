@@ -26,6 +26,10 @@ public:
 	
 	// Stops the timer, given by the Id	
 	MOCK_METHOD1(StopTimer, bool(const Int32 timerId) );
+	
+	// Gets the current tickout of the system
+	MOCK_METHOD0(GetCurrentTime, const UInt32());
+
 };
 
 class SessionStateListenerMock: public Controller::ISessionStateListener

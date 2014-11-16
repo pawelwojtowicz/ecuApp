@@ -24,7 +24,7 @@
 		</CNode>
 		<CNode Name="Process003">
 			<Parameter Name="CommandLine" Type="String">bukaDziont</Parameter>
-			<Parameter Name="StartupGroup" Type="UInt8">3</Parameter>
+			<Parameter Name="StartupGroup" Type="UInt8">2</Parameter>
 			<Parameter Name="ShutdownGroup" Type="UInt8">1</Parameter>
 			<Parameter Name="HeartbeatPeriod" Type="UInt32">15</Parameter>
 			<Parameter Name="Shortname" Type="String">BKD</Parameter>
@@ -39,7 +39,7 @@
 		</CNode>
 		<CNode Name="Process004">
 			<Parameter Name="CommandLine" Type="String">tetraMoja</Parameter>
-			<Parameter Name="StartupGroup" Type="UInt8">3</Parameter>
+			<Parameter Name="StartupGroup" Type="UInt8">2</Parameter>
 			<Parameter Name="ShutdownGroup" Type="UInt8">1</Parameter>
 			<Parameter Name="HeartbeatPeriod" Type="UInt32">20</Parameter>
 			<Parameter Name="Shortname" Type="String">TMA</Parameter>

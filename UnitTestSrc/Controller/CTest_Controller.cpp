@@ -35,7 +35,7 @@ TEST( CProcessInfo ,ConfigParsing )
 	
 	EXPECT_EQ( pProcessInfo->GetShortName(), "TST");
 	
-	EXPECT_EQ( pProcessInfo->GetStartupGroup(), 6U );
+	EXPECT_EQ( pProcessInfo->GetStartupGroup(), eSessionState_Init2 );
 	
 	EXPECT_EQ( pProcessInfo->GetShutdownGroup(), 3U );
 	

@@ -21,17 +21,33 @@ CProcessInfo::CProcessInfo(	const UInt32& unitId,
 , m_executableFileName()
 , m_debugZoneSettings(defaultDebugZones)
 , m_shortName()
-, m_startupGroup(0)
+, m_startupGroup(eSessionState_Iddle)
 , m_shutdownGroup(0)
 , m_hearbeatTimeout(5)
-, m_lastHeartbeat(0)
+, m_nextDeadlineForHeartbeat(0)
 , m_queueName()
 , m_versionInformation()
+, m_unitState(eStatus_Stopped)
 {
 	m_processName = pConfigNode->GetConfigNodeName();
 	std::string executableFileName = pConfigNode->GetParameter(sCfg_ExecutableName)->GetString(std::string());
 	m_executableFileName = UCL::SystemEnvironment::ResolvePath(UCL::SystemEnvironment::Dir_App, executableFileName);
-	m_startupGroup = pConfigNode->GetParameter(sCfg_StartupGroup)->GetUInt8(0);
+	UInt8 uiStartupGroup = pConfigNode->GetParameter(sCfg_StartupGroup)->GetUInt8(0);
+	switch(uiStartupGroup)
+	{
+		case 1:
+		{
+			m_startupGroup = eSessionState_Init1;
+		};break;
+		case 2:
+		{
+			m_startupGroup = eSessionState_Init2;
+		};break;
+		default:
+		{
+			m_startupGroup = eSessionState_Init3;
+		};
+	}
 	m_shutdownGroup = pConfigNode->GetParameter(sCfg_ShutdownGroup)->GetUInt8(0);
 	m_hearbeatTimeout = pConfigNode->GetParameter(sCfg_HeartbeatPeriod)->GetUInt32(m_hearbeatTimeout);
 	m_shortName	= pConfigNode->GetParameter(cCfg_ProcessShortname)->GetString("tmp");
@@ -67,7 +83,7 @@ const std::string& CProcessInfo::GetShortName() const
 	return m_shortName;
 }
 
-const UInt8 CProcessInfo::GetStartupGroup() const
+const tSessionState CProcessInfo::GetStartupGroup() const
 {
 	return m_startupGroup;
 }
@@ -85,6 +101,20 @@ const UInt32 CProcessInfo::GetHeartbeatTimeout() const
 const std::string& CProcessInfo::GetProcessName() const
 {
 	return m_processName;
+}
+
+void CProcessInfo::UpdateHeartbeat(const UInt32 currentTickCount )
+{
+	m_nextDeadlineForHeartbeat = currentTickCount + m_hearbeatTimeout*1000;
+}
+
+bool CProcessInfo::HeartbeatTimeoutExpired(const UInt32 currentTickCount)
+{
+	if ( m_nextDeadlineForHeartbeat > currentTickCount )
+	{
+		return false;
+	}
+	return true;
 }
 
 }

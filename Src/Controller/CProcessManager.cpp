@@ -55,7 +55,7 @@ bool CProcessManager::Initialize( const Configuration::CConfigNode* configNode,
 			if (m_processControl->AddProcessController( unitId, 
 																									pProcessInfo->GetExecutableFileName(),
 																									pProcessInfo->GetHeartbeatTimeout(),
-																									defaultDebugLevelSettings))
+																									pProcessInfo->GetDebugZoneSettings()))
 			{			
 				m_processList.insert(tProcessInfoMap::value_type( unitId , pProcessInfo ));
 				// at least one process is configured
@@ -82,24 +82,85 @@ void CProcessManager::Shutdown()
 
 bool CProcessManager::NotifySessionState(const tSessionState sessionState)
 {
-	return true;
+	switch( sessionState )
+	{
+	case eSessionState_Init1:
+	case eSessionState_Init2:
+	case eSessionState_Init3:
+	{
+		for(	tProcessIterator processIterator = m_processList.begin(); 
+					processIterator != m_processList.end() ; 
+					++processIterator)
+		{
+			if ( sessionState == processIterator->second->GetStartupGroup() )
+			{
+				/** start the process */
+				m_processControl->StartProcess(processIterator->second->GetProcessID());
+				
+				/** update the internal CProcessInfo structure, with the busy state*/
+				processIterator->second->SetUnitState(eStatus_Busy);
+			}
+		}
+	};break;
+	case eSessionState_Running:
+	{
+		m_rTimerManager.StartTimer( m_processMonitorTimerId );
+	};break;
+	case eSessionState_PendingShutdown:
+	{
+	};break;
+	case eSessionState_Shutdown:
+	{
+	};break;
+	default:;
+	}
+	
+	return CheckProcessManagerState();
 }
 
 void CProcessManager::NotifyTimer( const Int32& timerId )
 {
 	if ( timerId == m_processMonitorTimerId )
 	{
-
+		UInt32 currentTickCount(m_rTimerManager.GetCurrentTime());
+		for (tProcessIterator pIter = m_processList.begin() ; m_processList.end() != pIter ; ++pIter)
+		{
+			if ( pIter->second->HeartbeatTimeoutExpired(currentTickCount))
+			{
+				m_processControl->TerminateProcess( pIter->second->GetProcessID());
+			}
+		}
 	}
 }
 
-void CProcessManager::NotifyUnitInitialized(	const UInt32& unitId, const std::string& processQueue, 
-															const std::string& unitVersion)
+void CProcessManager::NotifyUnitInitialized(	const UInt32& unitId, 
+																							const std::string& processQueue, 
+																							const std::string& unitVersion)
 {
+	UInt32 currentTickCount(m_rTimerManager.GetCurrentTime());
+	tProcessIterator pIter = m_processList.find(unitId);
+	
+	if ( m_processList.end() != pIter )
+	{
+		pIter->second->SetUnitState( eStatus_Iddle );
+		pIter->second->SetVersionInfo(unitVersion);
+		pIter->second->SetQueueName(processQueue);
+		pIter->second->UpdateHeartbeat(currentTickCount);
+		m_sessionManager.ReportItemState(m_sessionItemId,CheckProcessManagerState());
+	}
 }
 
 void CProcessManager::NotifyUnitHeartbeat(	const UInt32 unitId, const tProcessStatus& status )
 {
+	UInt32 currentTickCount(m_rTimerManager.GetCurrentTime());
+	tProcessIterator pIter = m_processList.find(unitId);
+	
+	if ( m_processList.end() != pIter )
+	{
+		pIter->second->SetUnitState( status );
+		pIter->second->UpdateHeartbeat(currentTickCount);
+		m_sessionManager.ReportItemState(m_sessionItemId,CheckProcessManagerState());
+	}	
 }
 
 void CProcessManager::GetRuntimeUnitShortnameList( tStringVector& runtimeShortnameList)
@@ -110,8 +171,19 @@ void CProcessManager::GetRuntimeUnitShortnameList( tStringVector& runtimeShortna
 	{
 		runtimeShortnameList[pIter->first] = pIter->second->GetShortName() ;
 	}
-
 }
 
+bool CProcessManager::CheckProcessManagerState()
+{
+	for (tProcessIterator pIter = m_processList.begin() ; m_processList.end() != pIter ; ++pIter)
+	{
+		if ( eStatus_Busy == pIter->second->GetUnitState())
+		{
+			return true;
+		}
+	}
+	return false;
+
+}
 
 }

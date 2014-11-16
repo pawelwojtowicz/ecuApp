@@ -27,6 +27,8 @@ public:
 	// Stops the timer, given by the Id	
 	virtual bool StopTimer(const Int32 timerId) = 0;
 	
+	virtual const UInt32 GetCurrentTime() = 0;
+	
 private:
 	ITimerManager(const ITimerManager&);
 	ITimerManager& operator=(const ITimerManager&);

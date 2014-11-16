@@ -46,7 +46,7 @@ private:
 	// prio every 1s.
 	virtual void HandleMessage( CMessage& message );
 
-	const UInt32 GetCurrentTime();
+	virtual const UInt32 GetCurrentTime();
 
 private:
 	CTimerManager(const CTimerManager&);
