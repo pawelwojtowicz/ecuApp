@@ -110,6 +110,17 @@ bool CControllerStub::BroadcastShutdown()
 	return GetMessenger().PostMessage(shutdownMsg);
 }
 
+bool CControllerStub::SendProcessStatus(const UInt32 processId, const tProcessStatus& status )
+{
+	UInt8 intStatus(static_cast<UInt8>(status));
+	Runtime::CMessage initDoneMsg(256);
+	initDoneMsg.SetMessageId(msgId_Controller_Heartbeat);
+	initDoneMsg.SetMsgPrio(255);
+	initDoneMsg.SetTargetId(OWN_QUEUE_ID);
+	initDoneMsg.SetValue(processId);
+	initDoneMsg.SetValue(intStatus);
 
+	return GetMessenger().PostMessage(initDoneMsg);
+}
 
 }

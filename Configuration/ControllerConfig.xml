@@ -24,19 +24,19 @@
 			<Parameter Name="Detail2" Type="bool">false</Parameter>
 		</CNode>
 	</CNode>
+	<CNode Name="SessionManagment">
+		<Parameter Name="Init1Timeout" Type="UInt32">10</Parameter>
+		<Parameter Name="Init2Timeout" Type="UInt32">10</Parameter>
+		<Parameter Name="Init3Timeout" Type="UInt32">10</Parameter>
+		<Parameter Name="PendingShutdownTimeout" Type="UInt32">200</Parameter>
+		<Parameter Name="ShutdownTimeout" Type="UInt32">100</Parameter>
+	</CNode>
 	<CNode Name="Watchdog">
 		<Parameter Name="DeviceId" Type="String">uotchDogh</Parameter>
 		<Parameter Name="WatchdogRefreshPeriod" Type="UInt32">10</Parameter>
 		<Parameter Name="MaxWatchodCounter" Type="UInt32">3</Parameter>
 	</CNode>
-	<CNode Name="SessionManagment">
-		<Parameter Name="Init1Timeout" Type="UInt32">10</Parameter>
-		<Parameter Name="Init2Timeout" Type="UInt32">10</Parameter>
-		<Parameter Name="Init3Timeout" Type="UInt32">10</Parameter>
-		<Parameter Name="PendingShutdownTimeout" Type="UInt32">10</Parameter>
-		<Parameter Name="ShutdownTimeout" Type="UInt32">10</Parameter>
-	</CNode>
-	<CNode Name="ProcessManager">
+	<CNode Name="Processes">
 		<CNode Name="Sample">
 			<Parameter Name="CommandLine" Type="String">exampleApp</Parameter>
 			<Parameter Name="StartupGroup" Type="UInt8">1</Parameter>

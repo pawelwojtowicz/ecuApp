@@ -1,12 +1,15 @@
 #include "CProcessControl.h"
 #include "CProcessHandler.h"
+#include "ControllerInterface/IProcessStatusReporter.h"
 
 namespace Controller
 {
 
-CProcessControl::CProcessControl()
+CProcessControl::CProcessControl(IProcessStatusReporter& rProcessStatusReporter)
+: m_rProcessStatusReporter(rProcessStatusReporter)
 {
 }
+
 CProcessControl::~CProcessControl()
 {
 }
@@ -20,7 +23,8 @@ bool CProcessControl::AddProcessController(	UInt32 processID,
 	CProcessHandler* pProcessHandler = new CProcessHandler(processID, 
 																												executableName,
 																												heartbeatPeriod,
-																												debugZoneSetting);
+																												debugZoneSetting,
+																												m_rProcessStatusReporter);
 																												
 	if ( 0 != pProcessHandler )
 	{

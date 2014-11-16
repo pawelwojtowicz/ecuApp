@@ -1,6 +1,7 @@
 #include "CProcessHandler.h"
 #include <Logger/CLogManager.h>
 #include <Logger/Logger.h>
+#include <ControllerInterface/IProcessStatusReporter.h>
 #include <sys/wait.h>
 #include <unistd.h>
 #include <stdio.h>
@@ -13,13 +14,16 @@ namespace Controller
 CProcessHandler::CProcessHandler( const UInt32& processID, 
 																	const std::string& executableName,
 																	const UInt32& heartbeatPeriod,
-																	const UInt32& debugZoneSetting )
+																	const UInt32& debugZoneSetting,
+																	IProcessStatusReporter& rProcessStatusReporter
+ )
 : UCL::CThread( executableName )
 , m_processID(processID)
 , m_executableFileName(executableName)
 , m_heartbeatPeriodString()
 , m_debugZoneSettingString()
 , m_processId(0)
+, m_rProcessStatusReporter(rProcessStatusReporter)
 {
 	char helperBuffer[20];
 	
@@ -62,6 +66,7 @@ void CProcessHandler::Run()
 		m_processId = 0;
 		RETAILMSG(INFO,("Process [%s] is finished - return Value [%d]",GetThreadName().c_str(), returnValue));
 		sleep(10);
+		m_rProcessStatusReporter.SendProcessStatus(m_processID, eStatus_Iddle);
 	}
 }
 

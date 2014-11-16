@@ -220,7 +220,7 @@ tSessionState CSessionManager::EvaluateNextState( const tSessionEvents event )
 	case eSessionState_Shutdown:
 		if ( eEvent_ShutdownRequest != event )
 		{
-			newState = eSessionState_Iddle;
+			newState = eSessionState_PowerOff;
 		}
 
 	default:;

@@ -4,13 +4,14 @@
 namespace Controller
 {
 class CProcessHandler;
+class IProcessStatusReporter;
 
 class CProcessControl:public IProcessControl
 {
 	typedef std::map<UInt32, CProcessHandler*> tProcessHandlerMap;
 	typedef tProcessHandlerMap::iterator tProcessHandlerIterator;
 public:
-	CProcessControl();
+	CProcessControl(IProcessStatusReporter& rProcessStatusReporter);
 	virtual ~CProcessControl();
 
 
@@ -26,6 +27,8 @@ private:
 
 private:
 	tProcessHandlerMap m_processHandlers;
+	
+	IProcessStatusReporter& m_rProcessStatusReporter;
 };
 }
 

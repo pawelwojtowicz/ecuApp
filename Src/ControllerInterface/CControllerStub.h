@@ -2,6 +2,7 @@
 #define CONTROLLER_CCONTROLLERSTUB_H
 
 #include <Runtime/CStubBase.h> 
+#include "IProcessStatusReporter.h"
 
 namespace Runtime
 {
@@ -14,6 +15,7 @@ namespace Controller
 class IControllerServices;
 
 class CControllerStub: public Runtime::CStubBase
+										 , public IProcessStatusReporter
 {
 public:
 	CControllerStub( Runtime::IMessenger& rMessenger );
@@ -26,6 +28,9 @@ public:
 
 	virtual bool BroadcastShutdown();
 
+private: 	
+	//Implementation of IProcessStatusReporter
+	virtual bool SendProcessStatus(const UInt32 processId, const tProcessStatus& status );
 
 private:
 	virtual void HandleMessage(Runtime::CMessage& rMessage);

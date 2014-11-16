@@ -6,6 +6,7 @@
 #include "ISessionManager.h"
 #include "IProcessControl.h"
 #include "CProcessHandler.h"
+#include "CProcessControl.h"
 #include <stdio.h>
 
 namespace Controller
@@ -13,6 +14,7 @@ namespace Controller
 
 CProcessManager::CProcessManager( Runtime::ITimerManager& rTimerManager, 
 																	ISessionManager& rSessionManager,
+																	IProcessStatusReporter& rProcessStatusReporter,
 																	IProcessControl* pProcessControl )
 :	m_sessionManager(rSessionManager)
 , m_rTimerManager(rTimerManager)
@@ -20,7 +22,13 @@ CProcessManager::CProcessManager( Runtime::ITimerManager& rTimerManager,
 , m_processMonitorTimerId(-1)
 , m_processMonitorInterval(5)
 , m_sessionItemId(-1)
+, m_processControlInjected(true)
 {
+	if (0 == pProcessControl)
+	{
+		m_processControl = new CProcessControl(rProcessStatusReporter);
+		m_processControlInjected = false;
+	}
 }
 
 CProcessManager::~CProcessManager()
@@ -28,6 +36,11 @@ CProcessManager::~CProcessManager()
 	for (tProcessIterator pIter = m_processList.begin() ; m_processList.end() != pIter ; ++pIter)
 	{
 		delete pIter->second;
+	}
+	
+	if ( !m_processControlInjected &&	0 !=	m_processControl )
+	{
+		delete m_processControl;
 	}
 }
 
@@ -115,6 +128,7 @@ bool CProcessManager::NotifySessionState(const tSessionState sessionState)
 	};break;
 	case eSessionState_Shutdown:
 	{
+		return true;
 	};break;
 	default:;
 	}
@@ -150,6 +164,7 @@ void CProcessManager::NotifyUnitInitialized(	const UInt32& unitId,
 		pIter->second->SetVersionInfo(unitVersion);
 		pIter->second->SetQueueName(processQueue);
 		pIter->second->UpdateHeartbeat(currentTickCount);
+		RETAILMSG(INFO,("Process [%s] reported initDone unitVersion=[%s]", pIter->second->GetProcessName().c_str(), pIter->second->GetVersionInfo().c_str() ));
 		m_sessionManager.ReportItemState(m_sessionItemId,CheckProcessManagerState());
 	}
 }

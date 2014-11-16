@@ -8,6 +8,7 @@
 
 namespace Controller
 {
+class IProcessStatusReporter;
 
 class CProcessHandler: public UCL::CThread
 {
@@ -15,7 +16,9 @@ public:
 	CProcessHandler(	const UInt32& processID, 
 										const std::string& executableName,
 										const UInt32& heartbeatPeriod,
-										const UInt32& debugZoneSetting  );
+										const UInt32& debugZoneSetting,
+										IProcessStatusReporter& rProcessStatusReporter
+  );
 	virtual ~CProcessHandler();
 	
 	void TerminateProcess();
@@ -41,6 +44,8 @@ private:
 	std::string m_debugZoneSettingString;
 	
 	pid_t m_processId;
+	
+	IProcessStatusReporter& m_rProcessStatusReporter;
 };
 }
 

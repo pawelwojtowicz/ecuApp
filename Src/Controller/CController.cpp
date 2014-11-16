@@ -6,8 +6,9 @@
 #include <Configuration/CConfiguration.h>
 
 static const char sCfg_WatchdogConfig[] = {"Watchdog"};
-static const char sCfg_ProcessManager[] = {"ProcessManager"};
+static const char sCfg_ProcessManager[] = {"Processes"};
 static const char sCfg_LoggerConfig[]		= {"Logger"};
+static const char sCfg_SessionManagerCfg[] = {"SessionManagment"};
 
 Controller::CController gs;
 
@@ -19,11 +20,12 @@ CController::CController()
 , m_loggerManager()
 , m_loggingAgent(s_ControllerQueueName)
 , m_messenger()
+, m_timerManager()
 , m_timerMessage(0)
 , m_controllerStub( m_messenger )
 , m_sessionManager( m_timerManager )
 , m_watchdogManager(m_timerManager)
-, m_processManager( m_timerManager, m_sessionManager )
+, m_processManager( m_timerManager, m_sessionManager, m_controllerStub )
 {
 	m_timerMessage.SetMessageId(msgId_Runtime_Timer_1000);
 	m_timerMessage.SetMsgPrio(255);
@@ -38,6 +40,7 @@ void CController::Initialize()
 
 	if (pConfig != 0 )
 	{
+		// do the logger initialization first
 		const Configuration::CConfigNode* pLoggerConfig = pConfig->GetConfigNode(sCfg_LoggerConfig);
 		m_loggerManager.Initialize(pLoggerConfig);
 		m_loggingAgent.Initialize(0);// okomentowac to
@@ -64,6 +67,18 @@ void CController::Initialize()
 		else
 		{
 			RETAILMSG(ERROR, ("No configuration for Process Controller available. Critical failure"));
+		}
+		
+		const Configuration::CConfigNode* pSessionMngmtCfg = pConfig->GetConfigNode(sCfg_SessionManagerCfg);
+		if ( 0!= pSessionMngmtCfg )
+		{
+			m_sessionManager.Initialize(pSessionMngmtCfg);
+			ISessionManager& sessionManagerRegisterer(m_sessionManager);
+			sessionManagerRegisterer.RegisterSessionListener(this);
+		}
+		else
+		{
+			RETAILMSG(ERROR, ("No configuration for SessionManager available. "));
 		}
 	}
 	else
@@ -119,6 +134,7 @@ void CController::NotifyUnitHeartbeat(	const UInt32 unitId, const Controller::tP
 
 void CController::NotifyShutdownRequest()
 {
+	m_sessionManager.ShutdownRequest();
 }
 
 void CController::NotifyRestartRequest()
@@ -128,5 +144,32 @@ void CController::NotifyRestartRequest()
 void CController::ShutdownIfReady()
 {
 }
+
+bool CController::NotifySessionState(const tSessionState sessionState)
+{
+	switch( sessionState )
+	{
+	case eSessionState_PendingShutdown:
+		{
+			RETAILMSG(INFO, ("Broadcast Pending Shutdown Message."))			
+			m_controllerStub.BroadcastPendingShutdown();
+		};break;
+
+	case eSessionState_Shutdown:
+		{
+			RETAILMSG(INFO, ("Broadcast Shutdown Message."))			
+			m_controllerStub.BroadcastShutdown();
+		};break;
+	case eSessionState_PowerOff:
+		{
+			RETAILMSG(INFO, ("Stopping message processor."))
+			m_messenger.StopMsgProcessor();
+		};break;
+	default:;
+	}
+
+	return false;
+}
+
 
 }

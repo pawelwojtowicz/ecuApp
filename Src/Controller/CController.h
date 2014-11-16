@@ -16,11 +16,13 @@
 #include "CWatchdogManager.h"
 #include "CProcessManager.h"
 #include "CSessionManager.h"
+#include "ISessionStateListener.h"
 
 namespace Controller
 {
 
-class CController:	public IControllerServices, 
+class CController:	public IControllerServices,
+										public ISessionStateListener,
 										public Runtime::CExecutable, 
 										public Runtime::ITimerListener
 {
@@ -44,6 +46,10 @@ private:
 	// implementation of Controller::IControllerServices
 	virtual void NotifyUnitInitialized(	const UInt32& unitId, const std::string& processQueue, const std::string& unitVersion);
 	virtual void NotifyUnitHeartbeat(	const UInt32 unitId, const Controller::tProcessStatus& status );
+	
+	// implementation of Controller::ISessionStateListener
+	virtual bool NotifySessionState(const tSessionState sessionState);
+
 
 
 	virtual void NotifyShutdownRequest();

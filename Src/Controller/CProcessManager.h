@@ -18,6 +18,7 @@ namespace Controller
 class CProcessInfo;
 class ISessionManager;
 class IProcessControl;
+class IProcessStatusReporter;
 
 class CProcessManager : public Runtime::ITimerListener
 											, public Controller::ISessionStateListener
@@ -28,6 +29,7 @@ class CProcessManager : public Runtime::ITimerListener
 public:
 	CProcessManager(Runtime::ITimerManager& rTimerManager, 
 									ISessionManager& rSessionManager,
+									IProcessStatusReporter& rProcessStatusReporter,
 									IProcessControl* pProcessControl = 0 );
 									
 	virtual ~CProcessManager();
@@ -82,6 +84,9 @@ private:
 	/** the Id, that will be assigned, when the process manager registers for the session
 		* notifications. Used for reporting to CSessionManager*/
 	Int32 m_sessionItemId;
+	
+	/** the flag indicates whether the PC was injected. We won't clean it up, if so*/
+	bool m_processControlInjected;
 };
 }
 
