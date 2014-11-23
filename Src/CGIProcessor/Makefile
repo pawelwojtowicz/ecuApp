@@ -3,7 +3,7 @@ OBJ= CCGIProcessor.o CEnvironment.o CCommandFactory.o CControllerCommand.o CProx
 
 include ../../DevEnv/executableSettings
 
-LFLAGS+= -lControllerInterface -lRuntime -lUCL -lLogger
+LFLAGS+= -lControllerInterface -lRuntime -lUCL -lLogger -lJSON
 
 CCGIProcessor.o	: CCGIProcessor.cpp CCGIProcessor.h
 CEnvironment.o  : CEnvironment.cpp CEnvironment.h
