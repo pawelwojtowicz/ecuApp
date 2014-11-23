@@ -1,5 +1,5 @@
 #include "CPublicProcessInfo.h"
-
+#include <stdio.h>
 namespace Controller
 {
 
@@ -16,7 +16,7 @@ bool CPublicProcessInfo::ToByteStream()
 	UInt32 itemCount(m_processInfos.size());
 
 	bool retVal( SetValue(itemCount));
-	for ( UInt32 itemNo= 0 ; ( itemNo < itemCount ) && retVal ; ++itemCount )
+	for ( UInt32 itemNo= 0 ; ( itemNo < itemCount ) && retVal ; ++itemNo )
 	{
 		retVal &=	SetValue(m_processInfos[itemNo].ProcessID);
 		retVal &=	SetValue(m_processInfos[itemNo].ProcessName);
@@ -31,7 +31,7 @@ bool CPublicProcessInfo::FromByteStream()
 	UInt32 itemCount(0);
 
 	bool retVal( GetValue(itemCount));
-	for ( UInt32 itemNo= 0 ; ( itemNo < itemCount ) && retVal ; ++itemCount )
+	for ( UInt32 itemNo= 0 ; ( itemNo < itemCount ) && retVal ; ++itemNo )
 	{
 		ProcessInfoStruct infoStruct;
 		retVal &=	GetValue(infoStruct.ProcessID);
