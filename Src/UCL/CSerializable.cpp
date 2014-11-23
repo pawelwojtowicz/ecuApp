@@ -175,4 +175,9 @@ bool CSerializable::GetValue(std::string& value)
 	return false;
 }
 
+size_t CSerializable::GetStringSpace( UInt32 stringSize )
+{
+	return ( sizeof(UInt8) + stringSize * sizeof( std::string::value_type ) );
+}
+
 }

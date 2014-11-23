@@ -16,8 +16,10 @@ public:
 	
 	virtual bool ToByteStream() = 0;
 	virtual bool FromByteStream() = 0;
+	virtual size_t GetStorageSize() = 0;
 	
 protected:
+	size_t GetStringSpace( UInt32 stringSize );
 	
 	bool SetValue(const UInt8& value);
 	bool GetValue(UInt8& value);	
