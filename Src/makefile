@@ -8,6 +8,9 @@ libUCL:
 
 libRuntime:
 	$(MAKE) -C Runtime
+	
+libJSON:
+	$(MAKE) -C JSONLib
 
 libControllerInterface:
 	$(MAKE) -C ControllerInterface
@@ -24,7 +27,7 @@ controller:	libControllerInterface libRuntime libConfiguration.so libLogger.so l
 exampleApp:	libControllerInterface libRuntime libConfiguration.so libLogger.so libUCL
 	$(MAKE) -C Example
 
-cgiprocessor: libControllerInterface libRuntime libConfiguration.so libLogger.so libUCL
+cgiprocessor: libControllerInterface libRuntime libConfiguration.so libLogger.so libUCL libJSON
 	$(MAKE) -C CGIProcessor
 
 cleanup:
