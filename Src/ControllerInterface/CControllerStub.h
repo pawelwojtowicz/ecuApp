@@ -3,6 +3,7 @@
 
 #include <Runtime/CStubBase.h> 
 #include "IProcessStatusReporter.h"
+#include <Runtime/CSharedStorage.h>
 
 namespace Runtime
 {
@@ -13,6 +14,7 @@ class CMessage;
 namespace Controller
 {
 class IControllerServices;
+class CPublicProcessInfo;
 
 class CControllerStub: public Runtime::CStubBase
 										 , public IProcessStatusReporter
@@ -23,6 +25,8 @@ public:
 
 	virtual bool Initialize(IControllerServices* pControllerServices);
 	virtual bool Shutdown();
+	
+	virtual bool PublishProcessInfo( CPublicProcessInfo& processInfo);
 
 	virtual bool BroadcastPendingShutdown();
 
@@ -37,6 +41,8 @@ private:
 
 private:
 	IControllerServices* m_pControllerServices;
+	
+	Runtime::CSharedStorage m_sharedStorage;
 };
 
 }

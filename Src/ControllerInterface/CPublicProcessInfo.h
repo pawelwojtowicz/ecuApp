@@ -30,7 +30,6 @@ public:
 	tPublicProcessInfoList& GetProcessInfo() { return m_processInfos;};
 	const tPublicProcessInfoList& GetProcessInfo() const { return m_processInfos;};
 
-private:
  /** Implementation of CSerializable pure virtual functions */
 	virtual bool ToByteStream();
 	virtual bool FromByteStream();

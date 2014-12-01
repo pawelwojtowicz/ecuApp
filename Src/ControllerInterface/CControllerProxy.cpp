@@ -3,12 +3,14 @@
 #include <Runtime/CMessage.h>
 #include "IControllerListener.h"
 #include "ControllerInterfaceConst.h"
+#include "CPublicProcessInfo.h"
 #include <stdio.h>
 
 namespace Controller
 {
 CControllerProxy::CControllerProxy(Runtime::IMessenger& rMessenger)
 : Runtime::CProxyBase(rMessenger, s_ControllerQueueName)
+, m_sharedStorage(s_ControllerStorage, CPublicProcessInfo().GetStorageSize(),true)
 , m_pControllerListener(0)
 {
 }
@@ -20,6 +22,9 @@ CControllerProxy::~CControllerProxy()
 bool CControllerProxy::Initialize(IControllerListener* pListener)
 {
 	bool retVal(CProxyBase::Initialize());
+	
+	retVal &= m_sharedStorage.Initialize();
+
 
 	if ( 0 != pListener )
 	{
@@ -100,4 +105,8 @@ void CControllerProxy::HandleMessage(Runtime::CMessage& rMessage)
 	}
 }
 
+bool CControllerProxy::GetCurrentProcessInfo( CPublicProcessInfo& processInfo)
+{
+	return m_sharedStorage.GetData(processInfo);
+}
 }

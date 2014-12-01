@@ -10,6 +10,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <errno.h>
+#include <UCL/CSerializable.h>
 
 
 namespace Runtime
@@ -36,7 +37,7 @@ bool CSharedStorage::Initialize()
 
 	int flags = m_owner?(O_RDWR|O_CREAT):(O_RDONLY|O_CREAT);
 
-	m_hSharedMemoryHandle = shm_open( m_storageName.c_str(), flags, S_IRUSR | S_IWUSR );
+	m_hSharedMemoryHandle = shm_open( m_storageName.c_str(), flags, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP| S_IROTH | S_IWOTH);
 	if ( m_hSharedMemoryHandle != -1 )
 	{
 		if (ftruncate(m_hSharedMemoryHandle, m_size) != -1 )
@@ -47,8 +48,7 @@ bool CSharedStorage::Initialize()
 
 			if (retVal)
 			{
-				std::string semaphoreName(m_storageName+std::string("Lock"));
-				m_lockHandle = sem_open(semaphoreName.c_str(), O_CREAT , ( S_IRWXO | S_IRWXG | S_IRWXU) , 1 );
+				m_lockHandle = sem_open(m_storageName.c_str(), O_CREAT , ( S_IRWXO | S_IRWXG | S_IRWXU) , 1 );
 				if (SEM_FAILED != m_lockHandle )
 				{
 					retVal = true;
@@ -89,6 +89,24 @@ void CSharedStorage::UnlockStorage()
 	sem_post(m_lockHandle);
 }
 
+bool CSharedStorage::SetData( UCL::CSerializable& serializableData)
+{
+	bool retVal(false);
+	LockStorage();
+	retVal = serializableData.Serialize(m_pMemory,m_size);
+	UnlockStorage();
+	return retVal;
+}
+
+bool  CSharedStorage::GetData( UCL::CSerializable& serializableData)
+{
+	bool retVal(false);
+	LockStorage();
+	retVal = serializableData.Deserialize(m_pMemory,m_size);
+	UnlockStorage();
+	return retVal;
+
+}
 
 
 }

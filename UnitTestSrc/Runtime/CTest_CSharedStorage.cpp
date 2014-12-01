@@ -7,7 +7,7 @@ TEST( CSharedStorage, Initialization )
 {
 	bool initOK(false);
 	
-	Runtime::CSharedStorage storage("tmpFileName", 100, true);
+	Runtime::CSharedStorage storage("tmpFileName", 250, true);
 	
 	initOK = storage.Initialize();
 

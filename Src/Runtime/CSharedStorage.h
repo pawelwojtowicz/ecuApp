@@ -3,6 +3,11 @@
 #include <string>
 #include <semaphore.h>
 
+namespace UCL
+{
+class CSerializable;
+}
+
 namespace Runtime
 {
 
@@ -17,6 +22,9 @@ public:
 	
 	void LockStorage();	
 	void UnlockStorage();
+	
+	bool SetData( UCL::CSerializable& serializableData);
+	bool GetData( UCL::CSerializable& serializableData);
 
 private:
 	std::string m_storageName;

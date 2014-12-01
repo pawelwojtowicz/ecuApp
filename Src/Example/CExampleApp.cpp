@@ -1,5 +1,6 @@
 #include "CExampleApp.h"
 #include <Logger/Logger.h>
+#include <ControllerInterface/CPublicProcessInfo.h>
 
 
 // important - global instance of the new class
@@ -52,7 +53,20 @@ void CExampleApp::NotifyTimer( const Int32& timerId )
   if (timerId == m_timer1Id)
   {
     RETAILMSG(INFO, ("Test timer"));
+    Controller::CPublicProcessInfo processInfo;
+    GetControllerProxy().GetCurrentProcessInfo(processInfo);
     
+    Controller::CPublicProcessInfo::tPublicProcessInfoList list = processInfo.GetProcessInfo();
+    
+    for ( Controller::CPublicProcessInfo::tPublicProcessInfoIter 	iter = list.begin() ; 
+    																															iter != list.end() ; 
+    																															++iter)
+    {
+    	    RETAILMSG(INFO, ("id=[%d] name=[%s] version=[%s] status=[%d]"	, iter->ProcessID
+  	 	    																																, iter->ProcessName.c_str()
+  		    																																, iter->VersionInformation.c_str()
+  		    																																, iter->UnitState));
+    }
   }
   else if ( timerId == m_shutdownTimer )
   {

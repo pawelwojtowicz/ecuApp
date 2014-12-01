@@ -18,7 +18,7 @@ namespace Controller
 class CProcessInfo;
 class ISessionManager;
 class IProcessControl;
-class IProcessStatusReporter;
+class CControllerStub;
 
 class CProcessManager : public Runtime::ITimerListener
 											, public Controller::ISessionStateListener
@@ -29,7 +29,7 @@ class CProcessManager : public Runtime::ITimerListener
 public:
 	CProcessManager(Runtime::ITimerManager& rTimerManager, 
 									ISessionManager& rSessionManager,
-									IProcessStatusReporter& rProcessStatusReporter,
+									CControllerStub& rControllerStub,
 									IProcessControl* pProcessControl = 0 );
 									
 	virtual ~CProcessManager();
@@ -58,6 +58,8 @@ private:
 private:
 	/** returns aggregated status of all controlled processes */
 	bool CheckProcessManagerState();
+	
+	void PublishProcessInfo();
 
 private:
 	CProcessManager(const CProcessManager&);
@@ -68,6 +70,8 @@ private:
 	
 	/** Timers manager */
 	Runtime::ITimerManager& m_rTimerManager;
+	
+	CControllerStub& m_rControllerStub;
 	
 	/** Process */
 	IProcessControl* m_processControl;

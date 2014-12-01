@@ -2,6 +2,8 @@
 #include <Configuration/CConfigNode.h>
 #include <Logger/Logger.h>
 #include <algorithm>
+#include <ControllerInterface/CControllerStub.h>
+#include <ControllerInterface/CPublicProcessInfo.h>
 #include "CProcessInfo.h"
 #include "ISessionManager.h"
 #include "IProcessControl.h"
@@ -14,10 +16,11 @@ namespace Controller
 
 CProcessManager::CProcessManager( Runtime::ITimerManager& rTimerManager, 
 																	ISessionManager& rSessionManager,
-																	IProcessStatusReporter& rProcessStatusReporter,
+																	CControllerStub& rControllerStub,
 																	IProcessControl* pProcessControl )
 :	m_sessionManager(rSessionManager)
 , m_rTimerManager(rTimerManager)
+, m_rControllerStub(rControllerStub)
 , m_processControl(pProcessControl)
 , m_processMonitorTimerId(-1)
 , m_processMonitorInterval(5)
@@ -26,7 +29,7 @@ CProcessManager::CProcessManager( Runtime::ITimerManager& rTimerManager,
 {
 	if (0 == pProcessControl)
 	{
-		m_processControl = new CProcessControl(rProcessStatusReporter);
+		m_processControl = new CProcessControl(m_rControllerStub);
 		m_processControlInjected = false;
 	}
 }
@@ -88,7 +91,6 @@ bool CProcessManager::Initialize( const Configuration::CConfigNode* configNode,
 
 		pProcessNode = configNode->GetNextSubnode();
 	}
-
 
 	return retVal;
 }
@@ -167,6 +169,8 @@ void CProcessManager::NotifyUnitInitialized(	const UInt32& unitId,
 		RETAILMSG(INFO,("Process [%s] reported initDone unitVersion=[%s]", pIter->second->GetProcessName().c_str(), pIter->second->GetVersionInfo().c_str() ));
 		m_sessionManager.ReportItemState(m_sessionItemId,CheckProcessManagerState());
 	}
+	
+	PublishProcessInfo();
 }
 
 void CProcessManager::NotifyUnitHeartbeat(	const UInt32 unitId, const tProcessStatus& status )
@@ -179,7 +183,9 @@ void CProcessManager::NotifyUnitHeartbeat(	const UInt32 unitId, const tProcessSt
 		pIter->second->SetUnitState( status );
 		pIter->second->UpdateHeartbeat(currentTickCount);
 		m_sessionManager.ReportItemState(m_sessionItemId,CheckProcessManagerState());
-	}	
+	}
+	
+	PublishProcessInfo();
 }
 
 void CProcessManager::GetRuntimeUnitShortnameList( tStringVector& runtimeShortnameList)
@@ -203,5 +209,26 @@ bool CProcessManager::CheckProcessManagerState()
 	}
 	return false;
 }
+
+void CProcessManager::PublishProcessInfo()
+{
+	CPublicProcessInfo processInfo;
+	CPublicProcessInfo::tPublicProcessInfoList& processInfoList = processInfo.GetProcessInfo(); 
+	for (tProcessIterator pIter = m_processList.begin() ; 
+																						m_processList.end() != pIter ; 
+																						++pIter)
+	{
+		CPublicProcessInfo::ProcessInfoStruct itemInfo;
+		itemInfo.ProcessID 					= pIter->second->GetProcessID();
+		itemInfo.ProcessName				= pIter->second->GetProcessName();
+		itemInfo.VersionInformation	= pIter->second->GetVersionInfo();
+		itemInfo.UnitState					= pIter->second->GetUnitState();
+		
+		processInfoList.push_back(itemInfo);
+	}
+	
+	m_rControllerStub.PublishProcessInfo(processInfo);
+}
+
 
 }

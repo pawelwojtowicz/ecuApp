@@ -1,14 +1,17 @@
 #include "CControllerStub.h"
 #include "ControllerInterfaceConst.h"
 #include "IControllerServices.h"
+#include "CPublicProcessInfo.h"
 #include <Runtime/CMessenger.h>
 #include <Runtime/CMessage.h>
+#include <UCL/CSerializable.h>
 #include <stdio.h>
 
 namespace Controller
 {
 CControllerStub::CControllerStub(Runtime::IMessenger& rMessenger)
 : Runtime::CStubBase(rMessenger, s_ControllerQueueName)
+, m_sharedStorage(s_ControllerStorage, CPublicProcessInfo().GetStorageSize(),true)
 {
 }
 
@@ -19,6 +22,8 @@ CControllerStub::~CControllerStub()
 bool CControllerStub::Initialize(IControllerServices* pControllerServices)
 {
 	bool retVal(Runtime::CStubBase::Initialize());
+	
+	retVal &= m_sharedStorage.Initialize();
 
 	//attach the services
 	m_pControllerServices = pControllerServices;
@@ -121,6 +126,11 @@ bool CControllerStub::SendProcessStatus(const UInt32 processId, const tProcessSt
 	initDoneMsg.SetValue(intStatus);
 
 	return GetMessenger().PostMessage(initDoneMsg);
+}
+
+bool CControllerStub::PublishProcessInfo( CPublicProcessInfo& processInfo)
+{
+	return m_sharedStorage.SetData(processInfo);
 }
 
 }

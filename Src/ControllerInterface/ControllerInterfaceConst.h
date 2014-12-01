@@ -4,7 +4,8 @@
 
 namespace Controller
 {
-static char s_ControllerQueueName[]={"ControllerQueue"};
+static char s_ControllerQueueName[]	=	{"ControllerQueue"};
+static char s_ControllerStorage[]		= {"ControllerStorage"};
 }
 
 
