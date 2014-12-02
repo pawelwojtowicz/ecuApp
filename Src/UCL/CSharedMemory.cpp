@@ -74,7 +74,10 @@ bool CSharedMemory::Open(const std::string& sharedRegionName, size_t sharedRegio
 
 void CSharedMemory::Close()
 {
+<<<<<<< HEAD
 	munmap(m_pMemory,m_size); 
+=======
+>>>>>>> df1bc0ac83999ce26b84047b05edf7de54c92d9e
 
 	shm_unlink(m_storageName.c_str());
 }
