@@ -1,7 +1,7 @@
 #ifndef UCL_CSHARED_STORAGE_H
 #define UCL_CSHARED_STORAGE_H
-#include <string>
-#include <semaphore.h>
+#include <UCL/CSharedMemory.h>
+#include <UCL/CSemaphore.h>
 
 namespace UCL
 {
@@ -14,30 +14,19 @@ namespace Runtime
 class CSharedStorage
 {
 public:
-	CSharedStorage(const std::string& storageName, const size_t size, const bool owner );
+	CSharedStorage( );
 	virtual ~CSharedStorage();
 
-	bool Initialize();
+	bool Initialize(const std::string& storageName, const size_t size, const bool owner);
 	bool Shutdown();
-	
-	void LockStorage();	
-	void UnlockStorage();
-	
+		
 	bool SetData( UCL::CSerializable& serializableData);
 	bool GetData( UCL::CSerializable& serializableData);
 
 private:
-	std::string m_storageName;
-
-	size_t m_size;
-
-	bool m_owner;
-
-	int m_hSharedMemoryHandle;
-
-	char* m_pMemory;
+	UCL::CSharedMemory m_sharedMemory;
 	
-	sem_t* m_lockHandle;
+	UCL::CSemaphore m_lockFacility;
 
 };
 

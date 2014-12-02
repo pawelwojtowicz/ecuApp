@@ -10,7 +10,7 @@ namespace Controller
 {
 CControllerProxy::CControllerProxy(Runtime::IMessenger& rMessenger)
 : Runtime::CProxyBase(rMessenger, s_ControllerQueueName)
-, m_sharedStorage(s_ControllerStorage, CPublicProcessInfo().GetStorageSize(),true)
+, m_sharedStorage()
 , m_pControllerListener(0)
 {
 }
@@ -23,7 +23,7 @@ bool CControllerProxy::Initialize(IControllerListener* pListener)
 {
 	bool retVal(CProxyBase::Initialize());
 	
-	retVal &= m_sharedStorage.Initialize();
+	retVal &= m_sharedStorage.Initialize(s_ControllerStorage, CPublicProcessInfo().GetStorageSize(),false);
 
 
 	if ( 0 != pListener )

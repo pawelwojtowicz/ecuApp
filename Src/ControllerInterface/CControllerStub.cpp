@@ -11,7 +11,7 @@ namespace Controller
 {
 CControllerStub::CControllerStub(Runtime::IMessenger& rMessenger)
 : Runtime::CStubBase(rMessenger, s_ControllerQueueName)
-, m_sharedStorage(s_ControllerStorage, CPublicProcessInfo().GetStorageSize(),true)
+, m_sharedStorage()
 {
 }
 
@@ -23,7 +23,7 @@ bool CControllerStub::Initialize(IControllerServices* pControllerServices)
 {
 	bool retVal(Runtime::CStubBase::Initialize());
 	
-	retVal &= m_sharedStorage.Initialize();
+	retVal &= m_sharedStorage.Initialize(s_ControllerStorage, CPublicProcessInfo().GetStorageSize(),true);
 
 	//attach the services
 	m_pControllerServices = pControllerServices;
