@@ -1,4 +1,4 @@
-#include "CControllerCommand.h"
+#include "CControllerAction.h"
 #include "CGIProcessorConst.h"
 #include "CEnvironment.h"
 #include "CProxyProvider.h"
@@ -7,12 +7,12 @@
 
 namespace CGIProcessor
 {
-CControllerCommand::CControllerCommand(CProxyProvider& rProxyProvider)
+CControllerAction::CControllerAction(CProxyProvider& rProxyProvider)
 : m_pControllerProxy( rProxyProvider.GetControllerProxy() )
 {
 }
 
-bool CControllerCommand::Execute( const CEnvironment& environment )
+bool CControllerAction::Execute( const CEnvironment& environment )
 {
   bool retVal(false);
   if ( 0 != m_pControllerProxy )

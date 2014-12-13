@@ -1,22 +1,22 @@
-#ifndef CGIPROCESSOR_CCOMMANDFACTORY_H
-#define CGIPROCESSOR_CCOMMANDFACTORY_H
+#ifndef CGIPROCESSOR_CActionFactory_H
+#define CGIPROCESSOR_CActionFactory_H
 #include "GlobalTypes.h"
 #include "CFactoryItemObject.h"
-#include "ICommand.h"
+#include "IAction.h"
 namespace CGIProcessor
 {
 class CProxyProvider;
 
-class CCommandFactory
+class CActionFactory
 {
-  typedef IFactoryItemObject<ICommand> tCommandInterface;
+  typedef IFactoryItemObject<IAction> tCommandInterface;
   typedef std::map< std::string , tCommandInterface* > tItemFactoryMap;
   typedef tItemFactoryMap::iterator tItemFactoryMapIterator;
 public:
-  CCommandFactory(CProxyProvider&);
-  virtual ~CCommandFactory();
+  CActionFactory(CProxyProvider&);
+  virtual ~CActionFactory();
 
-  ICommand* GetCommand( const std::string& commandName );
+  IAction* GetCommand( const std::string& commandName );
 
 private:
   tItemFactoryMap m_factoryMap;

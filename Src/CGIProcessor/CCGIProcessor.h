@@ -3,7 +3,7 @@
 
 #include <Runtime/CExecutable.h>
 #include "CProxyProvider.h"
-#include "CCommandFactory.h"
+#include "CActionFactory.h"
 #include "CEnvironment.h"
 
 namespace CGIProcessor
@@ -25,7 +25,7 @@ private:
 
   CProxyProvider m_proxyProvider;
 
-  CCommandFactory m_commandFactory;
+  CActionFactory m_commandFactory;
 
   CEnvironment m_environment;
 

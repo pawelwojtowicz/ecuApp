@@ -1,6 +1,5 @@
 #include "CCGIProcessor.h"
 #include "CGIProcessorConst.h"
-#include "CCommandFactory.h"
 #include "JSONLib/json.h"
 
 
@@ -40,7 +39,7 @@ Int32 CCGIProcessor::Run()
   std::string commandName = m_environment.GetVariable(s_const_sv_commandName);
   
   
-  ICommand* pCommand = m_commandFactory.GetCommand(commandName);
+  IAction* pCommand = m_commandFactory.GetCommand(commandName);
   if ( 0 != pCommand )
   {
     bool retVal(pCommand->Execute(m_environment));
