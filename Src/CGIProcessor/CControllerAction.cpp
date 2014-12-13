@@ -31,27 +31,32 @@ bool CControllerAction::Execute( const CEnvironment& environment , json::Object&
     else if ( apiName=="get_process_list")
     {
 	    Controller::CPublicProcessInfo processInfo;
-	    m_pControllerProxy->GetCurrentProcessInfo(processInfo);
-    
-	    Controller::CPublicProcessInfo::tPublicProcessInfoList list = processInfo.GetProcessInfo();
 	    
-			json::Array processListArray;
+	    if (m_pControllerProxy->GetCurrentProcessInfo(processInfo) )
+	    {
     
-	    for ( Controller::CPublicProcessInfo::tPublicProcessInfoIter 	iter = list.begin() ; 
-    																															iter != list.end() ; 
-    																															++iter)
-    	{
-    		json::Object processItem;
-#pragma message("tutaj sprawdzic kuna - nie ma UInt32 w moim JSONie?")
-    		processItem["processId"] = static_cast<int>(iter->ProcessID);
-    		
-    		processItem["name"] = iter->ProcessName.c_str();
-    		processItem["versionInfo"] = iter->VersionInformation.c_str();
-    		processItem["unitState"] = iter->UnitState;
-    		processListArray.push_back(processItem);
-    	}
-    	
-    	commandOutput["processList"] = processListArray;
+			  Controller::CPublicProcessInfo::tPublicProcessInfoList list = processInfo.GetProcessInfo();
+			  
+				json::Array processListArray;
+		  
+			  for ( Controller::CPublicProcessInfo::tPublicProcessInfoIter 	iter = list.begin() ; 
+		  																															iter != list.end() ; 
+		  																															++iter)
+		  	{
+		  		// at least one of the processes is valid - OK.
+		  		retVal = true;
+		  		json::Object processItem;
+	#pragma message("tutaj sprawdzic kuna - nie ma UInt32 w moim JSONie?")
+		  		processItem["processId"] = static_cast<int>(iter->ProcessID);
+		  		
+		  		processItem["name"] = iter->ProcessName.c_str();
+		  		processItem["versionInfo"] = iter->VersionInformation.c_str();
+		  		processItem["unitState"] = iter->UnitState;
+		  		processListArray.push_back(processItem);
+		  	}
+		  	
+		  	commandOutput["processList"] = processListArray;
+		  }
     }
   }
   return retVal;

@@ -25,6 +25,7 @@ CCGIProcessor::~CCGIProcessor()
 void CCGIProcessor::Initialize()
 {
   m_environment.Initialize();
+  m_proxyProvider.Initialize();
 }
 
 Int32 CCGIProcessor::Run()
@@ -36,7 +37,8 @@ Int32 CCGIProcessor::Run()
   // prepare the structure for returning the JSON data
   json::Object requestResponse;
 
-  std::string commandName = m_environment.GetVariable(s_const_sv_commandName);
+  const std::string& commandName 	= m_environment.GetVariable(s_const_sv_commandName);
+  const std::string& apiName			= m_environment.GetVariable(s_const_sv_apiName);
   
   
   IAction* pCommand = m_commandFactory.GetCommand(commandName);
@@ -47,11 +49,10 @@ Int32 CCGIProcessor::Run()
 
     bool retVal(pCommand->Execute(m_environment, commandData));
 
-    commandExecutionResults["Payload"] = commandData; 
-    commandExecutionResults["CommandName"] = commandName.c_str();
-    commandExecutionResults["Result"] = retVal;
+    commandExecutionResults["data"] = commandData; 
+    commandExecutionResults["result"] = retVal;
     
-    requestResponse["CommandExecution"]=commandExecutionResults;
+    requestResponse[apiName.c_str()]=commandExecutionResults;
   }
   
   // serialize the JSON into the string, and send it to the std output.
@@ -63,7 +64,7 @@ Int32 CCGIProcessor::Run()
 
 void CCGIProcessor::Shutdown()
 {
-//  printf("\r\n");
+	m_proxyProvider.Shutdown();
 }
 
 }

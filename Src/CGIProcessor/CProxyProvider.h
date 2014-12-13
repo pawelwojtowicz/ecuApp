@@ -15,6 +15,9 @@ class CProxyProvider
 public:
   CProxyProvider();
   virtual ~CProxyProvider();
+  
+  bool Initialize();
+  void Shutdown();
 
   Controller::CControllerProxy* GetControllerProxy();
 

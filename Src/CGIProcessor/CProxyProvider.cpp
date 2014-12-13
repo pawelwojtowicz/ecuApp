@@ -1,5 +1,7 @@
 #include "CProxyProvider.h"
+#include <unistd.h>
 #include <ControllerInterface/CControllerProxy.h>
+
 
 namespace CGIProcessor
 {
@@ -16,6 +18,23 @@ CProxyProvider::~CProxyProvider()
     delete m_controllerProxy;
   }
 }
+
+bool CProxyProvider::Initialize()
+{
+	pid_t processID = getpid();
+	
+	char queueName[50];
+	
+	sprintf(queueName, "cgiProcessor%d",static_cast<UInt32>(processID));
+	
+	return m_messenger.Initialize(std::string(queueName));
+}
+
+void CProxyProvider::Shutdown()
+{
+	m_messenger.Shutdown();
+}
+
 
 Controller::CControllerProxy* CProxyProvider::GetControllerProxy()
 {
