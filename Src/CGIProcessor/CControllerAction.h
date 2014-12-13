@@ -16,7 +16,7 @@ public:
   CControllerAction(CProxyProvider&);
   virtual ~CControllerAction() {} ;
 
-  virtual bool Execute(const CEnvironment& variables);
+  virtual bool Execute(const CEnvironment& variables, json::Object& commandOutput);
 
 private:
   CControllerAction(const CControllerAction&);

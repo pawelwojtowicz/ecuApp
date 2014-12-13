@@ -42,10 +42,12 @@ Int32 CCGIProcessor::Run()
   IAction* pCommand = m_commandFactory.GetCommand(commandName);
   if ( 0 != pCommand )
   {
-    bool retVal(pCommand->Execute(m_environment));
+		json::Object commandExecutionResults;
+		json::Object commandData;
 
-    json::Object commandExecutionResults;
-    
+    bool retVal(pCommand->Execute(m_environment, commandData));
+
+    commandExecutionResults["Payload"] = commandData; 
     commandExecutionResults["CommandName"] = commandName.c_str();
     commandExecutionResults["Result"] = retVal;
     
@@ -61,7 +63,7 @@ Int32 CCGIProcessor::Run()
 
 void CCGIProcessor::Shutdown()
 {
-  printf("Shutdown\r\n");
+//  printf("\r\n");
 }
 
 }
