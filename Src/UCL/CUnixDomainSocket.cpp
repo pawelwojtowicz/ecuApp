@@ -51,6 +51,7 @@ bool CUnixDomainSocket::IsValid()
 void CUnixDomainSocket::Close()
 {
 	close(m_socketFileDescriptor);
+	unlink( m_socketName.c_str() );
 	m_socketFileDescriptor = -1;
 }
 
