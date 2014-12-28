@@ -1,0 +1,31 @@
+#!/bin/bash 
+
+export TOOLCHAIN_PREFIX=$1
+export PROJECT_ROOT=$2
+export TOOLCHAIN_LIB_PATHS=""
+
+
+export TARGET_PATH=$PROJECT_ROOT/Bin/Target
+export TARGET_SHARED_LIBS_PATH=$TARGET_PATH/lib
+export TARGET_BIN_PATH=$TARGET_PATH/bin
+export TARGET_WWW_PATH=$TARGET_PATH/srv/www
+export THIRD_PARTY_COMPONENTS=$PROJECT_ROOT/3rdParty
+export DEPLOYMENT_SCRIPTS=$PROJECT_ROOT/DeploymentScripts
+export DEPLOYMENT_SETTINGS=$DEPLOYMENT_SCRIPTS/deploymentPaths
+export SYSTEM_CONFIGURATION_DIRECTORY=$DEPLOYMENT_SCRIPTS/ConfigurationFiles
+
+#preparing the filenames and paths for the makefile common settings
+export MAKEFILE_RULES=$PROJECT_ROOT/DevEnv
+export COMMON_MAKE_SETTINGS=$MAKEFILE_RULES/commonSettings
+#preparing the filenames and paths for deployment scripts
+
+# generate the common makefile 
+echo "export TOOLCHAIN_PREFIX=$TOOLCHAIN_PREFIX" > $COMMON_MAKE_SETTINGS
+echo 'export CC:=$(TOOLCHAIN_PREFIX)g++' >> $COMMON_MAKE_SETTINGS
+echo "export ARCHIVER:=ar" >> $COMMON_MAKE_SETTINGS
+echo "export BIN_PATH:=$PROJECT_ROOT/Bin" >> $COMMON_MAKE_SETTINGS
+echo 'export INTERMEDIATE_PATH=$(BIN_PATH)/Intermediate' >> $COMMON_MAKE_SETTINGS
+echo 'export TARGET_PATH=$(BIN_PATH)/Target' >> $COMMON_MAKE_SETTINGS
+echo 'export SHARED_LIB_PATH=$(BIN_PATH)/Target/lib' >> $COMMON_MAKE_SETTINGS
+echo "export CFLAGS:= -c -Wall -pedantic -I\"$PROJECT_ROOT/Src/Global\" -I\"$PROJECT_ROOT/Src\"" >> $COMMON_MAKE_SETTINGS
+echo 'export LFLAGS:= -pthread -L$(INTERMEDIATE_PATH) -L$(SHARED_LIB_PATH)' >> $COMMON_MAKE_SETTINGS
