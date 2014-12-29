@@ -7,7 +7,6 @@ mount -t tmpfs none dev/shm
 echo "lnxdev" > /proc/sys/kernel/hostname
 
 echo configure the www server
-ln /bin/cgiprocessor /srv/www/cgi-bin/controller
 httpd -h /srv/www
 
 /sbin/mdev -s
