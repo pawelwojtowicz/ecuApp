@@ -52,7 +52,7 @@ void CSyslogTarget::LogToTarget(const CLogMsg& logMsg )
 		};
 	}
 	
-	syslog(LOG_MAKEPRI( LOG_LOCAL7 , syslogDBGzone), logMsg.GetEntryText() );
+	syslog(LOG_MAKEPRI( LOG_USER , syslogDBGzone), logMsg.GetEntryText() );
 }
 
 }
