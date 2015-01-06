@@ -7,7 +7,7 @@
 #define VARIABLE_POSTFIX "}"
 #define VARIABLE_POSTFIX_LENGTH 1
 
-static char sDflt_ApplicationPath[] = {"/bin"};
+static char sDflt_ApplicationPath[] = {"/usr/bin"};
 static char sDflt_ConfigPath[]			= {"/etc/opt"};
 static char sDflt_LogPath[]			= {"/var/log"};
 static char sDflt_TempPath[]			= {"/tmp"};
