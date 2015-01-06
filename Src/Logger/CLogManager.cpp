@@ -5,6 +5,7 @@
 #include <UCL/CUnixDomainSocket.h>
 #include <UCL/SystemEnvironment.h>
 #include "CConsoleTarget.h"
+#include "CSyslogTarget.h"
 #include <stdio.h>
 #include <errno.h>
 
@@ -20,6 +21,8 @@ static const char sConstCfg_LoggerTargetsNodeName[]		= {"LogTargets"};
 static const char sConstCfg_LoggerTargetType[]				= {"Type"};
 static const char sConstCfg_LoggerTargetActive[]			= {"Active"};
 static const char sConstCfg_LoggerTypeName_Console[]	= {"CONSOLE"};
+static const char sConstCfg_LoggerTypeName_Syslog[]		= {"SYSLOG"};
+
 namespace Logger
 {
 CLogManager::CLogManager()
@@ -210,7 +213,12 @@ ILogTarget* CLogManager::CreateLogTarget(const std::string& targetTypeName)
 	if (0 == targetTypeName.compare(sConstCfg_LoggerTypeName_Console) )
 	{
 		pLogTarget = new CConsoleTarget();
+	} 
+	else if (0 == targetTypeName.compare(sConstCfg_LoggerTypeName_Syslog ) )
+	{
+		pLogTarget = new CSyslogTarget();
 	}
+	
 
 	return pLogTarget;
 }

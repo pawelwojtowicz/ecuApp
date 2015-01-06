@@ -27,10 +27,14 @@ public:
 	static void SetUnitId( const UInt32 unitId ) { s_uint32_unitRuntimeId = unitId; };
 
 	const char* GetZoneName() const;
+	
+	const UInt32 GetDebugZone() const { return m_debugZone; };
 
 	inline const UInt32& GetLogSrcRuntimeId() const { return m_logSrcRuntimeId; };
 
 	void SetSourceShortName( const char* sourceShortName ) { m_sourceShortName = sourceShortName; } ;
+	
+	const char* GetEntryText() const { return m_logText;};
 
 private:
 

@@ -6,8 +6,8 @@
 				<Parameter Name="Active" Type="bool">true</Parameter>
 			</CNode>
 			<CNode Name="Socket">
-				<Parameter Name="Type" Type="String">TCP</Parameter>
-				<Parameter Name="Active" Type="bool">false</Parameter>
+				<Parameter Name="Type" Type="String">SYSLOG</Parameter>
+				<Parameter Name="Active" Type="bool">true</Parameter>
 			</CNode>
 			<CNode Name="File">
 				<Parameter Name="Type" Type="String">FILE</Parameter>
