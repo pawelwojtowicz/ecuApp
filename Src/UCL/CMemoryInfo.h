@@ -15,7 +15,8 @@ public:
 		SwapCached,
 		Active,
 		Inactive,
-		Shmem
+		Shmem,
+		NotAnItem
 	} tMemStatItem;
 	
 	CMemoryInfo();
@@ -24,6 +25,8 @@ public:
 	void RefreshMemoryInformation();
 	
 	Int32 GetMemInfoItem( const tMemStatItem& itemId );
+	
+	bool IsValid() {return m_dataValid;};
 private:
 	CMemoryInfo(const CMemoryInfo&);
 	CMemoryInfo& operator=(const CMemoryInfo&);

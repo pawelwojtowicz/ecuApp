@@ -6,7 +6,7 @@ TEST(CMemoryInfo,Basic)
 	UCL::CMemoryInfo memInfo;
 	
 	memInfo.RefreshMemoryInformation();
-  EXPECT_EQ(4,4);
+  EXPECT_EQ(memInfo.IsValid(),true);
 }
 
 
