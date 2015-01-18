@@ -1,42 +1,23 @@
 #ifndef UCL_CMEMORYINFO_H
 #define UCL_CMEMORYINFO_H
 #include <GlobalTypes.h>
+#include "InfoItemTypes.h"
+#include "CPROCInfoParserBase.h"
 
 namespace UCL
 {
-class CMemoryInfo
+class CMemoryInfo : public CPROCInfoParserBase<tMemStatItem,Int32>
 {
-public:
-	typedef enum
-	{
-		MemTotal,
-		MemFree,
-		Buffers,Cached,
-		SwapCached,
-		Active,
-		Inactive,
-		Shmem,
-		NotAnItem
-	} tMemStatItem;
-	
+public:	
 	CMemoryInfo();
 	virtual ~CMemoryInfo();
 	
-	void RefreshMemoryInformation();
-	
-	Int32 GetMemInfoItem( const tMemStatItem& itemId );
-	
-	bool IsValid() {return m_dataValid;};
+private:
+	virtual bool ParseInfoLine( const std::string& infoLine);
+
 private:
 	CMemoryInfo(const CMemoryInfo&);
-	CMemoryInfo& operator=(const CMemoryInfo&);
-private:
-	typedef std::map<tMemStatItem, Int32> tMemStatItems;
-	typedef tMemStatItems::const_iterator tMemStatItemConstIter;
-	
-	bool m_dataValid;
-
-	tMemStatItems m_statItems;
+	CMemoryInfo& operator=(const CMemoryInfo&);	
 };
 }
 #endif
