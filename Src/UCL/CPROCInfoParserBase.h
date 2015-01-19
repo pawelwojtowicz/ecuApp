@@ -66,7 +66,7 @@ public:
 	}
 
 	
-	bool GetMemInfoItem( const ITEM_ENUMERATION& itemId, ITEM_VALUE& value )
+	bool GetInfoItem( const ITEM_ENUMERATION& itemId, ITEM_VALUE& value )
 	{
 		tInfoItemsConstIter pCIter = m_infoItems.find(itemId);
 	

@@ -1,5 +1,5 @@
 OUTPUT= cgiprocessor
-OBJ= CCGIProcessor.o CEnvironment.o CActionFactory.o CControllerAction.o CProxyProvider.o
+OBJ= CCGIProcessor.o CEnvironment.o CActionFactory.o CControllerAction.o CProxyProvider.o CGetMemInfoAction.o
 
 include ../../DevEnv/executableSettings
 
@@ -10,3 +10,4 @@ CEnvironment.o  : CEnvironment.cpp CEnvironment.h
 CActionFactory.o : CActionFactory.cpp CActionFactory.h
 CControllerAction.o : CControllerAction.cpp CControllerAction.h
 CProxyProvider.o  : CProxyProvider.cpp CProxyProvider.h
+CGetMemInfoAction.o: CGetMemInfoAction.cpp CGetMemInfoAction.h

@@ -1,5 +1,6 @@
 #include "CActionFactory.h"
 #include "CControllerAction.h"
+#include "CGetMemInfoAction.h"
 
 namespace CGIProcessor
 {
@@ -7,6 +8,7 @@ namespace CGIProcessor
 CActionFactory::CActionFactory( CProxyProvider& rProxyProvider)
 {
   m_factoryMap.insert( tItemFactoryMap::value_type("controller" , new CFactoryItemObject<IAction, CControllerAction>(rProxyProvider)));
+  m_factoryMap.insert( tItemFactoryMap::value_type("getMemInfo", new CFactoryItemObject<IAction, CGetMemInfoAction>(rProxyProvider)));
 }
 
 CActionFactory::~CActionFactory()
