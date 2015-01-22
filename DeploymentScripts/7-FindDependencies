@@ -25,11 +25,18 @@ while read binaryName; do
 	done < <(readelf -a $binaryName | grep NEEDED | awk '{ print substr($5,2,length($5)-2) }')
 done < <( find $TARGET_SHARED_LIBS_PATH/* )
 
+while read binaryName; do
+	while read line;
+	do
+		dependencies["$line"]="used"
+	done < <(readelf -a $binaryName | grep NEEDED | awk '{ print substr($5,2,length($5)-2) }')
+done < <( find $TARGET_SHARED_TOOLCHAIN_LIBS/* )
+
 export BACK_DIR=$(pwd)
-cd $TARGET_SHARED_LIBS_PATH
+cd $TARGET_SHARED_TOOLCHAIN_LIBS
 for file in "${!dependencies[@]}"
 do
-	if [ -f $TARGET_SHARED_LIBS_PATH/$file ];
+	if [ -f $TARGET_SHARED_TOOLCHAIN_LIBS/$file ] || [ -f $TARGET_SHARED_LIBS_PATH/$file ];
 	then
 		echo "$file -> exists"
 	else
@@ -38,11 +45,11 @@ do
 		then
 			fileName=`ls -la $TOOLCHAIN_LIB_PATHS/$file | awk '{ print $NF }'`
 			echo "$file is a link to the $fileName"
-			cp $TOOLCHAIN_LIB_PATHS/$fileName $TARGET_SHARED_LIBS_PATH/$fileName
+			cp $TOOLCHAIN_LIB_PATHS/$fileName $TARGET_SHARED_TOOLCHAIN_LIBS/$fileName
 			ln -s $fileName $file
 		else
 			echo Regular File
-			cp $TOOLCHAIN_LIB_PATHS/$file $TARGET_SHARED_LIBS_PATH/$file
+			cp $TOOLCHAIN_LIB_PATHS/$file $TARGET_SHARED_TOOLCHAIN_LIBS/$file
 		fi
 		FILES_COPIED=true
 	fi
