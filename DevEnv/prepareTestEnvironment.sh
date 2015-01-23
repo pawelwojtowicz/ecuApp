@@ -1,5 +1,5 @@
 ROOT=$(pwd)/..
-export LD_LIBRARY_PATH=$ROOT/Bin/Target/usr/lib
+export LD_LIBRARY_PATH=$ROOT/Bin/Target/usr/lib;$ROOT/Bin/Target/lib
 export APP_DIR=$ROOT/Bin/Target/usr/bin
 export CONFIG_DIR=$ROOT/Configuration
 export LOG_DIR=$ROOT/Bin/Target/var/log
