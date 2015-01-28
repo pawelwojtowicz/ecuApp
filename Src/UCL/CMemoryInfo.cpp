@@ -9,9 +9,9 @@
 namespace UCL
 {
 CMemoryInfo::CMemoryInfo()
-: CPROCInfoParserBase<tMemStatItem,Int32>(std::string("/proc/meminfo"), 8)
+: CPROCInfoParserBase(std::string("/proc/meminfo"))
 {
-
+	Refresh();
 }
 
 CMemoryInfo::~CMemoryInfo()
@@ -24,7 +24,7 @@ bool CMemoryInfo::ParseInfoLine( const std::string& infoLine)
 	if ( 2 == memoryItemExtractor.GetTokenCount() )
 	{
 		tMemStatItem itemId(NotAnItem);
-	
+			
 		if (memoryItemExtractor.GetToken(0) == std::string("MemTotal"))
 		{
 			itemId = MemTotal;
@@ -47,7 +47,7 @@ bool CMemoryInfo::ParseInfoLine( const std::string& infoLine)
 		}
 		else if (memoryItemExtractor.GetToken(0) == std::string("Active"))
 		{
-			itemId = SwapCached;
+			itemId = Active;
 		}
 		else if (memoryItemExtractor.GetToken(0) == std::string("Inactive"))
 		{
@@ -57,7 +57,7 @@ bool CMemoryInfo::ParseInfoLine( const std::string& infoLine)
 		{
 			itemId = Shmem;
 		}
-	
+			
 		if (NotAnItem != itemId)
 		{
 			Int32 value(-1);
@@ -69,13 +69,34 @@ bool CMemoryInfo::ParseInfoLine( const std::string& infoLine)
 		
 			if (-1 != value)
 			{
-				AddInfoItem(itemId, value);
-				return true;
+				m_memInfo.insert(tMemStatInfo::value_type(itemId,value));
+				
+				if ( 8 == m_memInfo.size() )
+				{
+					return true;
+				}
 			}
 		}
 	}
 	return false;
 }
+
+void CMemoryInfo::Reset()
+{
+	m_memInfo.clear();
+}
+
+Int32 CMemoryInfo::GetMemoryInfo(const tMemStatItem& memInfoId)
+{
+	tMemStatInfoIter pCIter = m_memInfo.find(memInfoId);
+	if ( m_memInfo.end() != pCIter)
+	{
+		return pCIter->second;
+	}
+
+	return -1;
+}
+
 
 }
 

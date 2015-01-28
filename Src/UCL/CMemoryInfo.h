@@ -6,18 +6,26 @@
 
 namespace UCL
 {
-class CMemoryInfo : public CPROCInfoParserBase<tMemStatItem,Int32>
+class CMemoryInfo : public CPROCInfoParserBase
 {
+	typedef std::map<tMemStatItem,Int32> tMemStatInfo;
+	typedef tMemStatInfo::const_iterator tMemStatInfoIter;
 public:	
 	CMemoryInfo();
 	virtual ~CMemoryInfo();
 	
-private:
+	Int32 GetMemoryInfo(const tMemStatItem& memInfoId);
+	
+protected:
 	virtual bool ParseInfoLine( const std::string& infoLine);
+	
+	virtual void Reset();
 
 private:
 	CMemoryInfo(const CMemoryInfo&);
-	CMemoryInfo& operator=(const CMemoryInfo&);	
+	CMemoryInfo& operator=(const CMemoryInfo&);
+	
+	tMemStatInfo m_memInfo;
 };
 }
 #endif

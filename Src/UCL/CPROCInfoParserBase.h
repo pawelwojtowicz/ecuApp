@@ -11,19 +11,14 @@
 namespace UCL
 {
 
-template <typename ITEM_ENUMERATION, typename ITEM_VALUE>
 class CPROCInfoParserBase
 {
-	typedef typename std::map<ITEM_ENUMERATION, ITEM_VALUE> tInfoItems;
-	typedef typename tInfoItems::const_iterator tInfoItemsConstIter;
 
 protected:	
-	CPROCInfoParserBase(const std::string& infoFileName, UInt8 requiredFields)
+	CPROCInfoParserBase(const std::string& infoFileName)
 	: m_dataValid(false)
-	, m_requiredFields(requiredFields)
 	, m_infoFileName(infoFileName)
 	{
-		Refresh();
 	}
 
 	virtual ~CPROCInfoParserBase()
@@ -34,12 +29,12 @@ public:
 	void Refresh()
 	{
 		m_dataValid = false;
-		m_infoItems.clear();
+		this->Reset();
+		
 		FILE* infoFileDescr = fopen(m_infoFileName.c_str(), "r");
 	
 		if ( 0 != infoFileDescr)
 		{
-			UInt8 fieldCount(0);
 			size_t infoItemStringSize(MEMORY_ITEM_SIZE);
 			char memoryInfoItemString[MEMORY_ITEM_SIZE];
 		
@@ -48,56 +43,32 @@ public:
 
 			while ( getline( &tmp, &infoItemStringSize, infoFileDescr ) >= 0 )
 			{
-				if (ParseInfoLine(tmp))
+				std::string line(tmp);
+				if (this->ParseInfoLine(line))
 				{
-					++fieldCount;
+					m_dataValid = true;
 				}
 		
 				memset(memoryInfoItemString, 0 , infoItemStringSize);			
 			}
 		
 			fclose(infoFileDescr);
-		
-			if ( fieldCount >= m_requiredFields )
-			{
-				m_dataValid = true;
-			}
 		}	
 	}
 
 	
-	bool GetInfoItem( const ITEM_ENUMERATION& itemId, ITEM_VALUE& value )
-	{
-		tInfoItemsConstIter pCIter = m_infoItems.find(itemId);
-	
-		if (m_infoItems.end() != pCIter)
-		{
-			value = pCIter->second;
-			return true;
-		}
-	
-		return false;
-	}
-	
 	bool IsValid() {return m_dataValid;};	
-private:
+
+protected:
 	virtual bool ParseInfoLine( const std::string& infoLine) = 0;
 	
-protected:
-	void AddInfoItem(const ITEM_ENUMERATION& infoItemId, const ITEM_VALUE& value )
-	{
-		m_infoItems.insert(typename tInfoItems::value_type(infoItemId,value));
-	}
-		
+	virtual void Reset() = 0;
+	
 private:
 	CPROCInfoParserBase(const CPROCInfoParserBase&);
 	CPROCInfoParserBase& operator=(const CPROCInfoParserBase&);
 	
 	bool m_dataValid;
-	
-	UInt8 m_requiredFields;
-
-	tInfoItems m_infoItems;
 	
 	std::string m_infoFileName;
 };

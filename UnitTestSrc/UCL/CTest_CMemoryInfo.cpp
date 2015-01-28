@@ -8,4 +8,12 @@ TEST(CMemoryInfo,Basic)
   EXPECT_EQ(memInfo.IsValid(),true);
 }
 
+TEST(CMemoryInfo,GetValue)
+{
+	UCL::CMemoryInfo memInfo;
+	
+	Int32 info(0);
+	
+  EXPECT_EQ(memInfo.GetMemoryInfo(UCL::MemTotal), true);
+}
 

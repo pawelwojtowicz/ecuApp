@@ -20,46 +20,14 @@ bool CGetMemInfoAction::Execute(const CEnvironment& variables, json::Object& com
 	if ( memInfo.IsValid() )
 	{
 		json::Object meminfoItem;
-		Int32 memoryAmount(0);
-		if ( memInfo.GetInfoItem(UCL::MemTotal,memoryAmount))
-		{
-			meminfoItem["MemTotal"] = memoryAmount; 
-		}
-		
-		if ( memInfo.GetInfoItem(UCL::MemFree,memoryAmount))
-		{
-			meminfoItem["MemFree"] = memoryAmount; 
-		}
-
-		if ( memInfo.GetInfoItem(UCL::Buffers,memoryAmount))
-		{
-			meminfoItem["Buffers"] = memoryAmount;
-		}
-		
-		if ( memInfo.GetInfoItem(UCL::Cached,memoryAmount))
-		{
-			meminfoItem["Cached"] = memoryAmount; 
-		}
-
-		if ( memInfo.GetInfoItem(UCL::SwapCached,memoryAmount))
-		{
-			meminfoItem["SwapCached"] = memoryAmount; 
-		}
-
-		if ( memInfo.GetInfoItem(UCL::Active,memoryAmount))
-		{
-			meminfoItem["Active"] = memoryAmount; 
-		}
-
-		if ( memInfo.GetInfoItem(UCL::Inactive,memoryAmount))
-		{
-			meminfoItem["Inactive"] = memoryAmount; 
-		}
-
-		if ( memInfo.GetInfoItem(UCL::SwapCached,memoryAmount))
-		{
-			meminfoItem["Shmem"] = memoryAmount; 
-		}
+		meminfoItem["MemTotal"] 	= memInfo.GetMemoryInfo(UCL::MemTotal); 
+		meminfoItem["Buffers"] 		= memInfo.GetMemoryInfo(UCL::Buffers);
+		meminfoItem["MemFree"] 		= memInfo.GetMemoryInfo(UCL::MemFree); 
+		meminfoItem["Cached"] 		= memInfo.GetMemoryInfo(UCL::Cached);
+		meminfoItem["SwapCached"]	= memInfo.GetMemoryInfo(UCL::SwapCached);
+		meminfoItem["Active"] 		= memInfo.GetMemoryInfo(UCL::Active);
+		meminfoItem["Inactive"] 	= memInfo.GetMemoryInfo(UCL::Inactive);
+		meminfoItem["Shmem"] 			= memInfo.GetMemoryInfo(UCL::Shmem);
 	
 		commandOutput["meminfo"] = meminfoItem;
 		return true;

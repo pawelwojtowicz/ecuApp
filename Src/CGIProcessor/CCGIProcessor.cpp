@@ -44,6 +44,7 @@ Int32 CCGIProcessor::Run()
   IAction* pCommand = m_commandFactory.GetCommand(commandName);
   if ( 0 != pCommand )
   {
+  	std::string actionId(apiName.empty() ?  commandName : apiName);
 		json::Object commandExecutionResults;
 		json::Object commandData;
 
@@ -52,7 +53,7 @@ Int32 CCGIProcessor::Run()
     commandExecutionResults["data"] = commandData; 
     commandExecutionResults["result"] = retVal;
     
-    requestResponse[apiName.c_str()]=commandExecutionResults;
+    requestResponse[actionId]=commandExecutionResults;
   }
   
   // serialize the JSON into the string, and send it to the std output.
