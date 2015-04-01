@@ -22,7 +22,7 @@ export COMMON_MAKE_SETTINGS=$MAKEFILE_RULES/commonSettings
 #preparing the filenames and paths for deployment scripts
 
 # generate the common makefile 
-echo "export CC:=$CC" >> $COMMON_MAKE_SETTINGS
+echo "export CC:=$CC" > $COMMON_MAKE_SETTINGS
 echo "export ARCHIVER:=ar" >> $COMMON_MAKE_SETTINGS
 echo "export BIN_PATH:=$PROJECT_ROOT/Bin" >> $COMMON_MAKE_SETTINGS
 echo "export INTERMEDIATE_PATH=$INTERMEDIATE_PATH" >> $COMMON_MAKE_SETTINGS
