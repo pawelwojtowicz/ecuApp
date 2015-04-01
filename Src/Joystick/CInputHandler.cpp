@@ -1,6 +1,5 @@
 #include "CInputHandler.h"
 #include <GlobalTypes.h>
-#include <SDL2/SDL.h>
 
 namespace Joystick
 {

@@ -2,7 +2,7 @@
 #define CJOYSTICK_CInputHandler_H
 
 #include <UCL/CThread.h>
-#include <SDL2/SDL_joystick.h>
+#include <SDL/SDL_joystick.h>
 
 namespace Joystick
 {

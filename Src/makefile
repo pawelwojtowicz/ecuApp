@@ -1,4 +1,4 @@
-all: controller exampleApp cgiprocessor
+all: controller exampleApp cgiprocessor joystick
 
 libXMLParser:
 	$(MAKE) -C XMLParser
@@ -29,6 +29,9 @@ exampleApp:	libControllerInterface libRuntime libConfiguration.so libLogger.so l
 
 cgiprocessor: libControllerInterface libRuntime libConfiguration.so libLogger.so libUCL libJSON
 	$(MAKE) -C CGIProcessor
+	
+joystick: libControllerInterface libRuntime libConfiguration.so libLogger.so libUCL
+	$(MAKE)	-C Joystick
 
 cleanup:
 	$(MAKE) -C XMLParser clean
@@ -40,6 +43,7 @@ cleanup:
 	$(MAKE) -C Controller clean
 	$(MAKE) -C Example clean
 	$(MAKE) -C CGIProcessor clean
+	$(MAKE)	-C Joystick
 	rm -rf ../Bin
 
 	
