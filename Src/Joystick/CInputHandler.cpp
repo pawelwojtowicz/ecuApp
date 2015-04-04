@@ -1,5 +1,7 @@
 #include "CInputHandler.h"
-#include <GlobalTypes.h>
+#include <Logger/Logger.h>
+#include <SDL/SDL.h>
+
 
 namespace Joystick
 {
@@ -15,12 +17,22 @@ CInputHandler::~CInputHandler()
 
 void CInputHandler::Initialize()
 {
+	RETAILMSG(INFO, ("CInputHandler::Initialize()"));
+	
+	if ( SDL_Init( SDL_INIT_JOYSTICK) < 0)
+	{
+		RETAILMSG(INFO, ("Failed to initialize the SDL library"));	
+	}
+
 	if ( SDL_NumJoysticks() > 0 )
 	{
+		RETAILMSG(INFO, ("CInputHandler::Initialize() 1 "));
 		m_pJoystick = SDL_JoystickOpen(0);
 		
 		if ( 0 != m_pJoystick )
 		{
+			RETAILMSG(INFO, ("CInputHandler::Initialize() 2 "));
+
 			SDL_JoystickName(0);
 			SDL_JoystickNumAxes(m_pJoystick);
 			SDL_JoystickNumButtons(m_pJoystick);

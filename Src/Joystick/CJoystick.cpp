@@ -1,5 +1,8 @@
 #include "CJoystick.h"
 
+// important - global instance of the new class
+Joystick::CJoystick gs;
+
 namespace Joystick
 {
 CJoystick::CJoystick()
