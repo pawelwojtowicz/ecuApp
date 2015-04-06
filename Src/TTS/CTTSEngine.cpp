@@ -1,5 +1,13 @@
 #include "CTTSEngine.h"
 
+extern "C" 
+{
+cst_voice *register_cmu_us_kal(const char*);				// mans voice
+cst_voice *register_cmu_us_awb(const char *voxdir); // mans voice
+cst_voice *register_cmu_us_rms(const char *voxdir);	// slappy mans voice
+cst_voice *register_cmu_us_slt(const char *voxdir); // womans voice
+}
+
 
 namespace TTS
 {
@@ -16,10 +24,11 @@ bool CTTSEngine::Initialize()
 {
 	flite_init();
 	
-	m_pTTSVoice = flite_voice_select("kal");
+	m_pTTSVoice = register_cmu_us_slt(NULL);
 	
 	
-	return true;
+	
+	return ( 0 != m_pTTSVoice );
 }
 
 void CTTSEngine::Shutdown()

@@ -1,6 +1,5 @@
 #include "CTTS.h"
 #include <Logger/Logger.h>
-#include <stdio.h>
 
 TTS::CTTS gs;
 
@@ -23,11 +22,9 @@ void CTTS::Initialize()
   CRuntimeUnit::Initialize();
   
   m_ttsEngine.Initialize();
+  
+  m_ttsEngine.Say("TTS works fine - let's proceed with the further steps");
 
-	bool returnValue = m_ttsEngine.Say("This is a test , please - let us know, if everything is fine");
-	
-	printf("\nDupa dupa %d",returnValue);
-	
 	InitDone(true);
 }
 
