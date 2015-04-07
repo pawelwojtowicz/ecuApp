@@ -1,4 +1,4 @@
-all: controller exampleApp cgiprocessor joystick
+all: controller exampleApp cgiprocessor joystick tts
 
 libXMLParser:
 	$(MAKE) -C XMLParser
@@ -14,6 +14,9 @@ libJSON:
 
 libControllerInterface:
 	$(MAKE) -C ControllerInterface
+	
+libTTSInterface:
+	$(MAKE)	-C TTSInterface
 
 libConfiguration.so: libXMLParser libUCL
 	$(MAKE) -C Configuration
@@ -24,7 +27,7 @@ libLogger.so:
 controller:	libControllerInterface libRuntime libConfiguration.so libLogger.so libUCL
 	$(MAKE) -C Controller
 
-exampleApp:	libControllerInterface libRuntime libConfiguration.so libLogger.so libUCL
+exampleApp:	libControllerInterface libTTSInterface libRuntime libConfiguration.so libLogger.so libUCL
 	$(MAKE) -C Example
 
 cgiprocessor: libControllerInterface libRuntime libConfiguration.so libLogger.so libUCL libJSON
@@ -32,6 +35,9 @@ cgiprocessor: libControllerInterface libRuntime libConfiguration.so libLogger.so
 	
 joystick: libControllerInterface libRuntime libConfiguration.so libLogger.so libUCL
 	$(MAKE)	-C Joystick
+	
+tts: libControllerInterface libTTSInterface libRuntime libUCL libLogger.so
+	$(MAKE) -C TTS
 
 cleanup:
 	$(MAKE) -C XMLParser clean
@@ -44,6 +50,7 @@ cleanup:
 	$(MAKE) -C Example clean
 	$(MAKE) -C CGIProcessor clean
 	$(MAKE)	-C Joystick
+	$(MAKE) -c TTS
 	rm -rf ../Bin
 
 	
