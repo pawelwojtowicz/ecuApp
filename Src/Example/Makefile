@@ -3,6 +3,6 @@ OBJ= CExampleApp.o
 
 include ../../DevEnv/executableSettings
 
-LFLAGS+= -lControllerInterface -lRuntime -lUCL -lLogger
+LFLAGS+= -lControllerInterface -lTTSInterface -lRuntime -lUCL -lLogger
 
 CExampleApp.o	: CExampleApp.cpp CExampleApp.h

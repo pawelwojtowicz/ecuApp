@@ -18,7 +18,8 @@ typedef enum
 	msgId_Controller_RestartRequest,
 	msgId_Controller_ShutdownRequest,
 	msgId_Controller_PendingShutdown,
-	msgId_Controller_Shutdown
+	msgId_Controller_Shutdown,
+	msgId_TTS_SayPhrase
 } tMsgIds;
 
 #endif

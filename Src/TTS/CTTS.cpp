@@ -1,4 +1,5 @@
 #include "CTTS.h"
+#include <TTSInterface/TTSInterfaceConst.h>
 #include <Logger/Logger.h>
 
 TTS::CTTS gs;
@@ -7,7 +8,9 @@ namespace TTS
 {
 
 CTTS::CTTS()
-: Runtime::CRuntimeUnit("TextToSpeach", "TTS_Q")
+: Runtime::CRuntimeUnit("TextToSpeach", s_TTSQueueName)
+, m_ttsStub(GetMessenger())
+, m_ttsEngine()
 {
 }
 
@@ -21,11 +24,16 @@ void CTTS::Initialize()
 	// important - initialize the messenger
   CRuntimeUnit::Initialize();
   
-  m_ttsEngine.Initialize();
+  m_ttsStub.Initialize(this);
   
-  m_ttsEngine.Say("TTS works fine - let's proceed with the further steps");
+  bool status = m_ttsEngine.Initialize();
+  
+	InitDone(status);
+}
 
-	InitDone(true);
+void CTTS::Say( const std::string& phrase )
+{
+  m_ttsEngine.Say(phrase);
 }
 
 void CTTS::Shutdown()

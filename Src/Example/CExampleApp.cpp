@@ -14,6 +14,7 @@ CExampleApp::CExampleApp()
 : Runtime::CRuntimeUnit("ExampleApp", "ExQueue")
 , m_timer1Id(0)
 , m_shutdownTimer(0)
+, m_ttsProxy(GetMessenger())
 {
 }
 
@@ -29,6 +30,7 @@ void CExampleApp::Initialize()
 // important - initialize the timer manager
   InitializeTimerManager();
 
+	m_ttsProxy.Initialize();
 
 
   // prepare some test timer, ( started after 5 seconds, triggered every 2seconds afterwards
@@ -53,6 +55,7 @@ void CExampleApp::NotifyTimer( const Int32& timerId )
   if (timerId == m_timer1Id)
   {
     RETAILMSG(INFO, ("Test timer"));
+    m_ttsProxy.Say("Test");
     Controller::CPublicProcessInfo processInfo;
     GetControllerProxy().GetCurrentProcessInfo(processInfo);
     
@@ -72,10 +75,12 @@ void CExampleApp::NotifyTimer( const Int32& timerId )
   {
     RETAILMSG(INFO, ("Requesting shutdown"));
     GetControllerProxy().RequestShutdown();
+    m_ttsProxy.Say("Requesting Shutdown");
   }
   else if ( timerId ==m_iddleTimer )
   {
     RETAILMSG(INFO, ("ExampleApp iddle - system should be down in couple of seconds"));
+    m_ttsProxy.Say("Example application reports iddle - system should be down in couple of seconds");
     SetIddle();
   }
 }

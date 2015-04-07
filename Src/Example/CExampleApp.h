@@ -3,6 +3,7 @@
 
 #include <Runtime/CRuntimeUnit.h>
 #include <Runtime/ITimerListener.h>
+#include <TTSInterface/CTTSProxy.h>
 
 namespace ExampleApp
 {
@@ -22,6 +23,8 @@ private:
   Int32 m_shutdownTimer;
 
   Int32 m_iddleTimer;
+  
+  TTS::CTTSProxy m_ttsProxy;
 
 };
 
