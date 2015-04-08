@@ -1,13 +1,21 @@
 #include "CInputHandler.h"
 #include <Logger/Logger.h>
 #include <SDL/SDL.h>
+#include <JoystickInterface/CJoyState.h>
+#include <JoystickInterface/CJoystickStub.h>
+
+#include <unistd.h>
 
 
 namespace Joystick
 {
-CInputHandler::CInputHandler()
+CInputHandler::CInputHandler(CJoystickStub& stub)
 : m_running(false)
 , m_pJoystick(0)
+, m_axisCount(0)
+, m_crossCount(0)
+, m_buttonCount(0)
+, m_rJoystickStub(stub)
 {
 }
 
@@ -26,18 +34,25 @@ void CInputHandler::Initialize()
 
 	if ( SDL_NumJoysticks() > 0 )
 	{
-		RETAILMSG(INFO, ("CInputHandler::Initialize() 1 "));
 		m_pJoystick = SDL_JoystickOpen(0);
 		
 		if ( 0 != m_pJoystick )
 		{
-			RETAILMSG(INFO, ("CInputHandler::Initialize() 2 "));
+			std::string joystickName(SDL_JoystickName(0));
+			m_axisCount 	= SDL_JoystickNumAxes(m_pJoystick);
+			m_buttonCount = SDL_JoystickNumButtons(m_pJoystick);
+			m_crossCount 	= SDL_JoystickNumHats(m_pJoystick);
+			
+			RETAILMSG(INFO, ("Joystick name=[%s] detected. AxesCount=[%d], ButtonCount=[%d], CrossCount=[%d]"
+												, joystickName.c_str(), m_axisCount , m_buttonCount , m_crossCount));
+				// start the polling
+			Start();
 
-			SDL_JoystickName(0);
-			SDL_JoystickNumAxes(m_pJoystick);
-			SDL_JoystickNumButtons(m_pJoystick);
-			SDL_JoystickNumHats(m_pJoystick);
 		}
+	}
+	else
+	{
+		RETAILMSG(ERROR, ("No Joysticks Attached to the computer"))
 	}
 	
 }
@@ -46,6 +61,8 @@ void CInputHandler::Shutdown()
 {
 	m_running = false;
 	
+	WaitFor();
+	
 	SDL_JoystickClose(m_pJoystick);
 }
 
@@ -53,13 +70,38 @@ void CInputHandler::Run()
 {
 	m_running = true;
 	
+	CJoyState joyState;
+	
+	joyState.SetAxisCount(m_axisCount);
+	joyState.SetCrossCount( m_crossCount );
+	joyState.SetButtonCount( m_buttonCount);
+	
 	while(m_running)
 	{
-		SDL_JoystickUpdate();
+		SDL_JoystickUpdate( );
 		
-		Int16 axis = SDL_JoystickGetAxis(m_pJoystick,0);
-		UInt8 button = SDL_JoystickGetButton(m_pJoystick,0);
-		UInt8 hat = SDL_JoystickGetHat(m_pJoystick,0);
+		for (UInt8 i = 0 ; i < m_axisCount ; ++i )
+		{
+			joyState.SetAxis(i , SDL_JoystickGetAxis(m_pJoystick,i) );
+		}
+		
+		for (UInt8 i = 0 ; i < m_buttonCount ; ++i )
+		{
+			joyState.SetButtonState(i , SDL_JoystickGetButton(m_pJoystick,i) );
+		}
+		
+		for (UInt8 i = 0 ; i < m_crossCount ; ++i )
+		{
+			UInt8 crossState(SDL_JoystickGetHat(m_pJoystick,i));
+			
+			joyState.SetCrossState(i , crossState );
+		}
+		
+		m_rJoystickStub.UpdateJoysticState(joyState);
+		
+		usleep( 100 * 1000 ); // wait 100ms with the next update
+		
+		
 	}
 }
 

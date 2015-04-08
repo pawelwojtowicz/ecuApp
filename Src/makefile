@@ -11,6 +11,9 @@ libRuntime:
 	
 libJSON:
 	$(MAKE) -C JSONLib
+	
+libJoystickInterface:
+	$(MAKE) -C JoystickInterface
 
 libControllerInterface:
 	$(MAKE) -C ControllerInterface
@@ -33,7 +36,7 @@ exampleApp:	libControllerInterface libTTSInterface libRuntime libConfiguration.s
 cgiprocessor: libControllerInterface libRuntime libConfiguration.so libLogger.so libUCL libJSON
 	$(MAKE) -C CGIProcessor
 	
-joystick: libControllerInterface libRuntime libConfiguration.so libLogger.so libUCL
+joystick: libControllerInterface libJoystickInterface libRuntime libConfiguration.so libLogger.so libUCL
 	$(MAKE)	-C Joystick
 	
 tts: libControllerInterface libTTSInterface libRuntime libUCL libLogger.so

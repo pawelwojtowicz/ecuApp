@@ -27,6 +27,10 @@ bool CStubBase::Shutdown()
 	return true;
 }
 
+void CStubBase::HandleMessage(Runtime::CMessage& rMessage)
+{
+}
+
 void CStubBase::SubscribeMessage(const tMsgIds& msgId )
 {
 	m_rMessenger.SubscribeMessage( OWN_QUEUE_ID, msgId, this );

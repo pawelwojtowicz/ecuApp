@@ -22,6 +22,9 @@ protected:
 	Runtime::IMessenger& GetMessenger() { return m_rMessenger;};
 
 	void SubscribeMessage(const tMsgIds& msgId );
+	
+private:
+	virtual void HandleMessage(Runtime::CMessage& rMessage);
 
 private:
 	CStubBase(const CStubBase&);

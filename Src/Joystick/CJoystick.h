@@ -3,6 +3,7 @@
 
 #include <Runtime/CRuntimeUnit.h>
 #include "CInputHandler.h"
+#include "JoystickInterface/CJoystickStub.h"
 
 namespace Joystick
 {
@@ -16,7 +17,10 @@ class CJoystick : public Runtime::CRuntimeUnit
 
 	virtual void Shutdown();
 private:
+	CJoystickStub m_joystickStub;
+
 	CInputHandler m_handler;
+	
 };
 }
 
