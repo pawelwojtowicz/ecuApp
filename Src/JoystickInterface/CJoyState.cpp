@@ -128,7 +128,7 @@ size_t CJoyState::GetStorageSize()
 	
 	storageSize += m_axisValues.size() * sizeof(tAxisValues::value_type);
 	storageSize += m_crossStates.size() * sizeof(tCrossStates::value_type);
-	storageSize += m_buttonsStates.size() * sizeof(tButtonStates::size_type);
+	storageSize += m_buttonsStates.size() * sizeof(tButtonStates::value_type);
 	
 	return storageSize;
 }
