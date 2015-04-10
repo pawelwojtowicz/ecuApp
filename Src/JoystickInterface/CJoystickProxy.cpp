@@ -25,7 +25,7 @@ bool CJoystickProxy::Initialize()
 	initialState.SetCrossCount(5);
 	initialState.SetButtonCount(15);
 	
-	retVal &= m_sharedStorage.Initialize(s_JoystickStorage, initialState.GetStorageSize(),false);
+	m_sharedStorage.Initialize(s_JoystickStorage, initialState.GetStorageSize(),false);
 
 	return retVal;
 }

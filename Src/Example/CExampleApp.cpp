@@ -1,6 +1,9 @@
 #include "CExampleApp.h"
 #include <Logger/Logger.h>
 #include <ControllerInterface/CPublicProcessInfo.h>
+#include <JoystickInterface/CJoyState.h>
+#include <string.h>
+#include <stdlib.h>
 
 
 // important - global instance of the new class
@@ -15,6 +18,7 @@ CExampleApp::CExampleApp()
 , m_timer1Id(0)
 , m_shutdownTimer(0)
 , m_ttsProxy(GetMessenger())
+, m_joystickProxy(GetMessenger())
 {
 }
 
@@ -31,6 +35,8 @@ void CExampleApp::Initialize()
   InitializeTimerManager();
 
 	m_ttsProxy.Initialize();
+	
+	m_joystickProxy.Initialize();
 
 
   // prepare some test timer, ( started after 5 seconds, triggered every 2seconds afterwards
@@ -39,7 +45,7 @@ void CExampleApp::Initialize()
   GetTimerManager().StartTimer(m_timer1Id);
 
   m_shutdownTimer = GetTimerManager().CreateTimer(this);
-  GetTimerManager().SetTimer(m_shutdownTimer, 20, 0 );
+  GetTimerManager().SetTimer(m_shutdownTimer, 120, 0 );
   GetTimerManager().StartTimer(m_shutdownTimer);
 
   m_iddleTimer = GetTimerManager().CreateTimer(this);
@@ -54,22 +60,23 @@ void CExampleApp::NotifyTimer( const Int32& timerId )
 {
   if (timerId == m_timer1Id)
   {
-    RETAILMSG(INFO, ("Test timer"));
     m_ttsProxy.Say("Test");
-    Controller::CPublicProcessInfo processInfo;
-    GetControllerProxy().GetCurrentProcessInfo(processInfo);
     
-    Controller::CPublicProcessInfo::tPublicProcessInfoList list = processInfo.GetProcessInfo();
+    Joystick::CJoyState joystate;
     
-    for ( Controller::CPublicProcessInfo::tPublicProcessInfoIter 	iter = list.begin() ; 
-    																															iter != list.end() ; 
-    																															++iter)
-    {
-    	    RETAILMSG(INFO, ("id=[%d] name=[%s] version=[%s] status=[%d]"	, iter->ProcessID
-  	 	    																																, iter->ProcessName.c_str()
-  		    																																, iter->VersionInformation.c_str()
-  		    																																, iter->UnitState));
-    }
+    m_joystickProxy.GetJoystickState(joystate);
+    
+		
+
+		UInt8 buttonCount = joystate.GetButtonCount();
+		std::string logText= ("Buttons: ");
+		for (UInt8 i = 0 ; i < buttonCount ; ++i )
+		{
+			logText += std::string("[")+(joystate.GetButtonState(i)? std::string("on"): std::string("off")) + std::string("] ");
+		}
+		
+		RETAILMSG(INFO, (logText.c_str() ));
+
   }
   else if ( timerId == m_shutdownTimer )
   {

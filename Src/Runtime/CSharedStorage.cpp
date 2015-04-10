@@ -1,6 +1,6 @@
 #include "CSharedStorage.h"
 #include <UCL/CSerializable.h>
-
+#include <Logger/Logger.h>
 
 namespace Runtime
 {
@@ -20,11 +20,17 @@ bool CSharedStorage::Initialize(const std::string& storageName, const size_t siz
 {
 	bool retVal(false);
 	
+	RETAILMSG(INFO, ("CSharedStorage name=[%s] size=[%d] owner=[%d]",storageName.c_str() , size, owner));
+	
 	retVal = m_sharedMemory.Open(storageName, size, owner);
 	
 	if (retVal)
 	{
+		RETAILMSG(INFO, ("CSharedStorage name=[%s] ok",storageName.c_str()));
+
 		retVal = m_lockFacility.Initialize(storageName, 1);
+		RETAILMSG(INFO, ("CSharedStorage name=[%s] synch=[%d]",storageName.c_str() , retVal));
+
 	}
 
 	return retVal; 

@@ -21,8 +21,10 @@ CTTS::~CTTS()
 
 void CTTS::Initialize()
 {
-	// important - initialize the messenger
+// important - initialize the messenger
   CRuntimeUnit::Initialize();
+// important - initialize the timer manager
+  InitializeTimerManager();
   
   m_ttsStub.Initialize(this);
   

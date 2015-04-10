@@ -19,10 +19,14 @@ CJoystick::~CJoystick()
 
 void CJoystick::Initialize()
 {
-	// important - initialize the messenger
+// important - initialize the messenger
   CRuntimeUnit::Initialize();
+// important - initialize the timer manager
+  InitializeTimerManager();
+
   
   m_joystickStub.Initialize();
+  m_joystickStub.InitializeJoystickStorage( );
   
 	m_handler.Initialize();
 	
