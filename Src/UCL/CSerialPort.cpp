@@ -6,6 +6,9 @@
 #include <sys/types.h>
 #include "CTokenizer.h"
 #include <stdio.h>
+#include <Logger/Logger.h>
+#include <errno.h>
+#include <string.h>
 
 static const char s_constParamName_baud[]     = {"baud"};
 static const char s_constParamName_data[]     = {"data"};
@@ -44,20 +47,27 @@ namespace UCL
   {
     bool retVal(false);
     
-    if ( -1 == m_portHandle )
+    if ( -1 != m_portHandle )
     {
       struct termios portConfiguration;
 
       // get the current settings
       retVal = ( 0 == tcgetattr(m_portHandle,&portConfiguration) );
+      RETAILMSG(INFO, ("GetAttr = %d", retVal));
 
       // parse the configuration string, and fill in the termios structure suitable to new parameters
       retVal &= ParseConfigurationString( configurationString, portConfiguration );
+      RETAILMSG(INFO, ("Parse Configs = %d", retVal));
 
       // apply the settings right away ( TCSANOW )
       // TCSADRAIN - would be - apply the settings after emptying the transmit buffer
       // TCSAFLUSH - flush the buffers and apply the changes.
       retVal &= ( 0 == tcsetattr(m_portHandle, TCSANOW ,&portConfiguration) );
+      RETAILMSG(INFO, ("SetAttr = %d", retVal));
+      if ( !retVal )
+      {
+      	RETAILMSG(INFO, ("Step final = [%s]", strerror(errno)));
+      }
     }
  
 
