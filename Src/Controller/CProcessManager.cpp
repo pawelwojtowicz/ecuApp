@@ -147,6 +147,7 @@ void CProcessManager::NotifyTimer( const Int32& timerId )
 		{
 			if ( pIter->second->HeartbeatTimeoutExpired(currentTickCount))
 			{
+				RETAILMSG(WARNING, ("Process ID=%d terminated", pIter->second->GetProcessID() ));
 				m_processControl->TerminateProcess( pIter->second->GetProcessID());
 			}
 		}
@@ -180,6 +181,7 @@ void CProcessManager::NotifyUnitHeartbeat(	const UInt32 unitId, const tProcessSt
 	
 	if ( m_processList.end() != pIter )
 	{
+		RETAILMSG(DET1, ("ProcessManager - Received heartbeat from name [%s]id(%d) - status[%d]", pIter->second->GetShortName().c_str() ,unitId , status ))
 		pIter->second->SetUnitState( status );
 		pIter->second->UpdateHeartbeat(currentTickCount);
 		m_sessionManager.ReportItemState(m_sessionItemId,CheckProcessManagerState());

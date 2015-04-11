@@ -1,7 +1,7 @@
 #include "CHealthReporter.h"
 #include "ITimerManager.h"
 #include <ControllerInterface/CControllerProxy.h>
-#include <stdio.h>
+#include <Logger/Logger.h>
 
 namespace Runtime
 {
@@ -42,6 +42,7 @@ void CHealthReporter::NotifyTimer( const Int32& timerId )
 {
 	if (timerId == m_heartbeatTimerId)
 	{
+		RETAILMSG(DET1, ("Sending heartbeat - unit [%d] - state [%d]", m_runtimeUnitId, m_unitState ))
 		m_rControllerProxy.SendProcessHeartbeat( m_runtimeUnitId, m_unitState );
 	}
 }

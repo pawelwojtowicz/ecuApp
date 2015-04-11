@@ -35,7 +35,10 @@ void CTTS::Initialize()
 
 void CTTS::Say( const std::string& phrase )
 {
+	RETAILMSG(INFO,("TTS-Saying [%s] - begin ",phrase.c_str()));
   m_ttsEngine.Say(phrase);
+	RETAILMSG(INFO,("TTS-Saying - done"));
+
 }
 
 void CTTS::Shutdown()

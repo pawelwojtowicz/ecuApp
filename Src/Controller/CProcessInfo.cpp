@@ -16,6 +16,8 @@ static char sCfg_HeartbeatPeriod[]	= {"HeartbeatPeriod"};
 static char sCfg_ProcessDebugLevel[]= {"DebugLevel"};
 static char cCfg_ProcessShortname[]	= {"Shortname"};
 
+static UInt32 s_missedHeatbeatsCounterAlarm = 3;
+
 CProcessInfo::CProcessInfo(	const UInt32& unitId, 
 							const UInt32& defaultDebugZones,
 							const Configuration::CConfigNode* pConfigNode)
@@ -107,7 +109,7 @@ const std::string& CProcessInfo::GetProcessName() const
 
 void CProcessInfo::UpdateHeartbeat(const UInt32 currentTickCount )
 {
-	m_nextDeadlineForHeartbeat = currentTickCount + m_hearbeatTimeout*1000;
+	m_nextDeadlineForHeartbeat = currentTickCount + s_missedHeatbeatsCounterAlarm*m_hearbeatTimeout*1000;
 }
 
 bool CProcessInfo::HeartbeatTimeoutExpired(const UInt32 currentTickCount)
