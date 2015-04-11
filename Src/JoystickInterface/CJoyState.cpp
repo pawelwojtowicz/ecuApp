@@ -57,14 +57,17 @@ const UInt8 CJoyState::GetButtonState( const UInt8 index ) const
 
 void CJoyState::SetAxis( const UInt8 index, const UInt16 value )
 {
+	m_axisValues[index] = value;
 }
 
 void CJoyState::SetCrossState( const UInt8 index, const UInt8 value )
 {
+	m_crossStates[index] = value;
 }
 
 void CJoyState::SetButtonState( const UInt8 index, const UInt8 value )
 {
+	m_buttonsStates[index] = value;
 }
 
 bool CJoyState::ToByteStream()

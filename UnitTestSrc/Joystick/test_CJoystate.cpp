@@ -47,4 +47,3 @@ TEST( CJoyState,Basic )
 	EXPECT_EQ( a.GetCrossState( 3 ) , b.GetCrossState( 3 ) );
 	
 }
-
