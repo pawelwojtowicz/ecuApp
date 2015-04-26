@@ -1,5 +1,6 @@
 #ifndef RBCGATEWAY_RBCTYPES_H
 #define RBCGATEWAY_RBCTYPES_H
+#include <GlobalTypes.h>
 
 namespace RBCGateway
 {
@@ -35,7 +36,13 @@ typedef enum
 	legid_LeftFront 	= 0x00,
 	legid_RightFront	= 0x01,
 	legid_LeftRear		= 0x02,
-	legid_RightRear		= 0x03,
+	legid_RightRear		= 0x03
 }	tLegId;
+
+typedef enum
+{
+	mode_Transparent	= 0x00,
+	mode_Stream				= 0x01
+} tCommunicationMode;
 }
 #endif
