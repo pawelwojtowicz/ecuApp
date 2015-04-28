@@ -26,13 +26,13 @@ TEST( CMsgSetCommMode, SetStreamMode )
 	
 	msg.Serialize(testBuffer,25) ;
 
-	EXPECT_EQ( testBuffer[0] , 255 );
-	EXPECT_EQ( testBuffer[1] , 0x11 );
-	EXPECT_EQ( testBuffer[2] , 0x30 );
-	EXPECT_EQ( testBuffer[3] , '0' );
-	EXPECT_EQ( testBuffer[4] , '0' );
-	EXPECT_EQ( testBuffer[5] , '1' );
-	EXPECT_EQ( testBuffer[6] , 0x0A );
+	EXPECT_EQ( testBuffer[0] , static_cast<Int8>(0xFF ));
+	EXPECT_EQ( testBuffer[1] , static_cast<Int8>(0x11 ));
+	EXPECT_EQ( testBuffer[2] , static_cast<Int8>(0x30 ));
+	EXPECT_EQ( testBuffer[3] , static_cast<Int8>('0' ));
+	EXPECT_EQ( testBuffer[4] , static_cast<Int8>('0' ));
+	EXPECT_EQ( testBuffer[5] , static_cast<Int8>('1' ));
+	EXPECT_EQ( testBuffer[6] , static_cast<Int8>(0x0A ));
 	
 }
 
@@ -46,11 +46,11 @@ TEST( CMsgSetCommMode, SetTransparentModeMode )
 	
 	msg.Serialize(testBuffer,25) ;
 
-	EXPECT_EQ( testBuffer[0] , 255 );
-	EXPECT_EQ( testBuffer[1] , 0x11 );
-	EXPECT_EQ( testBuffer[2] , 0x30 );
-	EXPECT_EQ( testBuffer[3] , '0' );
-	EXPECT_EQ( testBuffer[4] , '0' );
-	EXPECT_EQ( testBuffer[5] , '0' );
-	EXPECT_EQ( testBuffer[6] , 0x0A );
+	EXPECT_EQ( testBuffer[0] , static_cast<Int8>(0xFF) );
+	EXPECT_EQ( testBuffer[1] , static_cast<Int8>(0x11 ));
+	EXPECT_EQ( testBuffer[2] , static_cast<Int8>(0x30) );
+	EXPECT_EQ( testBuffer[3] , static_cast<Int8>('0' ));
+	EXPECT_EQ( testBuffer[4] , static_cast<Int8>('0' ));
+	EXPECT_EQ( testBuffer[5] , static_cast<Int8>('0' ));
+	EXPECT_EQ( testBuffer[6] , static_cast<Int8>(0x0A ));
 }
