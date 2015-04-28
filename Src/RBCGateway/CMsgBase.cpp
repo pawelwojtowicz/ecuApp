@@ -51,10 +51,15 @@ size_t CMsgBase::Serialize( Int8* buffer, const size_t bufferSize )
 
 void CMsgBase::PutUnsignedHASCII(UInt32 value, size_t hasciiWidth)
 {	
-	Int8* tmp = m_serializationPosition;
 	char formattingString[10];
 	sprintf(formattingString,"%%0%dX",hasciiWidth);
 	m_serializationPosition += sprintf( m_serializationPosition, formattingString ,  value);
 }
 
+void CMsgBase::PutSignedHASCII(Int32 value, size_t hasciiWidth)
+{
+	char formattingString[10];
+	sprintf(formattingString,"%%0%dX",hasciiWidth);
+	m_serializationPosition += sprintf( m_serializationPosition, formattingString ,  value);
+}
 }
