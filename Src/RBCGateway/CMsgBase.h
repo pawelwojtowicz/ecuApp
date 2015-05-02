@@ -19,6 +19,8 @@ protected:
 	void PutSignedHASCII(Int32 value, size_t hasciiWidth);
 	
 public:
+	void SetAddress( const tModuleAddress address);
+	
 	size_t Serialize( Int8* buffer, const size_t bufferSize );
 		
 private:

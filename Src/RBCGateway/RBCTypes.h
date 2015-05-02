@@ -7,6 +7,7 @@ namespace RBCGateway
 
 typedef enum
 {
+	moduleInvalid			= 0x00,
 	moduleIO					= 0x13,
 	moduleHUB					= 0x11,
 	moduleDrive				= 0x12,
@@ -44,5 +45,19 @@ typedef enum
 	mode_Transparent	= 0x00,
 	mode_Stream				= 0x01
 } tCommunicationMode;
+
+typedef enum
+{
+	ctrlModeNoPWM		= 0x00,
+	ctrlModePosition= 0x01, 
+	ctrlModeSpeed		= 0x02
+} tControlMode;
+
+typedef enum
+{
+	ctrlPID_Proportional 	= 0x00,
+	ctrlPID_Integral			= 0x01,
+	crelPID_Derivative		= 0x02
+} tControlPIDGainType;
 }
 #endif

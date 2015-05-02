@@ -24,6 +24,11 @@ CMsgBase::CMsgBase( const tModuleAddress& address, const tCommandCodes& command)
 CMsgBase::~CMsgBase()
 {
 }
+
+void CMsgBase::SetAddress( const tModuleAddress address)
+{
+	m_address = address;
+}
 	
 size_t CMsgBase::Serialize( Int8* buffer, const size_t bufferSize )
 {
