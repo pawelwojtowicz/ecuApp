@@ -1,5 +1,5 @@
 OUTPUT=test_RBCGateway
-OBJ=test_CMsgSetCommMode.o CMsgSetCommMode.o CMsgBase.o test_CMsgSetAllMotors.o CMsgSetAllMotors.o CMsgSetControlMode.o test_CMsgSetControlMode.o CMsgConfigurePID.o test_CMsgConfigurePID.o
+OBJ=test_CMsgSetCommMode.o CMsgSetCommMode.o CMsgBase.o test_CMsgSetAllMotors.o CMsgSetAllMotors.o CMsgSetControlMode.o test_CMsgSetControlMode.o CMsgConfigurePID.o test_CMsgConfigurePID.o test_CInitSequenceFileParser.o CInitSequenceFileParser.o
 VPATH=$(SUBJ_PATH)/RBCGateway
 
 include ../../DevEnv/unitTestSettings
@@ -15,3 +15,5 @@ CMsgSetAllMotors.o:	CMsgSetAllMotors.cpp CMsgSetAllMotors.h
 CMsgSetControlMode.o:	CMsgSetControlMode.cpp CMsgSetControlMode.h
 CMsgConfigurePID.o: CMsgConfigurePID.cpp CMsgConfigurePID.h
 CMsgBase.o: CMsgBase.cpp CMsgBase.h
+test_CInitSequenceFileParser.o: test_CInitSequenceFileParser.cpp
+CInitSequenceFileParser.o: CInitSequenceFileParser.cpp CInitSequenceFileParser.h

@@ -2,10 +2,10 @@
 #define RBCGATEWAY_CRBCGATEWAY_H
 #include <Runtime/CRuntimeUnit.h>
 #include <UCL/CSerialPort.h>
+#include "CRBCSendThread.h"
 
 namespace RBCGateway
 {
-
 class CRBCGateway : public Runtime::CRuntimeUnit
 {
 public:
@@ -20,6 +20,8 @@ private:
 	CRBCGateway& operator=(const CRBCGateway&);
 	
 	UCL::CSerialPort m_port;
+	
+	CRBCSendThread m_sendThread;	
 };
 
 }

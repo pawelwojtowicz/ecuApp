@@ -8,6 +8,7 @@ namespace RBCGateway
 CRBCGateway::CRBCGateway()
 : Runtime::CRuntimeUnit("RBCGateway", "rbcGateway_Q")
 , m_port()
+, m_sendThread(m_port)
 {
 }
 
@@ -22,17 +23,16 @@ void CRBCGateway::Initialize()
 
 // important - initialize the timer manager
   InitializeTimerManager();
-  
+    
   std::string portName("/dev/ttyAMA0");
+  
   std::string configuration("baud=19200 data=8 parity=none stop=2");
   if (m_port.Open(portName))
   {
   
   	if ( m_port.Configure(configuration) )
   	{
-  		char tmp[] = {"Test Stringa"};
-  		m_port.Write(tmp, 12); 
-  	}
+			m_sendThread.Initialize();  	}
   	else
   	{
   		RETAILMSG(ERROR,("Failed to configure the port"));
@@ -48,6 +48,7 @@ void CRBCGateway::Initialize()
 
 void CRBCGateway::Shutdown()
 {
+	m_sendThread.Shutdown();
 }
 
 }

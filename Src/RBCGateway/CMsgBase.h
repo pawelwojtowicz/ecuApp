@@ -32,5 +32,8 @@ private:
 	
 	Int8* m_serializationPosition;
 };
+
+typedef std::list<CMsgBase*> tMsgList;
+typedef tMsgList::const_iterator tMsgListIterator;
 }
 #endif

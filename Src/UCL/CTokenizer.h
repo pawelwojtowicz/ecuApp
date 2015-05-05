@@ -15,6 +15,7 @@ public:
 
 	unsigned int GetTokenCount();
 	const std::string& GetToken(const unsigned int& index );
+	const tStringVector& GetTokens() { return m_tokenizedFields; }; 
 
 private:
 	void Tokenize( const char* stringBuffer, const size_t bufferSize, const char* delimiter );
