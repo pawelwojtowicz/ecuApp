@@ -47,7 +47,6 @@ void CRBCGateway::Initialize()
   	{
   		RETAILMSG(ERROR,("Failed to configure the port"));
   	}
-  	
   }
   else
   {

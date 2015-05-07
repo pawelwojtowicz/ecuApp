@@ -3,6 +3,8 @@
 #include "CMsgFactory.h"
 #include <UCL/CSerialPort.h>
 #include <JoystickInterface/CJoyState.h>
+#include <JoystickInterface/CJoystickProxy.h>
+
 
 #define OUTPUT_BUFFER_SIZE 300
 
@@ -12,7 +14,7 @@ CRBCSendThread::CRBCSendThread( UCL::CSerialPort& rSerialPort, Joystick::CJoysti
 : m_run(true)
 , m_initialized(false)
 , m_rSerialPort(rSerialPort)
-, m_joystickPoxy(joystick)
+, m_joystickProxy(joystick)
 {
 }
 

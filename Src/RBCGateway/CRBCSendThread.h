@@ -33,7 +33,7 @@ private:
 	
 	UCL::CSerialPort& m_rSerialPort;
 	
-	Joystick::CJoystickProxy& m_joystickPoxy;
+	Joystick::CJoystickProxy& m_joystickProxy;
 	
 	tMsgList m_initSequence;
 
