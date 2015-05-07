@@ -2,15 +2,17 @@
 #include "CInitSequenceFileParser.h"
 #include "CMsgFactory.h"
 #include <UCL/CSerialPort.h>
+#include <JoystickInterface/CJoyState.h>
 
 #define OUTPUT_BUFFER_SIZE 300
 
 namespace RBCGateway
 {
-CRBCSendThread::CRBCSendThread( UCL::CSerialPort& rSerialPort)
+CRBCSendThread::CRBCSendThread( UCL::CSerialPort& rSerialPort, Joystick::CJoystickProxy& joystick )
 : m_run(true)
 , m_initialized(false)
 , m_rSerialPort(rSerialPort)
+, m_joystickPoxy(joystick)
 {
 }
 
@@ -38,11 +40,15 @@ void CRBCSendThread::Shutdown()
 	
 void CRBCSendThread::Run()
 {
+
 	while(m_run)
 	{
 		if (m_initialized)
 		{
-			// read the joystick and send all motor message
+			Joystick::CJoyState joystate;
+    
+    	m_joystickProxy.GetJoystickState(joystate);
+
 		}
 		else
 		{

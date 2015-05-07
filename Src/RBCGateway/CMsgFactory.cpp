@@ -3,6 +3,8 @@
 #include "CMsgSetAllMotors.h"
 #include "CMsgSetCommMode.h"
 #include "CMsgSetControlMode.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 namespace RBCGateway
 {
@@ -17,19 +19,47 @@ CMsgBase* CMsgFactory::CreateMessage(tStringVector arguments)
 		
 		if (msgName == "ConfigurePID")
 		{
-			pMsgInstance = new CMsgConfigurePID();
+			if (2 == arguments.size())
+			{
+				CMsgConfigurePID* pconfigurePID = new CMsgConfigurePID();
+				
+				pconfigurePID->SetAddress(static_cast<tModuleAddress>(atoi(arguments[1].c_str())));
+				pconfigurePID->SetMotorID(atoi(arguments[2].c_str()));
+				pconfigurePID->SetControlMode(static_cast<tControlMode>(atoi(arguments[3].c_str())));
+				pconfigurePID->SetPIDGainType( static_cast<tControlPIDGainType>(atoi(arguments[4].c_str())) );
+				pconfigurePID->SetPIDGain(atoi(arguments[5].c_str()));	
+			
+				pMsgInstance = pconfigurePID;
+			}
 		}
 		else if (msgName == "SetAllMotors")
 		{
-			pMsgInstance = new CMsgSetAllMotors();
+			CMsgSetAllMotors* pSetAllMotors = new CMsgSetAllMotors();
+			
+			pMsgInstance = pSetAllMotors;
 		}
 		else if (msgName == "SetCommMode")
 		{
-			pMsgInstance = new CMsgSetCommMode();
+			if ( 2 == arguments.size() )
+			{
+				CMsgSetCommMode* pSetCommMode = new CMsgSetCommMode();
+				
+				pSetCommMode->SetCommunicationMode(static_cast<tCommunicationMode>(atoi(arguments[1].c_str())));
+			
+				pMsgInstance = pSetCommMode;
+			}
 		}
 		else if (msgName == "SetControlMode")
 		{
-			pMsgInstance = new CMsgSetControlMode();
+			if (4 == arguments.size() )
+			{
+				CMsgSetControlMode* pSetControlMode = new CMsgSetControlMode();
+				
+				pSetControlMode->SetAddress(static_cast<tModuleAddress>(atoi(arguments[1].c_str())));
+				pSetControlMode->SetMotorID(atoi(arguments[2].c_str()));
+				pSetControlMode->SetControlMode(static_cast<tControlMode>(atoi(arguments[3].c_str())));
+				pMsgInstance = pSetControlMode;
+			}
 		}	
 	}
 	

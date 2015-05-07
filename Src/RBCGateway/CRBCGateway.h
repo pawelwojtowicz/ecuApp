@@ -2,6 +2,8 @@
 #define RBCGATEWAY_CRBCGATEWAY_H
 #include <Runtime/CRuntimeUnit.h>
 #include <UCL/CSerialPort.h>
+#include <TTSInterface/CTTSProxy.h>
+#include <JoystickInterface/CJoystickProxy.h>
 #include "CRBCSendThread.h"
 
 namespace RBCGateway
@@ -20,6 +22,10 @@ private:
 	CRBCGateway& operator=(const CRBCGateway&);
 	
 	UCL::CSerialPort m_port;
+	
+	TTS::CTTSProxy m_ttsProxy;
+  
+  Joystick::CJoystickProxy m_joystickProxy;
 	
 	CRBCSendThread m_sendThread;	
 };

@@ -1,5 +1,7 @@
 #include "CRBCGateway.h"
 #include <Logger/Logger.h>
+#include <JoystickInterface/CJoyState.h>
+
 
 RBCGateway::CRBCGateway gs;
 
@@ -8,8 +10,12 @@ namespace RBCGateway
 CRBCGateway::CRBCGateway()
 : Runtime::CRuntimeUnit("RBCGateway", "rbcGateway_Q")
 , m_port()
-, m_sendThread(m_port)
+, m_ttsProxy(GetMessenger())
+, m_joystickProxy(GetMessenger())
+, m_sendThread(m_port,m_joystickProxy)
+
 {
+
 }
 
 CRBCGateway::~CRBCGateway()
@@ -23,6 +29,10 @@ void CRBCGateway::Initialize()
 
 // important - initialize the timer manager
   InitializeTimerManager();
+  
+	m_ttsProxy.Initialize();
+	
+	m_joystickProxy.Initialize();
     
   std::string portName("/dev/ttyAMA0");
   
