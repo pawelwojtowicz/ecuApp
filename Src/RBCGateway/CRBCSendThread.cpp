@@ -4,6 +4,10 @@
 #include <UCL/CSerialPort.h>
 #include <JoystickInterface/CJoyState.h>
 #include <JoystickInterface/CJoystickProxy.h>
+#include "CMsgSetAllMotors.h"
+#include <UCL/SystemEnvironment.h>
+#include <unistd.h>
+#include <Logger/Logger.h>
 
 
 #define OUTPUT_BUFFER_SIZE 300
@@ -27,7 +31,9 @@ void CRBCSendThread::Initialize()
   CMsgFactory messageFactory;
   CInitSequenceFileParser initSequenceParser(messageFactory);
   
- 	std::string iniFileName("test.txt");
+	std::string iniFileName(UCL::SystemEnvironment::ResolvePath(UCL::SystemEnvironment::Dir_Config, "test.txt"));
+	
+	RETAILMSG(INFO, ("InitSequence from [%s]", iniFileName.c_str()));
   
   m_initSequence = initSequenceParser.ParseFile(iniFileName);
 
@@ -42,6 +48,7 @@ void CRBCSendThread::Shutdown()
 	
 void CRBCSendThread::Run()
 {
+	CMsgSetAllMotors rtControlMessage;
 
 	while(m_run)
 	{
@@ -50,13 +57,17 @@ void CRBCSendThread::Run()
 			Joystick::CJoyState joystate;
     
     	m_joystickProxy.GetJoystickState(joystate);
-
+    	
+    	usleep( 100 * 1000 );
+    	SendMessage(&rtControlMessage);
 		}
 		else
 		{
 			for ( tMsgListIterator pMsgIter = m_initSequence.begin(); m_initSequence.end() != pMsgIter ; ++pMsgIter )
 			{
 				SendMessage(*pMsgIter);
+				usleep( 100 * 1000 );
+
 			}
 			//execute the initialization sequence;
 			m_initialized = true;
