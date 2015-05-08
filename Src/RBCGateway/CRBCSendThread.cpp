@@ -8,9 +8,14 @@
 #include <UCL/SystemEnvironment.h>
 #include <unistd.h>
 #include <Logger/Logger.h>
+#include <limits>
+#include <cstdio>
 
 
 #define OUTPUT_BUFFER_SIZE 300
+#define MAX_JOY 32767
+
+#define MAX_STEERING 17000
 
 namespace RBCGateway
 {
@@ -55,11 +60,34 @@ void CRBCSendThread::Run()
 		if (m_initialized)
 		{
 			Joystick::CJoyState joystate;
-    
     	m_joystickProxy.GetJoystickState(joystate);
+    	UInt8 axisCount(joystate.GetAxisCount());
     	
-    	usleep( 100 * 1000 );
+    	if (axisCount > 0 )
+			{
+				Int32 steering(0);
+				float steeringFactor(static_cast<float>(joystate.GetAxis(0))/MAX_JOY);
+				
+				steering = static_cast<Int32>( steeringFactor * MAX_STEERING);
+				
+	    	Int32 speed(0);
+	    	float speedFactor = (static_cast<float>(-joystate.GetAxis(1))/MAX_JOY);
+	    	
+	    	speed = static_cast<Int32>( speedFactor * std::numeric_limits<Int32>::max());
+	    	
+	    	rtControlMessage.SetSteeringPosition( legid_LeftFront, steering );
+	    	rtControlMessage.SetSteeringPosition( legid_RightFront, steering );
+	    	
+	    	rtControlMessage.SetDrivingSpeed(legid_LeftFront, speed);
+	    	rtControlMessage.SetDrivingSpeed(legid_RightFront, speed);
+	    	rtControlMessage.SetDrivingSpeed(legid_LeftRear, speed);
+	    	rtControlMessage.SetDrivingSpeed(legid_RightRear, speed);
+
+				RETAILMSG(INFO,("DrivingControl Speed(%02.0f) Steering(%02.0f)", speedFactor*100 , steeringFactor*100))
+    	}
+    	
     	SendMessage(&rtControlMessage);
+			usleep( 100 * 1000 );
 		}
 		else
 		{
