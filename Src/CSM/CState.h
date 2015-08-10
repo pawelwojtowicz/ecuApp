@@ -1,9 +1,10 @@
 #ifndef CSM_CSTATE_H
 #define CSM_CSTATE_H
+#include <GlobalTypes.h>
 
 namespace CSM
 {
-class IAction
+class IAction;
 class CTransition;
 
 class CState
@@ -26,11 +27,11 @@ public:
 private:
 	std::string m_stateName;
 	
-	IAction* m_enterAction;
+	IAction* m_pEnterAction;
 	
-	IAction* m_leafAction;
+	IAction* m_pLeafAction;
 	
-	IAction* m_exitAction;	
+	IAction* m_pExitAction;	
 };
 }
 #endif

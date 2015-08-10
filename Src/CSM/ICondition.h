@@ -3,17 +3,17 @@
 
 namespace CSM
 {
-class IConditition
+class ICondition
 {
 public:
-	IConditition() {};
-	virtual ~IConditition() {};
+	ICondition() {};
+	virtual ~ICondition() {};
 	
 	virtual bool Evaluate() const = 0;
 	
 private:
-	IConditition(const IConditition&);
-	IConditition& operator=(const IConditition&);
+	ICondition(const ICondition&);
+	ICondition& operator=(const ICondition&);
 };
 }
 #endif

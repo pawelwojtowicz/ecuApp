@@ -1,5 +1,6 @@
 #ifndef CSM_CTRANSITION_H
 #define CSM_CTRANSITION_H
+#include <GlobalTypes.h>
 
 namespace CSM
 {
@@ -9,7 +10,7 @@ class ICondition;
 class CTransition
 {
 public:
-	CTransition( const std::const name, ICondition* pCondition, IAction* pAction);
+	CTransition( const std::string& name, ICondition* pCondition, IAction* pAction);
 	virtual ~CTransition();
 	
 	bool CanExecute();
