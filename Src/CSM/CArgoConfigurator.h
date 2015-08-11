@@ -14,8 +14,7 @@ public:
 	virtual ~CArgoConfigurator();
 	
 	bool InitializeStateMachine(const std::string& stateMachineFileName ,
-															ICSMBuilder* pBuilder,
-															IActionFactory* pActionFactory );
+															ICSMBuilder* pBuilder );
 	
 public:
 	CArgoConfigurator(const CArgoConfigurator&);

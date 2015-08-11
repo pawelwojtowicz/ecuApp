@@ -1,6 +1,5 @@
 #include "CArgoConfigurator.h"
 #include "ICSMBuilder.h"
-#include "IActionFactory.h"
 #include <XMLParser/xmlParser.h>
 
 namespace CSM
@@ -22,10 +21,9 @@ CArgoConfigurator::~CArgoConfigurator()
 }
 	
 bool CArgoConfigurator::InitializeStateMachine(	const std::string& stateMachineFileName ,
-																								ICSMBuilder* pBuilder,
-																								IActionFactory* pActionFactory )
+																								ICSMBuilder* pBuilder )
 {
-	if ( 0 == pBuilder || 0 == pActionFactory )
+	if ( 0 == pBuilder )
 	{
 		return false;
 	}
