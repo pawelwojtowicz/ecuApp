@@ -1,5 +1,5 @@
 <?xml version = '1.0' encoding = 'UTF-8' ?>
-<XMI xmi.version = '1.2' xmlns:UML = 'org.omg.xmi.namespace.UML' timestamp = 'Tue Aug 11 17:35:48 EDT 2015'>
+<XMI xmi.version = '1.2' xmlns:UML = 'org.omg.xmi.namespace.UML' timestamp = 'Wed Aug 12 19:12:18 EDT 2015'>
   <XMI.header>    <XMI.documentation>
       <XMI.exporter>ArgoUML (using Netbeans XMI Writer version 1.0)</XMI.exporter>
       <XMI.exporterVersion>0.34(6) revised on $Date: 2010-01-11 22:20:14 +0100 (Mon, 11 Jan 2010) $ </XMI.exporterVersion>
@@ -29,13 +29,18 @@
                   </UML:StateVertex.outgoing>
                   <UML:State.entry>
                     <UML:CallAction xmi.id = '127-0-1-1--5dd1d8e8:14f1ea68312:-8000:0000000000000970'
-                      name = 'A_EnteringParent1' isSpecification = 'false' isAsynchronous = 'false'/>
+                      name = 'A_EnteringParent1' isSpecification = 'false' isAsynchronous = 'false'>
+                      <UML:Action.script>
+                        <UML:ActionExpression xmi.id = '127-0-1-1--5dd1d8e8:14f1ea68312:-8000:0000000000000977'
+                          language = 'Java' body = ''/>
+                      </UML:Action.script>
+                    </UML:CallAction>
                   </UML:State.entry>
                   <UML:CompositeState.subvertex>
                     <UML:SimpleState xmi.id = '127-0-1-1--5dd1d8e8:14f1ea68312:-8000:0000000000000967'
                       name = 'Child1' isSpecification = 'false'>
                       <UML:StateVertex.outgoing>
-                        <UML:Transition xmi.idref = '127-0-1-1--5dd1d8e8:14f1ea68312:-8000:0000000000000969'/>
+                        <UML:Transition xmi.idref = '127-0-1-1--5dd1d8e8:14f1ea68312:-8000:0000000000000979'/>
                       </UML:StateVertex.outgoing>
                       <UML:StateVertex.incoming>
                         <UML:Transition xmi.idref = '127-0-1-1--5dd1d8e8:14f1ea68312:-8000:000000000000096D'/>
@@ -47,7 +52,7 @@
                         <UML:Transition xmi.idref = '127-0-1-1--5dd1d8e8:14f1ea68312:-8000:0000000000000974'/>
                       </UML:StateVertex.outgoing>
                       <UML:StateVertex.incoming>
-                        <UML:Transition xmi.idref = '127-0-1-1--5dd1d8e8:14f1ea68312:-8000:0000000000000969'/>
+                        <UML:Transition xmi.idref = '127-0-1-1--5dd1d8e8:14f1ea68312:-8000:0000000000000979'/>
                       </UML:StateVertex.incoming>
                       <UML:State.exit>
                         <UML:CallAction xmi.id = '127-0-1-1--5dd1d8e8:14f1ea68312:-8000:0000000000000971'
@@ -81,21 +86,12 @@
             </UML:CompositeState>
           </UML:StateMachine.top>
           <UML:StateMachine.transitions>
-            <UML:Transition xmi.id = '127-0-1-1--5dd1d8e8:14f1ea68312:-8000:0000000000000969'
-              name = 'E_CHANGE_TO_CHILD2' isSpecification = 'false'>
-              <UML:Transition.guard>
-                <UML:Guard xmi.id = '127-0-1-1--5dd1d8e8:14f1ea68312:-8000:000000000000096A'
-                  name = 'C_CAN_CHANGE_TO_CHILD1' isSpecification = 'false'/>
-              </UML:Transition.guard>
-              <UML:Transition.source>
-                <UML:SimpleState xmi.idref = '127-0-1-1--5dd1d8e8:14f1ea68312:-8000:0000000000000967'/>
-              </UML:Transition.source>
-              <UML:Transition.target>
-                <UML:SimpleState xmi.idref = '127-0-1-1--5dd1d8e8:14f1ea68312:-8000:0000000000000968'/>
-              </UML:Transition.target>
-            </UML:Transition>
             <UML:Transition xmi.id = '127-0-1-1--5dd1d8e8:14f1ea68312:-8000:000000000000096B'
               isSpecification = 'false'>
+              <UML:Transition.guard>
+                <UML:Guard xmi.id = '127-0-1-1--3f2e5a0b:14f242e0c62:-8000:0000000000000C6D'
+                  name = 'C_CanJump' isSpecification = 'false'/>
+              </UML:Transition.guard>
               <UML:Transition.trigger>
                 <UML:SignalEvent xmi.idref = '127-0-1-1--5dd1d8e8:14f1ea68312:-8000:000000000000096C'/>
               </UML:Transition.trigger>
@@ -146,14 +142,28 @@
                 <UML:SimpleState xmi.idref = '127-0-1-1--5dd1d8e8:14f1ea68312:-8000:0000000000000973'/>
               </UML:Transition.target>
             </UML:Transition>
+            <UML:Transition xmi.id = '127-0-1-1--5dd1d8e8:14f1ea68312:-8000:0000000000000979'
+              isSpecification = 'false'>
+              <UML:Transition.trigger>
+                <UML:SignalEvent xmi.idref = '127-0-1-1--5dd1d8e8:14f1ea68312:-8000:000000000000097A'/>
+              </UML:Transition.trigger>
+              <UML:Transition.source>
+                <UML:SimpleState xmi.idref = '127-0-1-1--5dd1d8e8:14f1ea68312:-8000:0000000000000967'/>
+              </UML:Transition.source>
+              <UML:Transition.target>
+                <UML:SimpleState xmi.idref = '127-0-1-1--5dd1d8e8:14f1ea68312:-8000:0000000000000968'/>
+              </UML:Transition.target>
+            </UML:Transition>
           </UML:StateMachine.transitions>
         </UML:StateMachine>
         <UML:SignalEvent xmi.id = '127-0-1-1--5dd1d8e8:14f1ea68312:-8000:000000000000096C'
           name = 'E_GoToParent2' isSpecification = 'false'/>
         <UML:SignalEvent xmi.id = '127-0-1-1--5dd1d8e8:14f1ea68312:-8000:000000000000096E'
-          name = 'E_GoBackToChild1' isSpecification = 'false'/>
+          name = 'E_GoToChild1' isSpecification = 'false'/>
         <UML:SignalEvent xmi.id = '127-0-1-1--5dd1d8e8:14f1ea68312:-8000:0000000000000975'
           name = 'E_GoOutside' isSpecification = 'false'/>
+        <UML:SignalEvent xmi.id = '127-0-1-1--5dd1d8e8:14f1ea68312:-8000:000000000000097A'
+          name = 'E_GoToChil2' isSpecification = 'false'/>
       </UML:Namespace.ownedElement>
     </UML:Model>
   </XMI.content>
