@@ -17,7 +17,8 @@ public:
 												const std::string& leafActionName, 
 												const std::string& exitActioName) = 0;
 	
-	virtual void AddTransition(	const std::string& sourceStateName, 
+	virtual void AddTransition(	const std::string& eventName,
+															const std::string& sourceStateName, 
 															const std::string& destinationStateName, 
 															const std::string& conditionName, 
 															const std::string& actionName) = 0;

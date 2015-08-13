@@ -59,6 +59,8 @@ bool CArgoConfigurator::InitializeStateMachine(	const std::string& stateMachineF
 		return false;
 	}
 	
+	m_pCSMBuilder = pBuilder;
+	
 	if ( stateMachineFileName.empty() )
 	{
 		return false;
@@ -71,8 +73,6 @@ bool CArgoConfigurator::InitializeStateMachine(	const std::string& stateMachineF
 		return false;
 	}
 	
-	printf("found %s\n", s_constXMI_Content );
-	
 	const XMLNode& contentNode = xMainNode.getChildNode( s_constXMI_Content , 0 );
 	
 	if (1 !=  contentNode.nChildNode(s_constUML_Model) )
@@ -80,17 +80,12 @@ bool CArgoConfigurator::InitializeStateMachine(	const std::string& stateMachineF
 		return false;
 	}
 	
-	printf("found %s\n", s_constUML_Model );
-	
 	const XMLNode& modelNode = contentNode.getChildNode( s_constUML_Model , 0 );
 	
 	if (1 !=  modelNode.nChildNode(s_constUML_OwnedElement) )
 	{
 		return false;
 	}
-
-	printf("found %s\n", s_constUML_OwnedElement );
-
 
 	const XMLNode& ownedElementNode = modelNode.getChildNode( s_constUML_OwnedElement , 0 );
 	
@@ -103,7 +98,6 @@ bool CArgoConfigurator::InitializeStateMachine(	const std::string& stateMachineF
 			m_IdToNameMap.insert( tIdToNameMap::value_type( signalEventNode.getAttribute(s_constUML_xmiId) , 																												signalEventNode.getAttribute(s_constUML_name) ) );
 			const std::string& name( signalEventNode.getAttribute(s_constUML_name));
 			const std::string& id(signalEventNode.getAttribute(s_constUML_xmiId));			
-			printf("%s %s\n", name.c_str(), id.c_str());
 		}
 	}
 	
@@ -111,7 +105,7 @@ bool CArgoConfigurator::InitializeStateMachine(	const std::string& stateMachineF
 	
 	for ( UInt32 soIndex = 0 ; soIndex < numberOfStateMachines ; ++soIndex )
 	{
-		const XMLNode& stateMachineNode = ownedElementNode.getChildNode( s_constUML_StateMachine , 0 );
+		const XMLNode& stateMachineNode = ownedElementNode.getChildNode( s_constUML_StateMachine , soIndex );
 		
 		const std::string smName = stateMachineNode.getAttribute(s_constUML_name);
 		
@@ -190,17 +184,13 @@ void CArgoConfigurator::ReadCompositeStateConfiguration ( const std::string& par
 		}
 	}
 
-	
-
-	printf("%s - parent: %15s, name:%15s, enter:%15s, do:%15s, exit:%s\n" ,
-	stateId.c_str(), 
-																						stateStructure.ParentName.c_str(),
-																						stateStructure.StateName.c_str(),
-																						stateStructure.EnterActionName.c_str(),
-																						stateStructure.LeafActionName.c_str(),
-																						stateStructure.ExitActionName.c_str());
-																						
 	m_statesMap.insert( tIdToState::value_type(stateId, stateStructure));
+	
+	m_pCSMBuilder->AddState( stateStructure.ParentName,
+													 stateStructure.StateName,
+													 stateStructure.EnterActionName,
+													 stateStructure.LeafActionName,
+													 stateStructure.ExitActionName);																						
 }
 
 //------------------------------------------------------------------------------------------
@@ -260,7 +250,6 @@ void CArgoConfigurator::ConfigureTransitions( const XMLNode& transitions)
 				if (m_statesMap.end() != cIter )
 				{
 					sourceName = cIter->second.StateName;
-					printf("sourceName %s\n",sourceName.c_str() );
 				}
 			} 
 			else if ( 1== sourceNode.nChildNode(s_constUML_SimpleState) )
@@ -272,7 +261,6 @@ void CArgoConfigurator::ConfigureTransitions( const XMLNode& transitions)
 				if (m_statesMap.end() != cIter )
 				{
 					sourceName = cIter->second.StateName;
-					printf("sourceName %s\n",sourceName.c_str() );
 				}
 			} 
 
@@ -290,7 +278,6 @@ void CArgoConfigurator::ConfigureTransitions( const XMLNode& transitions)
 				if (m_statesMap.end() != cIter )
 				{
 					target = cIter->second.StateName;
-					printf("target %s\n",sourceName.c_str() );
 				}
 			}
 			else if ( 1== sourceNode.nChildNode(s_constUML_SimpleState) )
@@ -302,7 +289,6 @@ void CArgoConfigurator::ConfigureTransitions( const XMLNode& transitions)
 				if (m_statesMap.end() != cIter )
 				{
 					target = cIter->second.StateName;
-					printf("target %s\n",sourceName.c_str() );
 				}
 			}
 
@@ -315,8 +301,6 @@ void CArgoConfigurator::ConfigureTransitions( const XMLNode& transitions)
 			{
 				guardName =
 				guardNode.getChildNode(s_constUML_Guard).getAttribute(s_constUML_name);
-				
-				printf("guardName %s\n", guardName.c_str());
 			}
 		}			
 
@@ -327,14 +311,14 @@ void CArgoConfigurator::ConfigureTransitions( const XMLNode& transitions)
 			{
 				actionName =
 				transitionAction.getChildNode(s_constUML_CallAction).getAttribute(s_constUML_name);
-				
-				printf("transitionActionName %s\n", actionName.c_str());
 			}
 		}			
 
-
-
-		
+		m_pCSMBuilder->AddTransition(	triggerName, 
+																	sourceName,
+																	target,
+																	guardName,
+																	actionName);
 	}
 }
 

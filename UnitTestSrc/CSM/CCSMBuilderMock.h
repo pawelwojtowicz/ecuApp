@@ -15,7 +15,8 @@ public:
 												std::string leafActionName, 
 												std::string exitActioName) = 0;
 	
-	virtual void AddTransition(	std::string sourceStateName, 
+	virtual void AddTransition(	std::string eventName,
+															std::string sourceStateName, 
 															std::string destinationStateName, 
 															std::string conditionName, 
 															std::string actionName) = 0;
@@ -40,12 +41,13 @@ private:
 		m_pBuilderUTIF->AddState(parent,stateName,enterActionName,leafActionName,exitActioName);
 	};
 	
-	virtual void AddTransition(	const std::string& sourceStateName, 
+	virtual void AddTransition(	const std::string& eventName,
+															const std::string& sourceStateName, 
 															const std::string& destinationStateName, 
 															const std::string& conditionName, 
 															const std::string& actionName)
 	{
-		m_pBuilderUTIF->AddTransition(sourceStateName,destinationStateName,conditionName,actionName);
+		m_pBuilderUTIF->AddTransition(eventName,sourceStateName,destinationStateName,conditionName,actionName);
 	};
 
 	
@@ -66,11 +68,11 @@ public:
 												std::string leafActionName, 
 												std::string exitActioName));
 												
-	MOCK_METHOD4(AddTransition, void (	std::string sourceStateName, 
-															std::string destinationStateName, 
-															std::string conditionName, 
-															std::string actionName));
-
+	MOCK_METHOD5(AddTransition, void (	std::string eventName,
+																			std::string sourceStateName, 
+																			std::string destinationStateName, 
+																			std::string conditionName, 
+																			std::string actionName));
 };
 
 

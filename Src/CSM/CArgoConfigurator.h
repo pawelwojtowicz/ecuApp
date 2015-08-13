@@ -45,6 +45,8 @@ public:
 	tIdToState m_statesMap;
 	
 	tIdToNameMap m_IdToNameMap;
+	
+	ICSMBuilder* m_pCSMBuilder;
 };
 }
 #endif
