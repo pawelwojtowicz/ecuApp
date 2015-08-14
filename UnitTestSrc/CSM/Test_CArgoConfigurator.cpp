@@ -10,7 +10,7 @@ TEST( CArgoConfigurator, TestScenario_1)
 {
 	CCSMBuilderMock mockInstance;
 	CCSMBuilderIF mockInterface(&mockInstance);
-	std::string configFileChange(UCL::SystemEnvironment::ResolveEnvironmentVariable("${UNITTEST_DIR}/CSM/CSM_testConfig_1.xmi"));
+	std::string configFile(UCL::SystemEnvironment::ResolveEnvironmentVariable("${UNITTEST_DIR}/CSM/CSM_testConfig_1.xmi"));
 	std::string smName("TestScenario_1");
 
 	EXPECT_CALL(mockInstance, AddState( std::string(""),		 					// parent, 
@@ -78,15 +78,15 @@ TEST( CArgoConfigurator, TestScenario_1)
 																					std::string("")		  					// actionName);
 																					)).Times(1);
 	
-	CSM::CArgoConfigurator configurator;
-	configurator.InitializeStateMachine(configFileChange,smName ,&mockInterface);
+	CSM::CArgoConfigurator configurator(configFile, smName);
+	configurator.InitializeStateMachine(&mockInterface);
 }
 
 TEST( CArgoConfigurator, TestScenario_2)
 {
 	CCSMBuilderMock mockInstance;
 	CCSMBuilderIF mockInterface(&mockInstance);
-	std::string configFileChange(UCL::SystemEnvironment::ResolveEnvironmentVariable("${UNITTEST_DIR}/CSM/CSM_testConfig_1.xmi"));
+	std::string configFile(UCL::SystemEnvironment::ResolveEnvironmentVariable("${UNITTEST_DIR}/CSM/CSM_testConfig_1.xmi"));
 	std::string smName("TestScenario_2");
 
 	EXPECT_CALL(mockInstance, AddState( std::string(""),		 					// parent, 
@@ -118,6 +118,6 @@ TEST( CArgoConfigurator, TestScenario_2)
 																					std::string("")		  			// actionName);
 																					)).Times(1);
 
-	CSM::CArgoConfigurator configurator;
-	configurator.InitializeStateMachine(configFileChange,smName ,&mockInterface);
+	CSM::CArgoConfigurator configurator(configFile, smName);
+	configurator.InitializeStateMachine(&mockInterface);
 }

@@ -27,26 +27,32 @@ class CArgoConfigurator
 	typedef tIdToNameMap::const_iterator tIdToNameMapConstIterator;
 	
 public:
-	CArgoConfigurator();
+	CArgoConfigurator( const std::string& stateMachineConfigFile, const std::string& statechartName );
 	virtual ~CArgoConfigurator();
 	
-	bool InitializeStateMachine( 	const std::string& stateMachineFileName , 
-																const std::string& stateMachineName, 
-																ICSMBuilder* pBuilder );
+	bool InitializeStateMachine( ICSMBuilder* pBuilder );
 																
 private:
-	void ReadCompositeStateConfiguration ( const std::string& parentName, const XMLNode& stateConfigNode );
-	const std::string ReadActionConfiguration( const XMLNode& actionConfiguration );
-	void ConfigureTransitions( const XMLNode& transitions);
-public:
 	CArgoConfigurator(const CArgoConfigurator&);
 	CArgoConfigurator& operator=(const CArgoConfigurator&);
+
+private:
+	void ReadCompositeStateConfiguration ( const std::string& parentName, const XMLNode& stateConfigNode );
+	void ConfigureTransitions( const XMLNode& transitions);
+  const std::string ReadNestedProperty( const XMLNode& parentNode , const char firstLevelNodeName[], const char secondLevelNodeName[], const char propertyName[] );
+
+private:
+	std::string m_xmiFileName;
 	
+	std::string m_statechartName;	
+	
+	ICSMBuilder* m_pCSMBuilder;
+
 	tIdToState m_statesMap;
 	
 	tIdToNameMap m_IdToNameMap;
 	
-	ICSMBuilder* m_pCSMBuilder;
+	
 };
 }
 #endif

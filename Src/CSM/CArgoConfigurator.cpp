@@ -40,7 +40,11 @@ static const char s_constUML_ExitAction[]		= {"UML:State.exit"};
 
 
 
-CArgoConfigurator::CArgoConfigurator()
+CArgoConfigurator::CArgoConfigurator(const std::string& xmiFileName, const std::string& statechartName)
+: m_xmiFileName(xmiFileName)
+, m_statechartName(statechartName)
+, m_pCSMBuilder(0)
+
 {
 }
 
@@ -52,7 +56,7 @@ CArgoConfigurator::~CArgoConfigurator()
 
 //------------------------------------------------------------------------------------------
 	
-bool CArgoConfigurator::InitializeStateMachine(	const std::string& stateMachineFileName , const std::string& stateMachineName, ICSMBuilder* pBuilder )
+bool CArgoConfigurator::InitializeStateMachine(	ICSMBuilder* pBuilder )
 {
 	if ( 0 == pBuilder )
 	{
@@ -61,12 +65,12 @@ bool CArgoConfigurator::InitializeStateMachine(	const std::string& stateMachineF
 	
 	m_pCSMBuilder = pBuilder;
 	
-	if ( stateMachineFileName.empty() )
+	if ( m_xmiFileName.empty() )
 	{
 		return false;
 	}
 	
-	XMLNode xMainNode=XMLNode::openFileHelper(stateMachineFileName.c_str(),s_constXMI);
+	XMLNode xMainNode=XMLNode::openFileHelper(m_xmiFileName.c_str(),s_constXMI);
 	
 	if ( 1 !=  xMainNode.nChildNode(s_constXMI_Content) )
 	{
@@ -96,8 +100,6 @@ bool CArgoConfigurator::InitializeStateMachine(	const std::string& stateMachineF
 			const XMLNode& signalEventNode = ownedElementNode.getChildNode( s_constUML_SignalEvent , i );
 			
 			m_IdToNameMap.insert( tIdToNameMap::value_type( signalEventNode.getAttribute(s_constUML_xmiId) , 																												signalEventNode.getAttribute(s_constUML_name) ) );
-			const std::string& name( signalEventNode.getAttribute(s_constUML_name));
-			const std::string& id(signalEventNode.getAttribute(s_constUML_xmiId));			
 		}
 	}
 	
@@ -109,7 +111,7 @@ bool CArgoConfigurator::InitializeStateMachine(	const std::string& stateMachineF
 		
 		const std::string smName = stateMachineNode.getAttribute(s_constUML_name);
 		
-		if ( smName == stateMachineName )
+		if ( smName == m_statechartName )
 		{
 			if ( 1 == stateMachineNode.nChildNode(s_constUML_TopState) )
 			{
@@ -147,22 +149,10 @@ void CArgoConfigurator::ReadCompositeStateConfiguration ( const std::string& par
 	stateStructure.StateName = stateConfigNode.getAttribute(s_constUML_name);
 	std::string stateId(stateConfigNode.getAttribute(s_constUML_xmiId));
 	
-	if ( 1 == stateConfigNode.nChildNode( s_constUML_EntryAction ) )
-	{
-		stateStructure.EnterActionName = ReadActionConfiguration( stateConfigNode.getChildNode( s_constUML_EntryAction , 0 ) );
-	}
-	
-	if ( 1 == stateConfigNode.nChildNode( s_constUML_LeafAction ) )
-	{
-		stateStructure.LeafActionName = ReadActionConfiguration( stateConfigNode.getChildNode( s_constUML_LeafAction , 0 ) );
-	}
-
-	if ( 1 == stateConfigNode.nChildNode( s_constUML_ExitAction ) )
-	{
-		stateStructure.ExitActionName = ReadActionConfiguration( stateConfigNode.getChildNode( s_constUML_ExitAction , 0 ) );
-	}
-	
-	
+  stateStructure.EnterActionName  = ReadNestedProperty(stateConfigNode, s_constUML_EntryAction, s_constUML_CallAction, s_constUML_name);
+  stateStructure.LeafActionName   = ReadNestedProperty(stateConfigNode, s_constUML_LeafAction, s_constUML_CallAction, s_constUML_name);
+  stateStructure.ExitActionName   = ReadNestedProperty(stateConfigNode, s_constUML_ExitAction, s_constUML_CallAction, s_constUML_name);
+  
 	if ( 1 == stateConfigNode.nChildNode( s_constUML_StateVertex ) )
 	{
 		const XMLNode& stateVertex = stateConfigNode.getChildNode( s_constUML_StateVertex, 0 );
@@ -195,20 +185,6 @@ void CArgoConfigurator::ReadCompositeStateConfiguration ( const std::string& par
 
 //------------------------------------------------------------------------------------------
 
-const std::string CArgoConfigurator::ReadActionConfiguration( const XMLNode& actionConfiguration )
-{
-	std::string actionName("");
-	
-	if ( 1 == actionConfiguration.nChildNode(s_constUML_CallAction) )
-	{
-		actionName = actionConfiguration.getChildNode( s_constUML_CallAction , 0 ).getAttribute(s_constUML_name);
-	}
-	
-	return actionName;
-}
-
-//------------------------------------------------------------------------------------------
-
 void CArgoConfigurator::ConfigureTransitions( const XMLNode& transitions)
 {
 	UInt32 noOfTransitions( transitions.nChildNode(s_constUML_Transition) );
@@ -222,97 +198,56 @@ void CArgoConfigurator::ConfigureTransitions( const XMLNode& transitions)
 		std::string actionName;
 
 		const XMLNode& transitionNode = transitions.getChildNode(s_constUML_Transition , i );
-		if ( 1 == transitionNode.nChildNode(s_constUML_TransitionTrigger) )
-		{
-			const XMLNode& triggerNode = transitionNode.getChildNode(s_constUML_TransitionTrigger);
-			
-			if ( 1== triggerNode.nChildNode(s_constUML_SignalEvent) )
-			{
-				std::string triggerId =
-				triggerNode.getChildNode(s_constUML_SignalEvent).getAttribute(s_constUML_xmiIdRef);
-				tIdToNameMapConstIterator cIter = m_IdToNameMap.find(triggerId);
-				if (m_IdToNameMap.end() != cIter )
-				{
-					triggerName = cIter->second;
-				}
-			}
-		}	
-		
-		if ( 1 == transitionNode.nChildNode(s_constUML_TransitionSource) )
-		{
-			const XMLNode& sourceNode = transitionNode.getChildNode(s_constUML_TransitionSource);
-			if ( 1== sourceNode.nChildNode(s_constUML_CompositeState) )
-			{
-				std::string stateId =
-				sourceNode.getChildNode(s_constUML_CompositeState).getAttribute(s_constUML_xmiIdRef);
-				tIdToStateConstIterator cIter = m_statesMap.find(stateId);
-				
-				if (m_statesMap.end() != cIter )
-				{
-					sourceName = cIter->second.StateName;
-				}
-			} 
-			else if ( 1== sourceNode.nChildNode(s_constUML_SimpleState) )
-			{
-				std::string stateId =
-				sourceNode.getChildNode(s_constUML_SimpleState).getAttribute(s_constUML_xmiIdRef);
-				tIdToStateConstIterator cIter = m_statesMap.find(stateId);
-				
-				if (m_statesMap.end() != cIter )
-				{
-					sourceName = cIter->second.StateName;
-				}
-			} 
 
-		}
-		
-		if ( 1 == transitionNode.nChildNode(s_constUML_TransitionTarget) )
-		{
-			const XMLNode& sourceNode = transitionNode.getChildNode(s_constUML_TransitionTarget);
-			if ( 1== sourceNode.nChildNode(s_constUML_CompositeState) )
-			{
-				std::string stateId =
-				sourceNode.getChildNode(s_constUML_CompositeState).getAttribute(s_constUML_xmiIdRef);
-				tIdToStateConstIterator cIter = m_statesMap.find(stateId);
-				
-				if (m_statesMap.end() != cIter )
-				{
-					target = cIter->second.StateName;
-				}
-			}
-			else if ( 1== sourceNode.nChildNode(s_constUML_SimpleState) )
-			{
-				std::string stateId =
-				sourceNode.getChildNode(s_constUML_SimpleState).getAttribute(s_constUML_xmiIdRef);
-				tIdToStateConstIterator cIter = m_statesMap.find(stateId);
-				
-				if (m_statesMap.end() != cIter )
-				{
-					target = cIter->second.StateName;
-				}
-			}
+    
+    std::string eventNameId( ReadNestedProperty(transitionNode, s_constUML_TransitionTrigger, s_constUML_SignalEvent, s_constUML_xmiIdRef));
+    tIdToNameMapConstIterator cIter = m_IdToNameMap.find(eventNameId);
+    if (m_IdToNameMap.end() != cIter )
+    {
+      triggerName = cIter->second;
+    }
 
-		}
-		
-		if ( 1 == transitionNode.nChildNode(s_constUML_TransitionGuard) )
-		{
-			const XMLNode& guardNode = transitionNode.getChildNode(s_constUML_TransitionGuard);
-			if ( 1== guardNode.nChildNode(s_constUML_Guard) )
-			{
-				guardName =
-				guardNode.getChildNode(s_constUML_Guard).getAttribute(s_constUML_name);
-			}
-		}			
+    
+         
+    {
+      std::string stateId(ReadNestedProperty( transitionNode, s_constUML_TransitionSource, s_constUML_CompositeState, s_constUML_xmiIdRef));
+      if ( stateId.empty() )
+      {
+        stateId = ReadNestedProperty( transitionNode, s_constUML_TransitionSource, s_constUML_SimpleState, s_constUML_xmiIdRef);
+        
+      }
+      
+      if ( !stateId.empty() )
+      {
+        tIdToStateConstIterator cIter = m_statesMap.find(stateId);
+        if (m_statesMap.end() != cIter )
+        {
+          sourceName = cIter->second.StateName;
+        }     
+      }
+    }
 
-		if ( 1 == transitionNode.nChildNode(s_constUML_TransitionAction) )
-		{
-			const XMLNode& transitionAction = transitionNode.getChildNode(s_constUML_TransitionAction);
-			if ( 1== transitionAction.nChildNode(s_constUML_CallAction) )
-			{
-				actionName =
-				transitionAction.getChildNode(s_constUML_CallAction).getAttribute(s_constUML_name);
-			}
-		}			
+
+    {
+      std::string stateId(ReadNestedProperty( transitionNode, s_constUML_TransitionTarget, s_constUML_CompositeState, s_constUML_xmiIdRef));
+      if ( stateId.empty() )
+      {
+        stateId = ReadNestedProperty( transitionNode, s_constUML_TransitionTarget, s_constUML_SimpleState, s_constUML_xmiIdRef);
+      }
+      
+      if ( !stateId.empty() )
+      {
+        tIdToStateConstIterator cIter = m_statesMap.find(stateId);
+        if (m_statesMap.end() != cIter )
+        {
+          target = cIter->second.StateName;
+        }     
+      }
+    }
+    
+    guardName = ReadNestedProperty( transitionNode, s_constUML_TransitionGuard, s_constUML_Guard, s_constUML_name);
+    actionName = ReadNestedProperty( transitionNode, s_constUML_TransitionAction, s_constUML_CallAction, s_constUML_name );
+    
 
 		m_pCSMBuilder->AddTransition(	triggerName, 
 																	sourceName,
@@ -323,6 +258,26 @@ void CArgoConfigurator::ConfigureTransitions( const XMLNode& transitions)
 }
 
 //------------------------------------------------------------------------------------------
-													
+
+const std::string CArgoConfigurator::ReadNestedProperty( const XMLNode& parentNode, const char firstLevelNodeName[], const char secondLevelNodeName[], const char propertyName[] )
+{
+  std::string propertyValue;
+  
+  
+  if ( 1 == parentNode.nChildNode(firstLevelNodeName) )
+  {
+    const XMLNode& childNode = parentNode.getChildNode(firstLevelNodeName);
+    
+    if ( 1 == childNode.nChildNode(secondLevelNodeName) )
+    {
+
+    	if ( childNode.getChildNode(secondLevelNodeName).isAttributeSet(propertyName) )
+    	{
+      	propertyValue = childNode.getChildNode(secondLevelNodeName).getAttribute(propertyName);
+      }
+    }
+  }
+  return propertyValue;
+}
 }
 
