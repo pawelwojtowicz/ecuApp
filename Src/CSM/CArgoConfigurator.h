@@ -1,6 +1,7 @@
 #ifndef CSM_CARGOCONFIGURATOR_H
 #define CSM_CARGOCONFIGURATOR_H
 #include <GlobalTypes.h>
+#include "ICSMConfigurator.h"
 
 class XMLNode; 
 
@@ -9,7 +10,7 @@ namespace CSM
 class IActionFactory;
 class ICSMBuilder;
 
-class CArgoConfigurator
+class CArgoConfigurator : public ICSMConfigurator
 {
 	struct sState
 	{
@@ -30,7 +31,7 @@ public:
 	CArgoConfigurator( const std::string& stateMachineConfigFile, const std::string& statechartName );
 	virtual ~CArgoConfigurator();
 	
-	bool InitializeStateMachine( ICSMBuilder* pBuilder );
+	virtual bool InitializeStateMachine( ICSMBuilder* pBuilder );
 																
 private:
 	CArgoConfigurator(const CArgoConfigurator&);
