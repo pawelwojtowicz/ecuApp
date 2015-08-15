@@ -4,8 +4,9 @@
 
 namespace CSM
 {
-CState::CState( const std::string& stateName, IAction* enterAction, IAction* leafAction, IAction* exitAction)
-: m_stateName(stateName)
+CState::CState( CState* pParentState, const std::string& stateName, IAction* enterAction, IAction* leafAction, IAction* exitAction)
+: m_pParentState(pParentState)
+, m_stateName(stateName)
 , m_pEnterAction(enterAction)
 , m_pLeafAction(leafAction)
 , m_pExitAction(exitAction)	
@@ -15,14 +16,29 @@ CState::CState( const std::string& stateName, IAction* enterAction, IAction* lea
 CState::~CState()
 {
 }
-	
+
+void CState::UpdateState(CState* pParentState, IAction* enterAction, IAction* leafAction, IAction* exitAction)
+{
+	m_pParentState = pParentState;
+	m_pEnterAction = enterAction;
+  m_pLeafAction = leafAction;
+  m_pExitAction = exitAction;
+}
+
+
 const std::string& CState::GetName() const
 {
 	return m_stateName;
 }
 
-void CState::AddTransition( CTransition* pTransition )
+const CState* CState::GetParent() const
 {
+	return m_pParentState;
+}
+
+void CState::AddTransition( const UInt32 eventNameHash, CTransition* pTransition )
+{
+	m_nameHashToTransitionMap.insert( tTransitionMap::value_type(eventNameHash, pTransition));
 }
 	
 void CState::ExecuteEnterAction()

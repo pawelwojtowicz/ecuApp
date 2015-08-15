@@ -6,11 +6,12 @@ namespace CSM
 {
 class IAction;
 class ICondition;
+class CState;
 
 class CTransition
 {
 public:
-	CTransition( const std::string& name, ICondition* pCondition, IAction* pAction);
+	CTransition( const std::string& name, ICondition* pCondition, IAction* pAction, CState* pTargetState);
 	virtual ~CTransition();
 	
 	bool CanExecute();
@@ -23,6 +24,8 @@ private:
 	ICondition* m_pCondition;
 	
 	IAction* m_pAction;
+	
+	CState* m_pTargetState;
 };
 
 }

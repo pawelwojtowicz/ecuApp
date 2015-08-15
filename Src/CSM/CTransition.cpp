@@ -1,14 +1,16 @@
 #include "CTransition.h"
 #include "IAction.h"
-#include "ICondition.h" 
+#include "ICondition.h"
+#include "CState.h" 
 
 namespace CSM
 {
 
-CTransition::CTransition( const std::string& name, ICondition* pCondition, IAction* pAction)
+CTransition::CTransition( const std::string& name, ICondition* pCondition, IAction* pAction, CState* pTargetState)
 :	m_eventName(name)
 , m_pCondition(pCondition)
 , m_pAction(pAction)
+, m_pTargetState(pTargetState)
 {
 }
 

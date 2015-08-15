@@ -13,25 +13,33 @@ class CState
 	typedef tTransitionMap::iterator tTranstionIterator;
 	
 public:
-	CState( const std::string& stateName, IAction* enterAction, IAction* leafAction, IAction* exitAction);
+	CState( CState* pParentState, const std::string& stateName, IAction* enterAction, IAction* leafAction, IAction* exitAction);
 	virtual ~CState();
 	
-	void AddTransition( CTransition* pTransition );
+	void UpdateState(CState* pParentState, IAction* enterAction, IAction* leafAction, IAction* exitAction);
+	
+	void AddTransition( const UInt32 eventNameHash, CTransition* pTransition );
 	
 	const std::string& GetName() const;
+	
+	const CState* GetParent() const;
 	
 	void ExecuteEnterAction();
 	void ExecuteLeafAction();
 	void ExecuteExitAction();
 
 private:
+	CState* m_pParentState;
+
 	std::string m_stateName;
 	
 	IAction* m_pEnterAction;
 	
 	IAction* m_pLeafAction;
 	
-	IAction* m_pExitAction;	
+	IAction* m_pExitAction;
+	
+	tTransitionMap m_nameHashToTransitionMap;
 };
 }
 #endif

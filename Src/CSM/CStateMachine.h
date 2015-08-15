@@ -1,5 +1,6 @@
 #ifndef CSM_CSTATEMACHINE_H
 #define CSM_CSTATEMACHINE_H
+#include <GlobalTypes.h>
 #include "ICSMBuilder.h"
 
 namespace CSM
@@ -7,9 +8,14 @@ namespace CSM
 
 class IActionFactory;
 class ICSMConfigurator;
+class CState;
 
 class CStateMachine : public ICSMBuilder
 {
+	typedef std::map<UInt32, CState*> tStateMap;
+	typedef tStateMap::const_iterator tStateMapConstIterator;
+	typedef tStateMap::iterator tStateMapIterator;
+	
 public:
 	CStateMachine();
 	virtual ~CStateMachine();
@@ -39,6 +45,12 @@ private:
 private:
 	CStateMachine(const CStateMachine&);
 	CStateMachine& operator=(const CStateMachine&);
+	
+	IActionFactory* m_pActionFactory;
+	
+	tStateMap m_stateMap;
+	
+	CState* m_pCurrentState;
 };
 }
 
