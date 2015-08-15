@@ -32,6 +32,9 @@ private:
 															const std::string& destinationStateName, 
 															const std::string& conditionName, 
 															const std::string& actionName);
+															
+	virtual void SetInitialState( const std::string& initialState);
+
 	
 private:
 	CStateMachine(const CStateMachine&);

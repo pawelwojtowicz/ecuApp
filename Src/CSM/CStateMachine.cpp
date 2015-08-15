@@ -39,6 +39,11 @@ void CStateMachine::AddTransition(	const std::string& eventName,
 {
 }
 
+void CStateMachine::SetInitialState( const std::string& initialState)
+{
+}
+
+
 bool CStateMachine::DispatchEvent( const std::string& eventName )
 {
 	return false;

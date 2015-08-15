@@ -20,6 +20,8 @@ public:
 															std::string destinationStateName, 
 															std::string conditionName, 
 															std::string actionName) = 0;
+															
+	virtual void SetInitialState( std::string initialState) = 0;
 
 private:
 	ICSMBuilderUT(const ICSMBuilderUT&);
@@ -49,6 +51,11 @@ private:
 	{
 		m_pBuilderUTIF->AddTransition(eventName,sourceStateName,destinationStateName,conditionName,actionName);
 	};
+	
+	virtual void SetInitialState( const std::string& initialState)
+	{
+		m_pBuilderUTIF->SetInitialState(initialState);
+	}
 
 	
 private:
@@ -73,6 +80,8 @@ public:
 																			std::string destinationStateName, 
 																			std::string conditionName, 
 																			std::string actionName));
+																			
+	MOCK_METHOD1(	SetInitialState, void( std::string initialState) );
 };
 
 

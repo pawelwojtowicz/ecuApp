@@ -26,9 +26,12 @@ static const char s_constUML_Guard[]							= {"UML:Guard"};
 static const char s_constUML_CompositeState[]	= {"UML:CompositeState"};
 static const char s_constUML_SimpleState[]	= {"UML:SimpleState"};
 static const char s_constUML_StateVertex[]	= {"UML:CompositeState.subvertex"};
+static const char s_constUML_PseudoState[]	= {"UML:Pseudostate"};
 
 static const char s_constUML_SignalEvent[]	= {"UML:SignalEvent"};
 
+
+static const char s_constUML_kind[]					= {"kind"};
 static const char s_constUML_name[]					= {"name"};
 static const char s_constUML_xmiId[]			  = {"xmi.id"};
 static const char s_constUML_xmiIdRef[]			= {"xmi.idref"};
@@ -172,6 +175,19 @@ void CArgoConfigurator::ReadCompositeStateConfiguration ( const std::string& par
 																				stateVertex.getChildNode( s_constUML_CompositeState , 
 																				i ));
 		}
+
+		if ( 0 < stateVertex.nChildNode(s_constUML_PseudoState) )
+		{
+			const XMLNode& initialStateNode( stateVertex.getChildNode(s_constUML_PseudoState,0));
+			
+			if ( initialStateNode.isAttributeSet(s_constUML_kind) )
+			{
+				if ( std::string("initial") == initialStateNode.getAttribute(s_constUML_kind) )
+				{
+					m_initialStateId = initialStateNode.getAttribute(s_constUML_xmiId);
+				}
+			}
+		}
 	}
 
 	m_statesMap.insert( tIdToState::value_type(stateId, stateStructure));
@@ -187,13 +203,14 @@ void CArgoConfigurator::ReadCompositeStateConfiguration ( const std::string& par
 
 void CArgoConfigurator::ConfigureTransitions( const XMLNode& transitions)
 {
+	bool dropTransition(false);
 	UInt32 noOfTransitions( transitions.nChildNode(s_constUML_Transition) );
 		
 	for(UInt32 i = 0 ; i < noOfTransitions ; ++i )
 	{
 		std::string triggerName;
 		std::string sourceName;
-		std::string target;
+		std::string targetName;
 		std::string guardName;
 		std::string actionName;
 
@@ -214,16 +231,26 @@ void CArgoConfigurator::ConfigureTransitions( const XMLNode& transitions)
       if ( stateId.empty() )
       {
         stateId = ReadNestedProperty( transitionNode, s_constUML_TransitionSource, s_constUML_SimpleState, s_constUML_xmiIdRef);
-        
+				if ( stateId.empty() )
+      	{
+        	stateId = ReadNestedProperty( transitionNode, s_constUML_TransitionSource, s_constUML_PseudoState, s_constUML_xmiIdRef);       
+      	}     
       }
       
       if ( !stateId.empty() )
       {
-        tIdToStateConstIterator cIter = m_statesMap.find(stateId);
-        if (m_statesMap.end() != cIter )
+      	if (m_initialStateId != stateId)
+    		{
+		      tIdToStateConstIterator cIter = m_statesMap.find(stateId);
+		      if (m_statesMap.end() != cIter )
+		      {
+		        sourceName = cIter->second.StateName;
+		      }
+        }
+        else
         {
-          sourceName = cIter->second.StateName;
-        }     
+        	dropTransition = true;
+        }   
       }
     }
 
@@ -240,7 +267,7 @@ void CArgoConfigurator::ConfigureTransitions( const XMLNode& transitions)
         tIdToStateConstIterator cIter = m_statesMap.find(stateId);
         if (m_statesMap.end() != cIter )
         {
-          target = cIter->second.StateName;
+          targetName = cIter->second.StateName;
         }     
       }
     }
@@ -248,12 +275,18 @@ void CArgoConfigurator::ConfigureTransitions( const XMLNode& transitions)
     guardName = ReadNestedProperty( transitionNode, s_constUML_TransitionGuard, s_constUML_Guard, s_constUML_name);
     actionName = ReadNestedProperty( transitionNode, s_constUML_TransitionAction, s_constUML_CallAction, s_constUML_name );
     
-
-		m_pCSMBuilder->AddTransition(	triggerName, 
-																	sourceName,
-																	target,
-																	guardName,
-																	actionName);
+		if ( !dropTransition)
+		{
+			m_pCSMBuilder->AddTransition(	triggerName, 
+																		sourceName,
+																		targetName,
+																		guardName,
+																		actionName);
+		}
+		else
+		{
+			m_pCSMBuilder->SetInitialState( targetName);
+		}
 	}
 }
 

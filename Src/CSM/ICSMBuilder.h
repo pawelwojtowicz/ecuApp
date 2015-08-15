@@ -22,6 +22,8 @@ public:
 															const std::string& destinationStateName, 
 															const std::string& conditionName, 
 															const std::string& actionName) = 0;
+															
+	virtual void SetInitialState( const std::string& initialState) = 0;
 	
 private:
 	ICSMBuilder(const ICSMBuilder&);

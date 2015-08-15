@@ -77,6 +77,8 @@ TEST( CArgoConfigurator, TestScenario_1)
 																					std::string(""),							// conditionName,
 																					std::string("")		  					// actionName);
 																					)).Times(1);
+																					
+	EXPECT_CALL(mockInstance, SetInitialState( std::string("Child1")));
 	
 	CSM::CArgoConfigurator configurator(configFile, smName);
 	configurator.InitializeStateMachine(&mockInterface);
@@ -117,6 +119,9 @@ TEST( CArgoConfigurator, TestScenario_2)
 																					std::string(""),					// conditionName,
 																					std::string("")		  			// actionName);
 																					)).Times(1);
+																					
+	EXPECT_CALL(mockInstance, SetInitialState( std::string("OneState")));
+
 
 	CSM::CArgoConfigurator configurator(configFile, smName);
 	configurator.InitializeStateMachine(&mockInterface);

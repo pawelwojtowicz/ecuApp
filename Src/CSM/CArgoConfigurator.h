@@ -53,6 +53,7 @@ private:
 	
 	tIdToNameMap m_IdToNameMap;
 	
+	std::string m_initialStateId;
 	
 };
 }
