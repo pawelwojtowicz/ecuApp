@@ -14,9 +14,9 @@ protected:
 	virtual ~IActionFactory() {};
 
 public:
-	virtual IAction* GetAction( const std::string& actionName ) = 0 ;
+	virtual IAction* GetAction( const std::string& actionName ) const = 0 ;
 	
-	virtual ICondition* GetCondition( const std::string& conditionName) = 0;
+	virtual ICondition* GetCondition( const std::string& conditionName) const = 0;
 	
 private:
 	IActionFactory(const IActionFactory&);
