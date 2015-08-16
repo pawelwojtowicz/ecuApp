@@ -9,7 +9,7 @@ public:
 	ICondition() {};
 	virtual ~ICondition() {};
 	
-	virtual bool Evaluate() const = 0;
+	virtual bool Evaluate() = 0;
 	
 private:
 	ICondition(const ICondition&);

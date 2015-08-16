@@ -13,6 +13,15 @@ CActionFactory::CActionFactory()
 
 CActionFactory::~CActionFactory()
 {
+	for (tActionMapConstIterator pCIter = m_actionMap.begin() ; m_actionMap.end() != pCIter ; ++pCIter )
+	{
+		delete pCIter->second;
+	}
+	
+	for (tConditionsMapConstIterator pCIter = m_conditionMap.begin() ; m_conditionMap.end() != pCIter ; ++pCIter )
+	{
+		delete pCIter->second;
+	}
 }
 
 void CActionFactory::AddAction( const std::string& actionName, IAction* pAction )
