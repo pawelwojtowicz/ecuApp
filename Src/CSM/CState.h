@@ -21,7 +21,7 @@ public:
 	
 	const std::string& GetName() const;
 	
-	const CState* GetParent() const;
+	CState* GetParent() const;
 	
 	void ExecuteEnterAction();
 	void ExecuteLeafAction();

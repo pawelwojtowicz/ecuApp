@@ -38,7 +38,7 @@ const std::string& CState::GetName() const
 	return m_stateName;
 }
 
-const CState* CState::GetParent() const
+CState* CState::GetParent() const
 {
 	return m_pParentState;
 }

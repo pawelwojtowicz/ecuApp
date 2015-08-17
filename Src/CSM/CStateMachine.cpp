@@ -5,6 +5,7 @@
 #include "CState.h"
 #include "CTransition.h"
 #include <UCL/CFastHash.h>
+#include <algorithm>
 namespace CSM
 {
 static const UInt32 cUInt32_CSM_HashSeed = 0x11FF;
@@ -154,7 +155,80 @@ void CStateMachine::SetInitialState( const std::string& initialState)
 
 bool CStateMachine::DispatchEvent( const std::string& eventName )
 {
+	UInt32 eventNameHash(UCL::CFastHash::CalculateHash32( eventName, cUInt32_CSM_HashSeed));
+
+	return DispatchEvent(eventNameHash);
+}
+
+bool CStateMachine::DispatchEvent( const UInt32 eventNameHash )
+{
+	if ( 0 != m_pCurrentState )
+	{
+		CTransition* pTransition( m_pCurrentState->GetTransition( eventNameHash ) );
+		
+		// there is a transition, which fits the nameHash and the condition
+		if ( 0 != pTransition )
+		{
+			CState* pTargetState( pTransition->GetTargetState() );
+			
+			tStateList sourceStates;
+			tStateList targetStates;
+			
+			//prepare the list of the parents of target and source states
+			//it will be used to evaluate the set of enter/exit actions to be exeuted
+			CState* pState(m_pCurrentState);
+			while ( 0 != pState )
+			{
+				sourceStates.push_back( pState );
+				pState = pState->GetParent();
+			}
+			
+			pState = pTargetState;
+			while ( 0 != pState )
+			{
+				targetStates.push_back( pState );
+				pState = pState->GetParent();
+			}
+			
+			// iterate through all of the source states, starting from current state
+			// and execute the exit action for all of the states , that are not present
+			// in the target state list.
+			for ( tStateListIterator iter = sourceStates.begin() ; sourceStates.end() != iter ; ++iter)
+			{
+				tStateListIterator targetIter = std::find(targetStates.begin(), targetStates.end() , *iter );
+				if ( targetStates.end() == targetIter )
+				{
+					(*iter)->ExecuteExitAction();
+				}
+			}
+			
+			pTransition->ExecuteAction();
+			
+			for ( tStateListReverseIterator iter = targetStates.rbegin() ; targetStates.rend() != iter ; ++iter)
+			{
+				tStateListIterator sourceIter = std::find(sourceStates.begin(), sourceStates.end() , *iter );
+				if ( sourceStates.end() == sourceIter )
+				{
+					(*iter)->ExecuteEnterAction();
+				}
+			}			
+			
+			if ( m_pCurrentState != pTargetState )
+			{
+				//change the current state to the target of the transition
+				m_pCurrentState = pTargetState;
+			
+				// Execute Leaf Action for the currentState in case it's different from previous one.
+				m_pCurrentState->ExecuteLeafAction();
+			}
+		}
+	
+		return true;
+	}
+
 	return false;
 }
+
+
 
 }

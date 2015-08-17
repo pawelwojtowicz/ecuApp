@@ -36,5 +36,11 @@ void CTransition::ExecuteAction()
 	}
 }
 
+CState* CTransition::GetTargetState()
+{
+
+	return m_pTargetState;
+}
+
 }
 

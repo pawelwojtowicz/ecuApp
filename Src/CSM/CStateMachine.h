@@ -16,6 +16,10 @@ class CStateMachine : public ICSMBuilder
 	typedef tStateMap::const_iterator tStateMapConstIterator;
 	typedef tStateMap::iterator tStateMapIterator;
 	
+	typedef std::list<CState*> tStateList;
+	typedef tStateList::iterator tStateListIterator;
+	typedef tStateList::reverse_iterator tStateListReverseIterator;
+	
 public:
 	CStateMachine();
 	virtual ~CStateMachine();
@@ -40,6 +44,9 @@ private:
 															const std::string& actionName);
 															
 	virtual void SetInitialState( const std::string& initialState);
+	
+private:
+	bool DispatchEvent( const UInt32 eventNameHash );
 
 	
 private:

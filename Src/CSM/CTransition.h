@@ -14,6 +14,8 @@ public:
 	CTransition( const std::string& name, ICondition* pCondition, IAction* pAction, CState* pTargetState);
 	virtual ~CTransition();
 	
+	CState* GetTargetState();
+	
 	bool CanExecute();
 	
 	void ExecuteAction();
