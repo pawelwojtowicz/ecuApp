@@ -5,9 +5,6 @@
 #include <CSM/CGenericCondition.h>
 #include "ITestInterface.h"
 
-using ::testing::Sequence;
-using ::testing::Return;
-
 void InitializeActionFactory( CSM::CActionFactory& actionFactory, TestOperationsMock* pMockPointer)
 {
 	actionFactory.AddAction("OperationA", new CSM::CGenericAction<ITestInterface>( pMockPointer, &ITestInterface::OperationA ));
@@ -26,9 +23,12 @@ void InitializeActionFactory( CSM::CActionFactory& actionFactory, TestOperations
 	actionFactory.AddCondition( "Condition5", new CSM::CGenericCondition<ITestInterface>( pMockPointer, &ITestInterface::Condition5));
 	actionFactory.AddCondition( "Condition6", new CSM::CGenericCondition<ITestInterface>( pMockPointer, &ITestInterface::Condition6));
 	actionFactory.AddCondition( "Condition7", new CSM::CGenericCondition<ITestInterface>( pMockPointer, &ITestInterface::Condition7));
-	actionFactory.AddCondition( "Condition8", new CSM::CGenericCondition<ITestInterface>( pMockPointer, &ITestInterface::Condition8));
-	
+	actionFactory.AddCondition( "Condition8", new CSM::CGenericCondition<ITestInterface>( pMockPointer, &ITestInterface::Condition8));	
 }
+
+
+using ::testing::Sequence;
+using ::testing::Return;
 
 TEST( CActionFactory, Actions_Found_NotFound )
 {

@@ -18,7 +18,6 @@ public:
 	
 	void UpdateState(CState* pParentState, IAction* enterAction, IAction* leafAction, IAction* exitAction);
 	
-	void AddTransition( const UInt32 eventNameHash, CTransition* pTransition );
 	
 	const std::string& GetName() const;
 	
@@ -27,6 +26,11 @@ public:
 	void ExecuteEnterAction();
 	void ExecuteLeafAction();
 	void ExecuteExitAction();
+	
+	
+	void AddTransition( const UInt32 eventNameHash, CTransition* pTransition );
+	
+	CTransition* GetTransition( const UInt32 eventNameHash );
 
 private:
 	CState* m_pParentState;
