@@ -21,9 +21,11 @@ CStateMachine::~CStateMachine()
 {
 }
 	
-bool CStateMachine::Initialize( ICSMConfigurator* pConfigurator, IActionFactory* pFactory)
+bool CStateMachine::Initialize( ICSMConfigurator* pConfigurator, IActionFactory* pActionFactory)
 {
-	if ( 0!= pConfigurator )
+	m_pActionFactory = pActionFactory;
+		
+	if ( 0!= pConfigurator && 0 != m_pActionFactory  )
 	{
 		return pConfigurator->InitializeStateMachine(this);
 	}
@@ -35,7 +37,7 @@ void CStateMachine::AddState(	const std::string& parentName,
 															const std::string& stateName, 
 															const std::string& enterActionName, 
 															const std::string& leafActionName, 
-															const std::string& exitActioName)
+															const std::string& exitActionName)
 {
 	CState* pParentState(0);
 	
@@ -58,9 +60,9 @@ void CStateMachine::AddState(	const std::string& parentName,
 			pLeafAction = m_pActionFactory->GetAction(leafActionName);
 		}
 		
-		if ( !exitActioName.empty() )
+		if ( !exitActionName.empty() )
 		{
-			pExitAction = m_pActionFactory->GetAction(exitActioName);
+			pExitAction = m_pActionFactory->GetAction(exitActionName);
 		}
 	}
 
@@ -228,7 +230,4 @@ bool CStateMachine::DispatchEvent( const UInt32 eventNameHash )
 
 	return false;
 }
-
-
-
 }

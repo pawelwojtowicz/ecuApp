@@ -203,11 +203,11 @@ void CArgoConfigurator::ReadCompositeStateConfiguration ( const std::string& par
 
 void CArgoConfigurator::ConfigureTransitions( const XMLNode& transitions)
 {
-	bool dropTransition(false);
 	UInt32 noOfTransitions( transitions.nChildNode(s_constUML_Transition) );
 		
 	for(UInt32 i = 0 ; i < noOfTransitions ; ++i )
 	{
+		bool dropTransition(false);
 		std::string triggerName;
 		std::string sourceName;
 		std::string targetName;
@@ -274,7 +274,7 @@ void CArgoConfigurator::ConfigureTransitions( const XMLNode& transitions)
     
     guardName = ReadNestedProperty( transitionNode, s_constUML_TransitionGuard, s_constUML_Guard, s_constUML_name);
     actionName = ReadNestedProperty( transitionNode, s_constUML_TransitionAction, s_constUML_CallAction, s_constUML_name );
-    
+     
 		if ( !dropTransition)
 		{
 			m_pCSMBuilder->AddTransition(	triggerName, 
