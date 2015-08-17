@@ -8,6 +8,8 @@
 #include <CSM/CStateMachine.h>
 #include "ITestInterface.h"
 
+using ::testing::Return;
+
 void InitializeSMActionFactory( CSM::CActionFactory& actionFactory, TestOperationsMock* pMockPointer)
 {
 	actionFactory.AddAction("OperationA", new CSM::CGenericAction<ITestInterface>( pMockPointer, &ITestInterface::OperationA ));
@@ -56,4 +58,48 @@ TEST( CStateMachine, BasicTest_1)
 	EXPECT_CALL(	operationsMock, OperationE());
 	EXPECT_TRUE(stateMachine.DispatchEvent("E_GO_BACK"));
 
+}
+
+TEST( CStateMachine, Conditions_variant_1)
+{
+	// action/condition mocks
+	CSM::CActionFactory actionFactory;
+	TestOperationsMock operationsMock;
+	InitializeSMActionFactory(actionFactory,&operationsMock);
+	
+	// configurator initialization parameters
+	std::string configFile(UCL::SystemEnvironment::ResolveEnvironmentVariable("${UNITTEST_DIR}/CSM/CSM_testConfig_2.xmi"));
+	std::string smName("ConditionalScenario");
+	
+	CSM::CArgoConfigurator configurator(configFile, smName);
+	CSM::CStateMachine stateMachine;
+	stateMachine.Initialize( &configurator, &actionFactory );
+	
+	EXPECT_CALL(	operationsMock, Condition1()).WillOnce(Return(true));
+	EXPECT_CALL(	operationsMock, OperationA());
+	
+	EXPECT_TRUE(stateMachine.DispatchEvent("E_GO"));
+}
+
+TEST( CStateMachine, Conditions_variant_2)
+{
+	// action/condition mocks
+	CSM::CActionFactory actionFactory;
+	TestOperationsMock operationsMock;
+	InitializeSMActionFactory(actionFactory,&operationsMock);
+	
+	// configurator initialization parameters
+	std::string configFile(UCL::SystemEnvironment::ResolveEnvironmentVariable("${UNITTEST_DIR}/CSM/CSM_testConfig_2.xmi"));
+	std::string smName("ConditionalScenario");
+	
+	CSM::CArgoConfigurator configurator(configFile, smName);
+	CSM::CStateMachine stateMachine;
+	stateMachine.Initialize( &configurator, &actionFactory );
+	
+	EXPECT_CALL(	operationsMock, Condition1()).WillOnce(Return(false));
+	EXPECT_CALL(	operationsMock, Condition2()).WillOnce(Return(true));
+
+	EXPECT_CALL(	operationsMock, OperationB());
+	
+	EXPECT_TRUE(stateMachine.DispatchEvent("E_GO"));
 }

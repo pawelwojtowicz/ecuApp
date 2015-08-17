@@ -6,6 +6,7 @@
 #include "CTransition.h"
 #include <UCL/CFastHash.h>
 #include <algorithm>
+#include <stdio.h>
 namespace CSM
 {
 static const UInt32 cUInt32_CSM_HashSeed = 0x11FF;
@@ -65,17 +66,20 @@ void CStateMachine::AddState(	const std::string& parentName,
 			pExitAction = m_pActionFactory->GetAction(exitActionName);
 		}
 	}
-
-	tStateMapIterator parentStateIterator( m_stateMap.find(parentNameHash) );
-	if ( m_stateMap.end() != parentStateIterator )
+	
+	if ( !parentName.empty() )
 	{
-		pParentState = parentStateIterator->second;
-	}
-	else
-	{
-		pParentState = new CState( 0 , stateName, 0 , 0, 0 );
+		tStateMapIterator parentStateIterator( m_stateMap.find(parentNameHash) );
+		if ( m_stateMap.end() != parentStateIterator )
+		{
+			pParentState = parentStateIterator->second;
+		}
+		else
+		{
+			pParentState = new CState( 0 , parentName, 0 , 0, 0 );
 		
-		m_stateMap.insert( tStateMap::value_type(parentNameHash,pParentState));
+			m_stateMap.insert( tStateMap::value_type(parentNameHash,pParentState));
+		}	
 	}
 	
 	tStateMapIterator stateIterator(m_stateMap.find(stateNameHash));
@@ -88,7 +92,7 @@ void CStateMachine::AddState(	const std::string& parentName,
 	else
 	{
 		stateIterator->second->UpdateState(pParentState, pEnterAction, pLeafAction, pExitAction);
-	}
+	}	
 }
 	
 void CStateMachine::AddTransition(	const std::string& eventName,
@@ -204,8 +208,11 @@ bool CStateMachine::DispatchEvent( const UInt32 eventNameHash )
 				}
 			}
 			
+			// execute the transition action in the middle of the transition
 			pTransition->ExecuteAction();
 			
+			// execute the enter action on the state and all it's parens, which were not
+			// present in the origin state.
 			for ( tStateListReverseIterator iter = targetStates.rbegin() ; targetStates.rend() != iter ; ++iter)
 			{
 				tStateListIterator sourceIter = std::find(sourceStates.begin(), sourceStates.end() , *iter );
