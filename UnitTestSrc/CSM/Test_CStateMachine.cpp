@@ -9,6 +9,7 @@
 #include "ITestInterface.h"
 
 using ::testing::Return;
+using ::testing::Sequence;
 
 void InitializeSMActionFactory( CSM::CActionFactory& actionFactory, TestOperationsMock* pMockPointer)
 {
@@ -102,4 +103,58 @@ TEST( CStateMachine, Conditions_variant_2)
 	EXPECT_CALL(	operationsMock, OperationB());
 	
 	EXPECT_TRUE(stateMachine.DispatchEvent("E_GO"));
+}
+
+
+TEST( CStateMachine, DetailedActionBehaviour)
+{
+	// action/condition mocks
+	CSM::CActionFactory actionFactory;
+	TestOperationsMock operationsMock;
+	InitializeSMActionFactory(actionFactory,&operationsMock);
+	
+	// configurator initialization parameters
+	std::string configFile(UCL::SystemEnvironment::ResolveEnvironmentVariable("${UNITTEST_DIR}/CSM/CSM_testConfig_2.xmi"));
+	std::string smName("DetailedActionScenario");
+	
+	CSM::CArgoConfigurator configurator(configFile, smName);
+	CSM::CStateMachine stateMachine;
+	stateMachine.Initialize( &configurator, &actionFactory );
+	
+	Sequence executionSequence;
+	
+	EXPECT_CALL(operationsMock, OperationC()).InSequence(executionSequence);
+	EXPECT_CALL(operationsMock, OperationB()).InSequence(executionSequence);
+	EXPECT_CALL(operationsMock, OperationA()).InSequence(executionSequence);
+	EXPECT_CALL(operationsMock, OperationD()).InSequence(executionSequence);
+	EXPECT_CALL(operationsMock, OperationE()).InSequence(executionSequence);
+	EXPECT_CALL(operationsMock, OperationF()).InSequence(executionSequence);
+	EXPECT_CALL(operationsMock, OperationG()).InSequence(executionSequence);
+	EXPECT_CALL(operationsMock, OperationH()).InSequence(executionSequence);
+	
+	EXPECT_TRUE(stateMachine.DispatchEvent("E_GO"));	
+}
+
+TEST( CStateMachine, DetailedActionSpecialCase)
+{
+	// action/condition mocks
+	CSM::CActionFactory actionFactory;
+	TestOperationsMock operationsMock;
+	InitializeSMActionFactory(actionFactory,&operationsMock);
+	
+	// configurator initialization parameters
+	std::string configFile(UCL::SystemEnvironment::ResolveEnvironmentVariable("${UNITTEST_DIR}/CSM/CSM_testConfig_2.xmi"));
+	std::string smName("DetailedActionScenario");
+	
+	CSM::CArgoConfigurator configurator(configFile, smName);
+	CSM::CStateMachine stateMachine;
+	stateMachine.Initialize( &configurator, &actionFactory );
+	
+	Sequence executionSequence;
+	
+	EXPECT_CALL(operationsMock, OperationC()).InSequence(executionSequence);
+	EXPECT_CALL(operationsMock, OperationB()).InSequence(executionSequence);
+	EXPECT_CALL(operationsMock, OperationH()).InSequence(executionSequence);
+	
+	EXPECT_TRUE(stateMachine.DispatchEvent("E_GO_WITHIN_SUPERPARENT"));	
 }
