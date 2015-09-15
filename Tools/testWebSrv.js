@@ -6,7 +6,7 @@ var http = require("http"),
 
 http.createServer(function(request, response) {
 
-  var srvHome = 'E:\\Programowanie\\rpi2Maintenance';
+  var srvHome = '../HTMLSource';
 
   var uri = url.parse(request.url).pathname
     , filename = path.join(srvHome, uri);
