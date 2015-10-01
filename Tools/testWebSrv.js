@@ -20,18 +20,16 @@ http.createServer(function(request, response)
           {
             if(!exists) 
               {
-                console.log ("NIE MA" + filename)
                 if ( filename == "..\\HTMLSource\\cgi-bin\\controller")
-                {                 
-                  var nameValuePairs = url.parse(request.url).query.split("&");
-                  
-                  console.log( "Liczba "+ nameValuePairs.length);
-                  
+                {
+                  console.log("parametey" + url.parse(request.url).query);
+                
+                  //extract the parameters of the HTTP request
+                  var nameValuePairs = url.parse(request.url).query.split("&");                 
                   var parameters = new Object();
                   
                   for ( count = 0 ; count < nameValuePairs.length ; ++count )
                   {
-                    console.log("nameValuePairs.length" + nameValuePairs.length );
                     var nameValuePair = nameValuePairs[count];
                     
                     if ( 2 == nameValuePair.split("=").length )
@@ -61,8 +59,20 @@ http.createServer(function(request, response)
                     
                     
                   }
-
-
+                  else if ( parameters["command_name"] == "getMemInfo" )
+                  {
+                    var memoryInformation = { "getMemInfo": {"data": { meminfo: { "MemTotal": 1024,
+                                                                                  "MemFree":1234, 
+                                                                                  "Buffers": 3213, 
+                                                                                  "Cached":321, 
+                                                                                  "SwapCached":543, 
+                                                                                  "Active":4234, 
+                                                                                  "Inactive": 4, 
+                                                                                  "Shmem":432 }}}};
+                    response.writeHead(200, {"Content-Type": "text/plain"});
+                    response.write(JSON.stringify(memoryInformation));
+                    response.end();
+                  }
 //-------------------------------------------------------------------------------                  
                   
                 }
