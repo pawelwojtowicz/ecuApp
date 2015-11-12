@@ -33,8 +33,8 @@
 	</CNode>
 	<CNode Name="Watchdog">
 		<Parameter Name="DeviceId" Type="String">/dev/watchdog</Parameter>
-		<Parameter Name="WatchdogRefreshPeriod" Type="UInt32">10</Parameter>
-		<Parameter Name="MaxWatchodCounter" Type="UInt32">3</Parameter>
+		<Parameter Name="WatchdogRefreshPeriod" Type="UInt32">3</Parameter>
+		<Parameter Name="WatchdogExpirationTimeout" Type="UInt32">10</Parameter>
 	</CNode>
 	<CNode Name="Processes">
 		<CNode Name="Sample">
