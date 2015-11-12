@@ -17,8 +17,8 @@ static const char sCfg_WatchdogRefreshPeriod[] 		= {"WatchdogRefreshPeriod"};
 static const char sCfg_WatchdogExpirationTimeout[]= {"WatchdogExpirationTimeout"};
 
 static const char 	sDflt_DeviceName[] 					= {"Dupa:"};
-static const UInt8 	sDflt_WatchdogResetPeriod 	= 10;
-static const UInt8 	sDflt_MaxWatchdogCounter 		= 3;
+static const UInt8 	sDflt_WatchdogResetPeriod 	= 5;
+static const UInt8 	sDflt_MaxWatchdogCounter 		= 10;
 
 namespace Controller
 {
@@ -47,7 +47,7 @@ bool CWatchdogManager::Initialize( const Configuration::CConfigNode* configNode 
 		
 		m_watchdogResetPeriod = configNode->GetParameter(sCfg_WatchdogRefreshPeriod)->GetUInt32(m_watchdogResetPeriod);
 
-		m_watchdogExpirationTimeout = configNode->GetParameter(sCfg_WatchdogExpirationTimeout)->GetInt32(m_watchdogExpirationTimeout);
+		m_watchdogExpirationTimeout = configNode->GetParameter(sCfg_WatchdogExpirationTimeout)->GetUInt32(m_watchdogExpirationTimeout);
 
 		RETAILMSG(INFO, ("Watchdog configuration: deviceName=[%s], watchdogExp=[%d], refreshPeriod=[%d]",
 											 m_watchdogDeviceName.c_str(),
@@ -59,6 +59,7 @@ bool CWatchdogManager::Initialize( const Configuration::CConfigNode* configNode 
 		if ( -1 != m_watchdogFD )
 		{
 			ioctl(m_watchdogFD, WDIOC_SETTIMEOUT, &m_watchdogExpirationTimeout);
+			ioctl(m_watchdogFD, WDIOC_KEEPALIVE, NULL);
 		}
 		else
 		{
