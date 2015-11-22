@@ -177,5 +177,16 @@ bool CController::NotifySessionState(const tSessionState sessionState)
 	return false;
 }
 
+void CController::RestartDevice()
+{
+	//reboot command
+	reboot( LINUX_REBOOT_CMD_POWER_OFF );
+}
+
+void CController::DeactivateWatchdog()
+{
+	m_watchdogManager.Shutdown();
+}
+
 
 }

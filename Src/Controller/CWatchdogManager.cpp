@@ -82,13 +82,14 @@ bool CWatchdogManager::Initialize( const Configuration::CConfigNode* configNode 
 
 void CWatchdogManager::Shutdown()
 {
-	RETAILMSG(INFO, ("Shutting down watchdog manager - device shuts down correctly"));
+	RETAILMSG(INFO, ("Shutting down watchdog manager"));
 	if (-1 != m_watchdogFD )
 	{
 		// write V, which signalizes the application is being closed correctly
 		write(m_watchdogFD, "V", 1);
 		//close the watchdog driver
 		close(m_watchdogFD);
+		m_watchdogFD = -1;
 	}
 }
 

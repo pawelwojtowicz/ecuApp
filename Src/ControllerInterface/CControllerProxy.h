@@ -27,6 +27,8 @@ public:
 
 	bool RequestShutdown();
 	bool RequestRestart();
+	bool RestartDevice();
+	bool DeactivateWatchdog();
 
 private:
 	void HandleMessage(Runtime::CMessage& rMessage);

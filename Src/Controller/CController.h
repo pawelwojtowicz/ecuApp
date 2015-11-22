@@ -54,6 +54,9 @@ private:
 
 	virtual void NotifyShutdownRequest();
 	virtual void NotifyRestartRequest();
+	virtual void RestartDevice();
+	virtual void DeactivateWatchdog();
+
 
 	// Runtime infrastructure - handling of the timers - do not touch
 	virtual void NotifyTimer();

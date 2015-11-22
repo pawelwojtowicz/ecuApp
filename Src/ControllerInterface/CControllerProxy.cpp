@@ -109,4 +109,27 @@ bool CControllerProxy::GetCurrentProcessInfo( CPublicProcessInfo& processInfo)
 {
 	return m_sharedStorage.GetData(processInfo);
 }
+
+bool CControllerProxy::RestartDevice()
+{
+	Runtime::CMessage initDoneMsg(256);
+	initDoneMsg.SetMessageId(msgId_Controller_RestartDevice);
+	initDoneMsg.SetMsgPrio(255);
+	initDoneMsg.SetTargetId(GetTargetQueueId());
+
+	return GetMessenger().PostMessage(initDoneMsg);
+
+}
+
+bool CControllerProxy::DeactivateWatchdog()
+{
+	Runtime::CMessage initDoneMsg(256);
+	initDoneMsg.SetMessageId(msgId_Controller_DeactivateWatchdog);
+	initDoneMsg.SetMsgPrio(255);
+	initDoneMsg.SetTargetId(GetTargetQueueId());
+
+	return GetMessenger().PostMessage(initDoneMsg);
+
+}
+
 }

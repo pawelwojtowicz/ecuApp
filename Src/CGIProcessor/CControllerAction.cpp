@@ -24,9 +24,17 @@ bool CControllerAction::Execute( const CEnvironment& environment , json::Object&
     {
 			retVal = m_pControllerProxy->RequestShutdown();
     }
-    else if ( apiName=="restart" )
+    else if ( apiName=="restartApplication" )
     {
       retVal = m_pControllerProxy->RequestRestart();
+    }
+    else if ( apiName=="restartDevice" )
+    {
+	    retVal = m_pControllerProxy->RestartDevice();
+    }
+    else if ( apiName == "deactivateWatchdog")
+    {
+			retVal = m_pControllerProxy->DeactivateWatchdog();
     }
     else if ( apiName=="get_process_list")
     {

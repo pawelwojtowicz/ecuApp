@@ -18,6 +18,8 @@ public:
 
 	virtual void NotifyShutdownRequest() = 0;
 	virtual void NotifyRestartRequest() = 0;
+	virtual void RestartDevice() = 0;
+	virtual void DeactivateWatchdog() = 0;
 
 private:
 	IControllerServices(const IControllerServices&);

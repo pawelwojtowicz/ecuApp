@@ -32,6 +32,8 @@ bool CControllerStub::Initialize(IControllerServices* pControllerServices)
 	SubscribeMessage(msgId_Controller_Heartbeat);
 	SubscribeMessage(msgId_Controller_RestartRequest);
 	SubscribeMessage(msgId_Controller_ShutdownRequest);
+	SubscribeMessage(msgId_Controller_RestartDevice);
+	SubscribeMessage(msgId_Controller_DeactivateWatchdog);
 
 	return retVal;
 }
@@ -84,6 +86,14 @@ void CControllerStub::HandleMessage(Runtime::CMessage& rMessage)
 		case msgId_Controller_ShutdownRequest:
 			{
 				m_pControllerServices->NotifyShutdownRequest();
+			};break;
+		case msgId_Controller_RestartDevice:
+			{
+				m_pControllerServices->RestartDevice();
+			};break;
+		case msgId_Controller_DeactivateWatchdog:
+			{
+				m_pControllerServices->DeactivateWatchdog();
 			};break;
 		default:;
 		};
