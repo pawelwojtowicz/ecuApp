@@ -5,6 +5,10 @@
 #include <ControllerInterface/ControllerInterfaceConst.h>
 #include <Configuration/CConfiguration.h>
 
+#include <unistd.h>
+#include <linux/reboot.h>
+#include <sys/reboot.h>
+
 static const char sCfg_WatchdogConfig[] = {"Watchdog"};
 static const char sCfg_ProcessManager[] = {"Processes"};
 static const char sCfg_LoggerConfig[]		= {"Logger"};
@@ -109,7 +113,9 @@ void CController::Shutdown()
 	m_watchdogManager.Shutdown();
 	m_loggingAgent.Shutdown();
 	m_loggerManager.Shutdown();
-
+	
+	//reboot command
+	reboot( LINUX_REBOOT_CMD_POWER_OFF );
 }
 
 void CController::NotifyTimer()
