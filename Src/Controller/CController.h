@@ -86,6 +86,8 @@ private:
 	CWatchdogManager m_watchdogManager;
 
 	CProcessManager m_processManager;
+	
+	bool m_shutdownNotRestart;
 };
 
 }

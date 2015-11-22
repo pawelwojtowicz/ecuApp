@@ -30,6 +30,7 @@ CController::CController()
 , m_sessionManager( m_timerManager )
 , m_watchdogManager(m_timerManager)
 , m_processManager( m_timerManager, m_sessionManager, m_controllerStub )
+, m_shutdownNotRestart(false)
 {
 	m_timerMessage.SetMessageId(msgId_Runtime_Timer_1000);
 	m_timerMessage.SetMsgPrio(255);
@@ -115,7 +116,14 @@ void CController::Shutdown()
 	m_loggerManager.Shutdown();
 	
 	//reboot command
-	reboot( LINUX_REBOOT_CMD_POWER_OFF );
+	if (m_shutdownNotRestart)
+	{
+		reboot( LINUX_REBOOT_CMD_POWER_OFF );
+	}
+	else
+	{
+		reboot( LINUX_REBOOT_CMD_RESTART );
+	}
 }
 
 void CController::NotifyTimer()
@@ -140,11 +148,14 @@ void CController::NotifyUnitHeartbeat(	const UInt32 unitId, const Controller::tP
 
 void CController::NotifyShutdownRequest()
 {
+	m_shutdownNotRestart = true;
 	m_sessionManager.ShutdownRequest();
 }
 
 void CController::NotifyRestartRequest()
 {
+	m_shutdownNotRestart = false;
+	m_sessionManager.ShutdownRequest();
 }
 
 void CController::ShutdownIfReady()
@@ -180,7 +191,7 @@ bool CController::NotifySessionState(const tSessionState sessionState)
 void CController::RestartDevice()
 {
 	//reboot command
-	reboot( LINUX_REBOOT_CMD_POWER_OFF );
+	reboot( LINUX_REBOOT_CMD_RESTART );
 }
 
 void CController::DeactivateWatchdog()
