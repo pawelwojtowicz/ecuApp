@@ -4,7 +4,6 @@
 #include <Runtime/CRuntimeUnit.h>
 #include <Runtime/ITimerListener.h>
 #include <TTSInterface/CTTSProxy.h>
-#include <JoystickInterface/CJoystickProxy.h>
 
 namespace ExampleApp
 {
@@ -26,9 +25,6 @@ private:
   Int32 m_iddleTimer;
   
   TTS::CTTSProxy m_ttsProxy;
-  
-  Joystick::CJoystickProxy m_joystickProxy;
-
 };
 
 }

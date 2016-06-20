@@ -1,7 +1,6 @@
 #include "CExampleApp.h"
 #include <Logger/Logger.h>
 #include <ControllerInterface/CPublicProcessInfo.h>
-#include <JoystickInterface/CJoyState.h>
 #include <string.h>
 #include <stdlib.h>
 
@@ -18,7 +17,6 @@ CExampleApp::CExampleApp()
 , m_timer1Id(0)
 , m_shutdownTimer(0)
 , m_ttsProxy(GetMessenger())
-, m_joystickProxy(GetMessenger())
 {
 }
 
@@ -34,9 +32,8 @@ void CExampleApp::Initialize()
 // important - initialize the timer manager
   InitializeTimerManager();
 
-	m_ttsProxy.Initialize();
-	
-	m_joystickProxy.Initialize();
+  m_ttsProxy.Initialize();
+       
 
 
   // prepare some test timer, ( started after 5 seconds, triggered every 2seconds afterwards
@@ -61,22 +58,6 @@ void CExampleApp::NotifyTimer( const Int32& timerId )
   if (timerId == m_timer1Id)
   {
     m_ttsProxy.Say("Test");
-    
-    Joystick::CJoyState joystate;
-    
-    m_joystickProxy.GetJoystickState(joystate);
-    
-		
-
-		UInt8 buttonCount = joystate.GetButtonCount();
-		std::string logText= ("Buttons: ");
-		for (UInt8 i = 0 ; i < buttonCount ; ++i )
-		{
-			logText += std::string("[")+(joystate.GetButtonState(i)? std::string("on"): std::string("off")) + std::string("] ");
-		}
-		
-		RETAILMSG(INFO, (logText.c_str() ));
-
   }
   else if ( timerId == m_shutdownTimer )
   {
