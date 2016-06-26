@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="DataService" targetNamespace="http://wojtech.com.pl/ecuapp/dataservice/" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://wojtech.com.pl/ecuapp/dataservice/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:suds="http://www.w3.org/2000/wsdl/suds" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:ns1="http://schemas.microsoft.com/clr/ns/System" xmlns:ns0="http://wojtech.com.pl/ecuapp/dataservice/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+
+    <message name="DataService.GetServiceStatusInput">
+    </message>
+    <message name="DataService.GetServiceStatusOutput">
+        <part name="return" type="xsd:int"/>
+    </message>
+
+    <message name="DataService.TrackDataInput">
+        <part name="trackItems" type="xsd:string"/>
+    </message>
+    <message name="DataService.TrackDataOutput">
+        <part name="return" type="xsd:int"/>
+    </message>
+
+    <message name="DataService.ExecuteCommandInput">
+        <part name="commandName" type="xsd:string"/>
+        <part name="arguments" type="xsd:string"/>
+    </message>
+    <message name="DataService.ExecuteCommandOutput">
+        <part name="return" type="xsd:string"/>
+    </message>
+
+    <message name="DataService.GetDataInput">
+        <part name="itemName" type="xsd:string"/>
+    </message>
+    <message name="DataService.GetDataOutput">
+        <part name="return" type="xsd:string"/>
+    </message>
+
+    <portType name="DataServicePortType">
+        <operation name="GetServiceStatus">
+            <input name="GetServiceStatusRequest" message="tns:DataService.GetServiceStatusInput"/>
+            <output name="GetServiceStatusResponse" message="tns:DataService.GetServiceStatusOutput"/>
+        </operation>
+        <operation name="TrackData" parameterOrder="trackItems">
+            <input name="TrackDataRequest" message="tns:DataService.TrackDataInput"/>
+            <output name="TrackDataResponse" message="tns:DataService.TrackDataOutput"/>
+        </operation>
+        <operation name="ExecuteCommand" parameterOrder="commandName arguments">
+            <input name="ExecuteCommandRequest" message="tns:DataService.ExecuteCommandInput"/>
+            <output name="ExecuteCommandResponse" message="tns:DataService.ExecuteCommandOutput"/>
+        </operation>
+        <operation name="GetData" parameterOrder="itemName">
+            <input name="GetDataRequest" message="tns:DataService.GetDataInput"/>
+            <output name="GetDataResponse" message="tns:DataService.GetDataOutput"/>
+        </operation>
+    </portType>
+
+    <binding name="DataServiceBinding" type="tns:DataServicePortType">
+        <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <suds:class type="ns0:DataService" rootType="MarshalByRefObject">
+        </suds:class>
+        <operation name="GetServiceStatus">
+            <soap:operation soapAction="http://schemas.microsoft.com/clr/nsassem/Wojtech.UI.DataService.DataService/UIServiceServer#GetServiceStatus"/>
+            <suds:method attributes="public"/>
+            <input name="GetServiceStatusRequest">
+                <soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://wojtech.com.pl/ecuapp/dataservice/"/>
+            </input>
+            <output name="GetServiceStatusResponse">
+                <soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://wojtech.com.pl/ecuapp/dataservice/"/>
+            </output>
+        </operation>
+        <operation name="TrackData">
+            <soap:operation soapAction="http://schemas.microsoft.com/clr/nsassem/Wojtech.UI.DataService.DataService/UIServiceServer#TrackData"/>
+            <suds:method attributes="public"/>
+            <input name="TrackDataRequest">
+                <soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://wojtech.com.pl/ecuapp/dataservice/"/>
+            </input>
+            <output name="TrackDataResponse">
+                <soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://wojtech.com.pl/ecuapp/dataservice/"/>
+            </output>
+        </operation>
+        <operation name="ExecuteCommand">
+            <soap:operation soapAction="http://schemas.microsoft.com/clr/nsassem/Wojtech.UI.DataService.DataService/UIServiceServer#ExecuteCommand"/>
+            <suds:method attributes="public"/>
+            <input name="ExecuteCommandRequest">
+                <soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://wojtech.com.pl/ecuapp/dataservice/"/>
+            </input>
+            <output name="ExecuteCommandResponse">
+                <soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://wojtech.com.pl/ecuapp/dataservice/"/>
+            </output>
+        </operation>
+        <operation name="GetData">
+            <soap:operation soapAction="http://schemas.microsoft.com/clr/nsassem/Wojtech.UI.DataService.DataService/UIServiceServer#GetData"/>
+            <suds:method attributes="public"/>
+            <input name="GetDataRequest">
+                <soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://wojtech.com.pl/ecuapp/dataservice/"/>
+            </input>
+            <output name="GetDataResponse">
+                <soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://wojtech.com.pl/ecuapp/dataservice/"/>
+            </output>
+        </operation>
+    </binding>
+
+    <service name="DataServiceService">
+        <port name="DataServicePort" binding="tns:DataServiceBinding">
+            <soap:address location="http://192.168.1.103:8064/DataService.soap"/>
+        </port>
+    </service>
+</definitions>
