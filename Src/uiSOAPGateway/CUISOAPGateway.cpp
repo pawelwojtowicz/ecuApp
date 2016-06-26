@@ -1,5 +1,7 @@
 #include "CUISOAPGateway.h"
 
+uiSOAPGateway::CUISOAPGateway gs;
+
 namespace uiSOAPGateway
 {
   
@@ -14,6 +16,11 @@ namespace uiSOAPGateway
 
   Int32 CUISOAPGateway::Run()
   {
-	return 0;
+		while(1)
+		{
+			printf("Calling - server Run()\n");
+			m_server.run(8064);
+		}
+		return 0;
   }
 }
