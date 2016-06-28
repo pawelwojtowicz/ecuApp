@@ -53,20 +53,20 @@ namespace UCL
 
       // get the current settings
       retVal = ( 0 == tcgetattr(m_portHandle,&portConfiguration) );
-      RETAILMSG(INFO, ("GetAttr = %d", retVal));
+      //RETAILMSG(INFO, ("GetAttr = %d", retVal));
 
       // parse the configuration string, and fill in the termios structure suitable to new parameters
       retVal &= ParseConfigurationString( configurationString, portConfiguration );
-      RETAILMSG(INFO, ("Parse Configs = %d", retVal));
+      //RETAILMSG(INFO, ("Parse Configs = %d", retVal));
 
       // apply the settings right away ( TCSANOW )
       // TCSADRAIN - would be - apply the settings after emptying the transmit buffer
       // TCSAFLUSH - flush the buffers and apply the changes.
       retVal &= ( 0 == tcsetattr(m_portHandle, TCSANOW ,&portConfiguration) );
-      RETAILMSG(INFO, ("SetAttr = %d", retVal));
+      //RETAILMSG(INFO, ("SetAttr = %d", retVal));
       if ( !retVal )
       {
-      	RETAILMSG(INFO, ("Step final = [%s]", strerror(errno)));
+      	//RETAILMSG(INFO, ("Step final = [%s]", strerror(errno)));
       }
     }
  

@@ -7,9 +7,11 @@ TEST( CSharedStorage, Initialization )
 {
 	bool initOK(false);
 	
-	Runtime::CSharedStorage storage("tmpFileName", 250, true);
+	Runtime::CSharedStorage storage;
 	
-	initOK = storage.Initialize();
+	initOK = storage.Initialize("tmpFileName", 250, true);
 
 	ASSERT_TRUE( initOK );
+
+	storage.Shutdown();
 }
