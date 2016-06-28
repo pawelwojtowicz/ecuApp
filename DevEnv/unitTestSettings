@@ -4,7 +4,7 @@ export INTERMEDIATE_PATH=$(BIN_PATH)/Intermediate
 export TARGET_PATH=$(BIN_PATH)/unitTests
 export SUBJ_PATH=../../Src
 export CFLAGS:= -c -Wall -pedantic -I$(SUBJ_PATH) -I$(SUBJ_PATH)/Global -I$(GOOGLE_TEST)/include -I$(GMOCK_DIR)/include -DUNIT_TEST
-export LFLAGS:= -pthread -L$(LD_LIBRARY_PATH)
+export LFLAGS:= -pthread -L$(INTERMEDIATE_PATH) -L$(LD_LIBRARY_PATH)
 export OBJ_DIR=$(INTERMEDIATE_PATH)/$(OUTPUT)
 export LINKER_INPUT= $(addprefix $(OBJ_DIR)/, $(OBJ))
 

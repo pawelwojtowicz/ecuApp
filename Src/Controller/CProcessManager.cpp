@@ -2,7 +2,7 @@
 #include <Configuration/CConfigNode.h>
 #include <Logger/Logger.h>
 #include <algorithm>
-#include <ControllerInterface/CControllerStub.h>
+#include <ControllerInterface/IProcessStatusReporter.h>
 #include <ControllerInterface/CPublicProcessInfo.h>
 #include "CProcessInfo.h"
 #include "ISessionManager.h"
@@ -16,7 +16,7 @@ namespace Controller
 
 CProcessManager::CProcessManager( Runtime::ITimerManager& rTimerManager, 
 																	ISessionManager& rSessionManager,
-																	CControllerStub& rControllerStub,
+																	IProcessStatusReporter& rControllerStub,
 																	IProcessControl* pProcessControl )
 :	m_sessionManager(rSessionManager)
 , m_rTimerManager(rTimerManager)

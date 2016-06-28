@@ -5,7 +5,7 @@ OBJ=CTest_Controller.o CProcessInfo.o CProcessHandler.o CTest_CSessionManager_Lo
 VPATH=$(SUBJ_PATH)/Controller
 
 include ../../DevEnv/unitTestSettings
-LFLAGS+= -lUCL -lConfiguration -lLogger
+LFLAGS+= -lrt -lUCL -lConfiguration -lLogger -lControllerInterface
 
 CTest_Controller.o:	CTest_Controller.cpp
 CProcessInfo.o:	CProcessInfo.cpp CProcessInfo.h
