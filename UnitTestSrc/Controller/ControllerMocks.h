@@ -66,7 +66,7 @@ class ProcessorStatusReporterMock: public Controller::IProcessStatusReporter
 public:
 	MOCK_METHOD2( SendProcessStatus, bool(const UInt32 processId, const Controller::tProcessStatus& status ) );
 
-	MOCK_METHOD1( PublishProcessInfo, bool ( Controller::CPublicProcessInfo& processInfo));
+	bool PublishProcessInfo( Controller::CPublicProcessInfo& ){ return true;};
 };
 }
 

@@ -191,9 +191,9 @@ TEST_F( CProcessManager_Test , NotifySessionState_Init3 )
 
 TEST_F(CProcessManager_Test , HeartbeatOnTheProcessMissing )
 {
-	Int32 timestamp(10000);
+	Int32 timestamp(10001);
 	Runtime::ITimerListener& timerListener(processManager);
-	EXPECT_CALL(timerManagerMock,GetCurrentTime()).Times(7).WillOnce(Return(timestamp)).WillOnce(Return(timestamp)).WillOnce(Return(timestamp)).WillOnce(Return(timestamp)).WillOnce(Return(timestamp+2000)).WillOnce(Return(timestamp+4000)).WillOnce(Return(timestamp+6000));
+	EXPECT_CALL(timerManagerMock,GetCurrentTime()).Times(7).WillOnce(Return(timestamp)).WillOnce(Return(timestamp)).WillOnce(Return(timestamp)).WillOnce(Return(timestamp)).WillOnce(Return(timestamp+5000)).WillOnce(Return(timestamp+10000)).WillOnce(Return(timestamp+15001));
 	EXPECT_CALL(sessionManagerMock, ReportItemState( SessionItemID, true )).Times(4);
 
 	EXPECT_CALL(processControlMock, TerminateProcess(2)).Times(1);
