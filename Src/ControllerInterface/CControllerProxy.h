@@ -1,5 +1,6 @@
 #ifndef CONTROLLER_CCONTROLLERPROXY_H
 #define CONTROLLER_CCONTROLLERPROXY_H
+#include "IControllerProxy.h"
 #include <Runtime/CProxyBase.h>
 #include <Runtime/CSharedStorage.h>
 #include "ControllerTypes.h"
@@ -9,7 +10,7 @@ namespace Controller
 class IControllerListener;
 class CPublicProcessInfo;
 
-class CControllerProxy : public Runtime::CProxyBase
+class CControllerProxy : public IControllerProxy, public Runtime::CProxyBase
 {
 public:
 	CControllerProxy(Runtime::IMessenger& rMessenger);
@@ -17,18 +18,18 @@ public:
 
 	bool Initialize(IControllerListener* pListener);
 
-	bool ReportInitDone(	const UInt32& processId, 
+	virtual bool ReportInitDone(	const UInt32& processId, 
 												const std::string& processQueue, 
 												const std::string& unitVersion);
 
-	bool SendProcessHeartbeat(const UInt32 processId, const tProcessStatus& status );
+	virtual bool SendProcessHeartbeat(const UInt32 processId, const tProcessStatus& status );
 	
-	bool GetCurrentProcessInfo( CPublicProcessInfo& processInfo);
+	virtual bool GetCurrentProcessInfo( CPublicProcessInfo& processInfo);
 
-	bool RequestShutdown();
-	bool RequestRestart();
-	bool RestartDevice();
-	bool DeactivateWatchdog();
+	virtual bool RequestShutdown();
+	virtual bool RequestRestart();
+	virtual bool RestartDevice();
+	virtual bool DeactivateWatchdog();
 
 private:
 	void HandleMessage(Runtime::CMessage& rMessage);

@@ -2,12 +2,12 @@ include ../../DevEnv/commonSettings
 
 DATASERVICE_GENSRC=gSOAP_DataService
 OUTPUT= uiSOAPGateway
-OBJ= gSOAP_DS_C.o gSOAP_DS_DataServiceBindingService.o CUISOAPGateway.o CDataServiceSOAPStub.o stdsoap2.o
+OBJ= gSOAP_DS_C.o gSOAP_DS_DataServiceBindingService.o CUISOAPGateway.o CDataServiceSOAPStub.o stdsoap2.o CUISOAPGatewayContext.o
 
 OBJ_DIR=$(INTERMEDIATE_PATH)/$(OUTPUT)
 INSTALL_PATH:=$(TARGET_PATH)/usr/bin
 LINKER_INPUT= $(addprefix $(OBJ_DIR)/, $(OBJ))
-LFLAGS+= -lConfiguration -lControllerInterface -lRuntime -lUCL -lLogger -lrt
+LFLAGS+= -lConfiguration -lControllerInterface -lTTSInterface -lRuntime -lUCL -lLogger -lrt
 
 default: DirStructure $(OBJ)
 	$(CC) $(LINKER_INPUT) -o $(INSTALL_PATH)/$(OUTPUT) $(LFLAGS)
@@ -26,6 +26,9 @@ CUISOAPGateway.o: CUISOAPGateway.cpp CUISOAPGateway.h
 
 CDataServiceSOAPStub.o: CDataServiceSOAPStub.cpp CDataServiceSOAPStub.h
 	$(CC) $(CFLAGS) CDataServiceSOAPStub.cpp -o$(OBJ_DIR)/CDataServiceSOAPStub.o
+
+CUISOAPGatewayContext.o: CUISOAPGatewayContext.cpp CUISOAPGatewayContext.h
+	$(CC) $(CFLAGS) CUISOAPGatewayContext.cpp -o$(OBJ_DIR)/CUISOAPGatewayContext.o
 
 
 
