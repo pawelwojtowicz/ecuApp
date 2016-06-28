@@ -1,5 +1,5 @@
 OUTPUT= libUCL
-OBJ= SystemEnvironment.o FileSystem.o CTokenizer.o CFile.o CThread.o CSerialPort.o CUnixDomainSocket.o CSerializable.o CSharedMemory.o CSemaphore.o CMemoryInfo.o CFastHash.o
+OBJ= SystemEnvironment.o FileSystem.o CTokenizer.o CFile.o CThread.o CSerialPort.o CUnixDomainSocket.o CSerializable.o CSharedMemory.o CSemaphore.o CMemoryInfo.o CFastHash.o CIPAddress.o
 
 include ../../DevEnv/sharedLibSettings
 
@@ -15,3 +15,4 @@ CSerializable.o: CSerializable.cpp CSerializable.h
 CSemaphore.o: CSemaphore.cpp CSemaphore.h
 CMemoryInfo.o: CMemoryInfo.cpp CMemoryInfo.h CPROCInfoParserBase.h
 CFastHash.o: CFastHash.cpp CFastHash.h
+CIPAddress.o: CIPAddress.cpp CIPAddress.h
