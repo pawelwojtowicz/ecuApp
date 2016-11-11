@@ -2,7 +2,7 @@ project ( ControllerUnitTests )
 
 SET ( CONTROLLER_SRC_DIR ${ECU_APP_SRC}/Controller)
 
-add_executable ( testController
+add_executable ( test_Controller
 ${CONTROLLER_SRC_DIR}/CProcessInfo.cpp
 ${CONTROLLER_SRC_DIR}/CProcessHandler.cpp
 ${CONTROLLER_SRC_DIR}/CSessionManager.cpp
@@ -14,5 +14,5 @@ CTest_CSessionManager_Helpers.cpp
 CTest_Controller.cpp
 )
 
-target_link_libraries ( testController ${GTEST_LIBRARIES} UCL Configuration Logger )
-add_dependencies ( testController ${GTEST_LIBRARIES} UCL Configuration Logger )
+target_link_libraries ( test_Controller ${GTEST_LIBRARIES} rt UCL Configuration Logger Runtime ControllerInterface  )
+add_dependencies ( test_Controller ${GTEST_LIBRARIES} UCL Configuration Logger Runtime ControllerInterface )

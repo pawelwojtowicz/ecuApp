@@ -11,3 +11,8 @@ include_directories ( ${ECU_APP_SRC}/Global)
 
 
 add_subdirectory ( Controller )
+add_subdirectory ( ControllerInterface )
+add_subdirectory ( CSM )
+add_subdirectory ( JSONLib )
+add_subdirectory ( Runtime )
+add_subdirectory ( UCL )
