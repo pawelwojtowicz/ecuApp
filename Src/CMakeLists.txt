@@ -1,0 +1,19 @@
+project( ecuApp )
+
+add_compile_options( -Wall -pedantic -std=c++0x )
+
+include_directories ( ${ECU_APP_SRC} )
+include_directories ( ${ECU_APP_SRC}/Global)
+
+add_subdirectory ( CGIProcessor )
+add_subdirectory ( Configuration )
+add_subdirectory ( Controller )
+add_subdirectory ( ControllerInterface )
+add_subdirectory ( Example )
+add_subdirectory ( JSONLib )
+add_subdirectory ( Logger )
+add_subdirectory ( Runtime )
+add_subdirectory ( TTS )
+add_subdirectory ( TTSInterface )
+add_subdirectory ( UCL )
+add_subdirectory ( XMLParser )
