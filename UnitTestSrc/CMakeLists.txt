@@ -1,7 +1,8 @@
 project (UnitTestSrc )
 
 add_compile_options( -Wall -pedantic -std=c++0x )
-SET( CMAKE_RUNTIME_OUTPUT_DIRECTORY  ${ECU_APP_TARGET_DIR}/unitTests )
+
+SET( CMAKE_RUNTIME_OUTPUT_DIRECTORY  ${ECU_APP_TARGET_DIR}/usr/bin/unitTests )
 SET( GTEST_LIBRARIES gtest gmock gtest_main gmock_main )
 
 include_directories ( ${GMOCK_DIR}/include )

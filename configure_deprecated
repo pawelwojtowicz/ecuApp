@@ -1,0 +1,72 @@
+#!/bin/bash 
+
+export BUILD_PLATFORM=DESKTOP
+export TOOLCHAIN_PREFIX=""
+export TOOLCHAIN_LIB_PATHS=""
+
+
+if [ $#=1 ];
+then
+	if [ $1 = "QEMU" ]
+	then
+		echo "Deployment prepared for QEMU"
+		export BUILD_PLATFORM=$1
+    export TOOLCHAIN_PREFIX=/home/pawel/x-tools/arm-unknown-linux-gnueabi/bin/arm-unknown-linux-gnueabi-
+    export TOOLCHAIN_LIB_PATHS=/home/pawel/x-tools/arm-unknown-linux-gnueabi/arm-unknown-linux-gnueabi/lib
+		
+	elif [ $1 = "KRISTECH" ]
+	then
+		echo "Deployment prepared for Kristech evaluation board"
+		export BUILD_PLATFORM=$1
+    export TOOLCHAIN_PREFIX=/home/pawel/x-tools/arm-unknown-linux-gnueabi/bin/arm-unknown-linux-gnueabi-
+    export TOOLCHAIN_LIB_PATHS=/home/pawel/x-tools/arm-unknown-linux-gnueabi/arm-unknown-linux-gnueabi/lib		
+	else
+		echo Invalid target - assuming DESKTOP
+	fi
+fi
+
+export KERNEL_VERSION=linux-3.4.4
+export PROJECT_ROOT=$(pwd)
+export ROOT_FILE_SYSTEM_IMAGE_PATH=$PROJECT_ROOT/Bin/rootfsimg
+export ROOT_FILE_SYSTEM_IMAGE=$ROOT_FILE_SYSTEM_IMAGE_PATH/rootfs.cpio
+export TARGET_PATH=$PROJECT_ROOT/Bin/Target
+export TARGET_SHARED_LIBS_PATH=$TARGET_PATH/usr/lib
+export TARGET_SHARED_TOOLCHAIN_LIBS=$TARGET_PATH/lib
+export TARGET_BIN_PATH=$TARGET_PATH/usr/bin
+export TARGET_WWW_PATH=$TARGET_PATH/srv/www
+export THIRD_PARTY_COMPONENTS=$PROJECT_ROOT/3rdParty
+export DEPLOYMENT_SCRIPTS=$PROJECT_ROOT/DeploymentScripts
+export DEPLOYMENT_SETTINGS=$DEPLOYMENT_SCRIPTS/deploymentPaths
+export SYSTEM_CONFIGURATION_DIRECTORY=$DEPLOYMENT_SCRIPTS/ConfigurationFiles
+
+#preparing the filenames and paths for the makefile common settings
+export MAKEFILE_RULES=$PROJECT_ROOT/DevEnv
+export COMMON_MAKE_SETTINGS=$MAKEFILE_RULES/commonSettings
+#preparing the filenames and paths for deployment scripts
+
+# generate the common deployment script variable set
+echo "export PROJECT_ROOT=$PROJECT_ROOT" > $DEPLOYMENT_SETTINGS
+echo "export TARGET_PATH=$TARGET_PATH" >> $DEPLOYMENT_SETTINGS
+echo "export THIRD_PARTY_COMPONENTS=$THIRD_PARTY_COMPONENTS" >> $DEPLOYMENT_SETTINGS
+echo "export TARGET_SHARED_LIBS_PATH=$TARGET_SHARED_LIBS_PATH" >> $DEPLOYMENT_SETTINGS
+echo "export TARGET_SHARED_TOOLCHAIN_LIBS=$TARGET_SHARED_TOOLCHAIN_LIBS" >> $DEPLOYMENT_SETTINGS
+echo "export TARGET_BIN_PATH=$TARGET_BIN_PATH" >> $DEPLOYMENT_SETTINGS
+echo "export TARGET_WWW_PATH=$TARGET_WWW_PATH" >> $DEPLOYMENT_SETTINGS
+echo "export TOOLCHAIN_LIB_PATHS=$TOOLCHAIN_LIB_PATHS" >> $DEPLOYMENT_SETTINGS
+echo "export TOOLCHAIN_PREFIX=$TOOLCHAIN_PREFIX" >> $DEPLOYMENT_SETTINGS
+echo "export ROOT_FILE_SYSTEM_IMAGE_PATH=$ROOT_FILE_SYSTEM_IMAGE_PATH" >> $DEPLOYMENT_SETTINGS
+echo "export ROOT_FILE_SYSTEM_IMAGE=$ROOT_FILE_SYSTEM_IMAGE" >> $DEPLOYMENT_SETTINGS
+echo "export KERNEL_VERSION=$KERNEL_VERSION" >> $DEPLOYMENT_SETTINGS
+echo "export BUILD_PLATFORM=$BUILD_PLATFORM" >> $DEPLOYMENT_SETTINGS
+echo "export SYSTEM_CONFIGURATION_DIRECTORY=$SYSTEM_CONFIGURATION_DIRECTORY" >> $DEPLOYMENT_SETTINGS
+
+# generate the common makefile 
+echo "export TOOLCHAIN_PREFIX=$TOOLCHAIN_PREFIX" > $COMMON_MAKE_SETTINGS
+echo 'export CC:=$(TOOLCHAIN_PREFIX)g++' >> $COMMON_MAKE_SETTINGS
+echo "export ARCHIVER:=ar" >> $COMMON_MAKE_SETTINGS
+echo "export BIN_PATH:=$PROJECT_ROOT/Bin" >> $COMMON_MAKE_SETTINGS
+echo 'export INTERMEDIATE_PATH=$(BIN_PATH)/Intermediate' >> $COMMON_MAKE_SETTINGS
+echo 'export TARGET_PATH=$(BIN_PATH)/Target' >> $COMMON_MAKE_SETTINGS
+echo 'export SHARED_LIB_PATH=$(BIN_PATH)/Target/usr/lib' >> $COMMON_MAKE_SETTINGS
+echo "export CFLAGS:= -c -Wall -pedantic -I\"$PROJECT_ROOT/Src/Global\" -I\"$PROJECT_ROOT/Src\"" >> $COMMON_MAKE_SETTINGS
+echo 'export LFLAGS:= -pthread -L$(INTERMEDIATE_PATH) -L$(SHARED_LIB_PATH)' >> $COMMON_MAKE_SETTINGS
