@@ -11,5 +11,5 @@ CSessionManager.cpp
 CWatchdogManager.cpp
 )
 
-target_link_libraries ( controller pthread rt UCL Runtime Configuration ControllerInterface Logger )
+target_link_libraries ( controller pthread rt UCL ControllerInterface Runtime Configuration Logger )
 add_dependencies ( controller UCL Runtime Configuration ControllerInterface Logger )

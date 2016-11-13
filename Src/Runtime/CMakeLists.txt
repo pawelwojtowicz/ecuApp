@@ -12,3 +12,6 @@ CSharedStorage.cpp
 CStubBase.cpp
 CTimerManager.cpp
 )
+
+target_link_libraries ( Runtime ControllerInterface ) 
+add_dependencies ( Runtime ControllerInterface )

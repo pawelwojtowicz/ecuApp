@@ -5,7 +5,10 @@ CTTS.cpp
 CTTSEngine.cpp
 )
 
-target_link_libraries ( tts Runtime 
+target_link_libraries ( tts pthread
+                            rt
+                            asound
+                            Runtime 
                             ControllerInterface 
                             TTSInterface 
                              
