@@ -1,6 +1,6 @@
 project ( JSONLibTest )
 
-SET ( JSONLIB_SRC_DIR ${ECU_APP_SRC}/JSONLib)
+SET ( JSONLIB_SRC_DIR ${ECUAPP_SRC}/JSONLib)
 
 add_executable ( test_JSONLib
 test_JSON.cpp

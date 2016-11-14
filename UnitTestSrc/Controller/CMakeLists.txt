@@ -1,6 +1,6 @@
 project ( ControllerUnitTests )
 
-SET ( CONTROLLER_SRC_DIR ${ECU_APP_SRC}/Controller)
+SET ( CONTROLLER_SRC_DIR ${ECUAPP_SRC}/Controller)
 
 add_executable ( test_Controller
 ${CONTROLLER_SRC_DIR}/CProcessInfo.cpp

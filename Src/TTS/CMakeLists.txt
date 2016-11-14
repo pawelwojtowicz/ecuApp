@@ -1,6 +1,8 @@
 project (TTS)
 
-add_executable ( tts
+SET( OUTPUT_NAME tts )
+
+add_executable ( ${OUTPUT_NAME}
 CTTS.cpp
 CTTSEngine.cpp
 )
@@ -12,5 +14,6 @@ if ( CMAKE_CROSSCOMPILING )
   SET (TTS_DEPENDENCIES asound ${TTS_DEPENDENCIES} )
 endif ()
 
-target_link_libraries ( tts ${TTS_DEPENDENCIES} )
-add_dependencies( tts ControllerInterface TTSInterface Runtime UCL Logger)
+target_link_libraries ( ${OUTPUT_NAME} ${TTS_DEPENDENCIES} )
+add_dependencies( ${OUTPUT_NAME} ControllerInterface TTSInterface Runtime UCL Logger)
+install ( TARGETS ${OUTPUT_NAME} RUNTIME DESTINATION ${ECUAPP_RUNTIME_INSTALL_DIR} )

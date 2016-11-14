@@ -1,6 +1,8 @@
 project ( CGIProcessor )
 
-add_executable( cgiprocessor
+SET( OUTPUT_NAME cgiprocessor )
+
+add_executable( ${OUTPUT_NAME}
 CCGIProcessor.cpp
 CEnvironment.cpp
 CActionFactory.cpp
@@ -9,5 +11,6 @@ CProxyProvider.cpp
 CGetMemInfoAction.cpp
 )
 
-target_link_libraries ( cgiprocessor pthread rt ControllerInterface Runtime UCL Logger JSON )
-add_dependencies ( cgiprocessor ControllerInterface Runtime UCL Logger JSON )
+target_link_libraries ( ${OUTPUT_NAME} pthread rt ControllerInterface Runtime UCL Logger JSON )
+add_dependencies ( ${OUTPUT_NAME} ControllerInterface Runtime UCL Logger JSON )
+install( TARGETS ${OUTPUT_NAME} RUNTIME DESTINATION ${ECUAPP_RUNTIME_INSTALL_DIR} )

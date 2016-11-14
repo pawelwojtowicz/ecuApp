@@ -1,6 +1,6 @@
 project (UCLTest )
 
-SET ( UCL_SRC_DIR  ${ECU_APP_SRC}/UCL )
+SET ( UCL_SRC_DIR  ${ECUAPP_SRC}/UCL )
 
 add_definitions( -DUNIT_TEST ) 
 

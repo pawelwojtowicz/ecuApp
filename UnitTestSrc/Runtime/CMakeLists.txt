@@ -1,6 +1,6 @@
 project (Runtime )
 
-SET ( RUNTIME_SRC_DIR  ${ECU_APP_SRC}/Runtime ) 
+SET ( RUNTIME_SRC_DIR  ${ECUAPP_SRC}/Runtime ) 
 
 add_executable ( test_Runtime 
 ${RUNTIME_SRC_DIR}/CMessage.cpp

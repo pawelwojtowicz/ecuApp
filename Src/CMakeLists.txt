@@ -2,8 +2,8 @@ project( ecuApp )
 
 add_compile_options( -Wall -pedantic -std=c++0x )
 
-include_directories ( ${ECU_APP_SRC} )
-include_directories ( ${ECU_APP_SRC}/Global)
+include_directories ( ${ECUAPP_SRC} )
+include_directories ( ${ECUAPP_SRC}/Global)
 
 add_subdirectory ( CGIProcessor )
 add_subdirectory ( Configuration )

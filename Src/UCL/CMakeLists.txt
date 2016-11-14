@@ -1,6 +1,8 @@
 project (UCL)
 
-add_library( UCL SHARED 
+SET(OUTPUT_NAME UCL )
+
+add_library( ${OUTPUT_NAME} SHARED 
 CFastHash.cpp
 CFile.cpp
 CMemoryInfo.cpp
@@ -14,3 +16,5 @@ CUnixDomainSocket.cpp
 FileSystem.cpp
 SystemEnvironment.cpp
 )
+
+install ( TARGETS ${OUTPUT_NAME} LIBRARY DESTINATION ${ECUAPP_LIBRARY_INSTALL_DIR} )

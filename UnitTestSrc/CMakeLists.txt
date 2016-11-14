@@ -7,8 +7,8 @@ SET( GTEST_LIBRARIES gtest gmock gtest_main gmock_main )
 
 include_directories ( ${GMOCK_DIR}/include )
 include_directories ( ${GMOCK_DIR}/gtest/include )
-include_directories ( ${ECU_APP_SRC} )
-include_directories ( ${ECU_APP_SRC}/Global)
+include_directories ( ${ECUAPP_SRC} )
+include_directories ( ${ECUAPP_SRC}/Global)
 
 
 add_subdirectory ( Controller )

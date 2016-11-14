@@ -1,6 +1,8 @@
 project( Runtime )
 
-add_library( Runtime SHARED
+SET( OUTPUT_NAME Runtime )
+
+add_library( ${OUTPUT_NAME} SHARED
 CExecutable.cpp
 executableMain.cpp
 CHealthReporter.cpp
@@ -13,5 +15,6 @@ CStubBase.cpp
 CTimerManager.cpp
 )
 
-target_link_libraries ( Runtime ControllerInterface ) 
-add_dependencies ( Runtime ControllerInterface )
+target_link_libraries ( ${OUTPUT_NAME} ControllerInterface ) 
+add_dependencies ( ${OUTPUT_NAME} ControllerInterface )
+install ( TARGETS ${OUTPUT_NAME} LIBRARY DESTINATION ${ECUAPP_LIBRARY_INSTALL_DIR} )
