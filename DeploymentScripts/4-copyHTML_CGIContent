@@ -1,4 +1,0 @@
-#!/bin/bash
-source deploymentPaths
-
-cp $PROJECT_ROOT/HTMLSource/* $TARGET_WWW_PATH
