@@ -1,4 +1,0 @@
-null::sysinit:/etc/init.d/rc
-ttyS0::askfirst:/sbin/getty 115200 ttyS0
-ttyS1::askfirst:/sbin/getty 38400 ttyS1
-

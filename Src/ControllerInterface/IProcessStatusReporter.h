@@ -5,6 +5,7 @@
 
 namespace Controller
 {
+class CPublicProcessInfo;
 
 class IProcessStatusReporter
 {
@@ -13,6 +14,10 @@ public:
 	virtual ~IProcessStatusReporter() {};
 	
 	virtual bool SendProcessStatus(const UInt32 processId, const tProcessStatus& status ) = 0;
+
+	virtual bool PublishProcessInfo( CPublicProcessInfo& processInfo) = 0;
+
+
 	
 private:
 	IProcessStatusReporter( const IProcessStatusReporter&);

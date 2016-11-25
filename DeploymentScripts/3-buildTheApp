@@ -1,7 +1,0 @@
-#!/bin/bash
-source deploymentPaths
-
-make -C $PROJECT_ROOT/Src
-
-cp -r $PROJECT_ROOT/Configuration/ControllerConfig.xml $TARGET_PATH/etc/opt
-ln -s '/usr/bin/cgiprocessor' $TARGET_WWW_PATH/cgi-bin/controller

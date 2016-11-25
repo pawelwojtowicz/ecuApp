@@ -14,6 +14,6 @@ TEST(CMemoryInfo,GetValue)
 	
 	Int32 info(0);
 	
-  EXPECT_EQ(memInfo.GetMemoryInfo(UCL::MemTotal), true);
+  EXPECT_EQ(memInfo.GetMemoryInfo(UCL::MemTotal)!=0, true);
 }
 

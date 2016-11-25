@@ -1,7 +1,0 @@
-include ../../DevEnv/commonSettings
-
-export OUTPUT_POSTFIX:=
-export INSTALL_PATH:=$(TARGET_PATH)/usr/bin
-LFLAGS+= -lRuntime -lrt -lConfiguration
-
-include ../../DevEnv/buildingRules

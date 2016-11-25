@@ -46,6 +46,8 @@ private:
 			return deserializationStatus;	
 		};
 
+		virtual size_t GetStorageSize() { return 0;};
+
 };
 
 TEST(CSerializable,BasicSerializaDeserialize)

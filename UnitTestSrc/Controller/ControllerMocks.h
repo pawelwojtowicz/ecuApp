@@ -7,6 +7,7 @@
 #include <Controller/ISessionManager.h>
 #include <Controller/IProcessControl.h>
 #include <ControllerInterface/IProcessStatusReporter.h>
+#include <ControllerInterface/CPublicProcessInfo.h>
 
 namespace ControllerTest
 {
@@ -64,6 +65,8 @@ class ProcessorStatusReporterMock: public Controller::IProcessStatusReporter
 {
 public:
 	MOCK_METHOD2( SendProcessStatus, bool(const UInt32 processId, const Controller::tProcessStatus& status ) );
+
+	MOCK_METHOD1( PublishProcessInfo, bool ( Controller::CPublicProcessInfo& processInfo));
 };
 }
 
