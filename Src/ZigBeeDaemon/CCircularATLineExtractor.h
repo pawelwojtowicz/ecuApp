@@ -1,7 +1,7 @@
 #pragma once
 #include <Global/GlobalTypes.h>
 
-namespace ZigBeeDeamon
+namespace ZigBeeDaemon
 {
 class IATLineConsumer;
 
@@ -11,7 +11,10 @@ public:
 	CCircularATLineExtractor( size_t bufferSize, IATLineConsumer* pATLineConsumer );
 	virtual ~CCircularATLineExtractor();
 
-	bool WriteBuffer( Int8* inputBuffer, size_t inputSize);
+	bool WriteBuffer(Int8* buffer, size_t chunkSize);
+	size_t GetRemainingSpaceSize();
+
+	void PrintHEX();
 
 private:
 	CCircularATLineExtractor(const CCircularATLineExtractor&);
@@ -20,6 +23,10 @@ private:
 	size_t m_bufferSize;
 
 	Int8* m_buffer;
+
+	size_t m_writeBufferSpace;
+
+	size_t m_readContentSize;
 
 	size_t m_writePosition;
 
