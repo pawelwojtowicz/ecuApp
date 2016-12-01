@@ -161,3 +161,85 @@ TEST( CCircularATLineExtractor, LineExtraction_BufferOverrun_TerminationSequence
 	ASSERT_TRUE(extractor.WriteBuffer(test+25,2));
 }
 
+
+TEST( CCircularATLineExtractor, PromptExtraction_BufferOverrun )
+{
+	char test[] = {"\n\rTest1\n\r<Kaka1>\n\r12345678\n\rddddddd"};
+
+	ATLineConsumerMock atLineConsumerMock;
+
+
+	ZigBeeDaemon::CCircularATLineExtractor extractor(16,&atLineConsumerMock);
+	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("Test1") )).Times(1);
+	EXPECT_CALL(atLineConsumerMock, NotifyATPromptExtracted(	EndsWith("Kaka1") )).Times(1);
+	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("12345678") )).Times(1);
+
+	ASSERT_TRUE(extractor.WriteBuffer(test,5));
+	ASSERT_TRUE(extractor.WriteBuffer(test+5,5));
+	ASSERT_TRUE(extractor.WriteBuffer(test+10,5));
+	ASSERT_TRUE(extractor.WriteBuffer(test+15,5));
+	ASSERT_TRUE(extractor.WriteBuffer(test+20,5));
+	ASSERT_TRUE(extractor.WriteBuffer(test+25,5));
+}
+
+TEST( CCircularATLineExtractor, PromptExtraction_IgnoreNotTerminated )
+{
+	char test[] = {"\n\rTest1\n\r<Kaka1\n\r12345678\n\rddddddd"};
+
+	ATLineConsumerMock atLineConsumerMock;
+
+
+	ZigBeeDaemon::CCircularATLineExtractor extractor(16,&atLineConsumerMock);
+	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("Test1") )).Times(1);
+	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("<Kaka1") )).Times(1);
+	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("12345678") )).Times(1);
+
+	ASSERT_TRUE(extractor.WriteBuffer(test,5));
+	ASSERT_TRUE(extractor.WriteBuffer(test+5,5));
+	ASSERT_TRUE(extractor.WriteBuffer(test+10,5));
+	ASSERT_TRUE(extractor.WriteBuffer(test+15,5));
+	ASSERT_TRUE(extractor.WriteBuffer(test+20,5));
+	ASSERT_TRUE(extractor.WriteBuffer(test+25,5));
+}
+
+TEST( CCircularATLineExtractor, PromptExtraction_IgnoreNotStarted )
+{
+	char test[] = {"\n\rTest1\n\rKaka1>\n\r12345678\n\rddddddd"};
+
+	ATLineConsumerMock atLineConsumerMock;
+
+
+	ZigBeeDaemon::CCircularATLineExtractor extractor(16,&atLineConsumerMock);
+	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("Test1") )).Times(1);
+	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("Kaka1>") )).Times(1);
+	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("12345678") )).Times(1);
+
+	ASSERT_TRUE(extractor.WriteBuffer(test,5));
+	ASSERT_TRUE(extractor.WriteBuffer(test+5,5));
+	ASSERT_TRUE(extractor.WriteBuffer(test+10,5));
+	ASSERT_TRUE(extractor.WriteBuffer(test+15,5));
+	ASSERT_TRUE(extractor.WriteBuffer(test+20,5));
+	ASSERT_TRUE(extractor.WriteBuffer(test+25,5));
+}
+
+
+TEST( CCircularATLineExtractor, PromptExtraction_IgnorePromptMarkupInTheMiddle )
+{
+	char test[] = {"\n\rTest1\n\rK<aka>1\n\r12345678\n\rddddddd"};
+
+	ATLineConsumerMock atLineConsumerMock;
+
+
+	ZigBeeDaemon::CCircularATLineExtractor extractor(16,&atLineConsumerMock);
+	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("Test1") )).Times(1);
+	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("K<aka>1") )).Times(1);
+	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("12345678") )).Times(1);
+
+	ASSERT_TRUE(extractor.WriteBuffer(test,5));
+	ASSERT_TRUE(extractor.WriteBuffer(test+5,5));
+	ASSERT_TRUE(extractor.WriteBuffer(test+10,5));
+	ASSERT_TRUE(extractor.WriteBuffer(test+15,5));
+	ASSERT_TRUE(extractor.WriteBuffer(test+20,5));
+	ASSERT_TRUE(extractor.WriteBuffer(test+25,5));
+}
+

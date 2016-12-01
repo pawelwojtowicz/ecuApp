@@ -49,31 +49,46 @@ bool CCircularATLineExtractor::WriteBuffer(Int8* buffer, size_t chunkSize)
 
 				if (readPosition!= m_readPosition)
 				{
-					std::string command;
-					size_t tokenSize(0);					
+					size_t fullLineLength(0);					
 					if ( readPosition > m_readPosition )
 					{
-						tokenSize = readPosition-m_readPosition;
-						command = std::string(m_buffer+m_readPosition, tokenSize);
+						fullLineLength = readPosition-m_readPosition;
 					}
 					else
 					{
-						tokenSize = readPosition + m_bufferSize - m_readPosition;
-						command = std::string(tokenSize,' ');
-						for (size_t idx=0;idx<tokenSize;++idx)
-						{
-							command[idx]=m_buffer[(m_readPosition+idx)%m_bufferSize];
-						}
+						fullLineLength = readPosition + m_bufferSize - m_readPosition;
+					}
+
+					size_t tokenSize(fullLineLength);
+					size_t readStartPosition(m_readPosition);
+
+					if (m_buffer[m_readPosition]=='<' && tokenSize > 2 && m_buffer[(m_readPosition+tokenSize-1)%m_bufferSize] == '>' )
+					{
+						tokenSize -=2;
+						readStartPosition +=1;
+					}
+					
+					std::string command(tokenSize,' ');										
+					for (size_t idx=0;idx<tokenSize;++idx)
+					{
+						command[idx]=m_buffer[(readStartPosition+idx)%m_bufferSize];
 					}
 
 					if (0 != m_pATLineConsumer)
 					{
-						m_pATLineConsumer->NotifyATResponseExtracted(command);
+						if ( tokenSize == fullLineLength )
+						{
+							m_pATLineConsumer->NotifyATResponseExtracted(command);
+						}
+						else
+						{
+							m_pATLineConsumer->NotifyATPromptExtracted(command);
+						}
 					}
 
-					m_readPosition = (m_readPosition+tokenSize)%m_bufferSize;
-					m_writeBufferSpace += tokenSize;
-  				m_readContentSize -= (tokenSize);
+					m_readPosition = (m_readPosition+fullLineLength)%m_bufferSize;
+					m_writeBufferSpace += fullLineLength;
+  				m_readContentSize -= 	fullLineLength;
 
 				}
 
