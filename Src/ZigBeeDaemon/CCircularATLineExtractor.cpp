@@ -41,19 +41,30 @@ bool CCircularATLineExtractor::WriteBuffer(Int8* buffer, size_t chunkSize)
 		m_writeBufferSpace -= chunkSize;
 		retVal = true;
 
-		PrintHEX();
-
-		size_t iterCount(0);
-
-		for( size_t readPosition= m_readPosition; readPosition+1 < m_readPosition+m_readContentSize; ++readPosition )
+		size_t readPosition(m_readPosition);
+		for( size_t cnt= m_readContentSize; cnt > 1 ; --cnt )
 		{
-			if ( m_buffer[readPosition]=='\n' && m_buffer[readPosition+1]=='\r')
+			if ( m_buffer[readPosition%m_bufferSize]=='\n' && m_buffer[(readPosition+1)%m_bufferSize]=='\r')
 			{
 
-				if (readPosition>m_readPosition)
+				if (readPosition!= m_readPosition)
 				{
-					size_t tokenSize(readPosition-m_readPosition);
-					std::string command(m_buffer+m_readPosition, tokenSize);
+					std::string command;
+					size_t tokenSize(0);					
+					if ( readPosition > m_readPosition )
+					{
+						tokenSize = readPosition-m_readPosition;
+						command = std::string(m_buffer+m_readPosition, tokenSize);
+					}
+					else
+					{
+						tokenSize = readPosition + m_bufferSize - m_readPosition;
+						command = std::string(tokenSize,' ');
+						for (size_t idx=0;idx<tokenSize;++idx)
+						{
+							command[idx]=m_buffer[(m_readPosition+idx)%m_bufferSize];
+						}
+					}
 
 					if (0 != m_pATLineConsumer)
 					{
@@ -69,7 +80,8 @@ bool CCircularATLineExtractor::WriteBuffer(Int8* buffer, size_t chunkSize)
 				m_readPosition = (m_readPosition +2)%m_bufferSize;
 				m_readContentSize -=2;
 				m_writeBufferSpace +=2;
-			}		
+			}
+			readPosition = (readPosition+1)%m_bufferSize;		
 		}
 	}
 	return retVal;
