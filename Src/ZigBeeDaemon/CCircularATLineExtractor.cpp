@@ -3,13 +3,16 @@
 
 #include <cstring>
 
+#define LF 0x0A
+#define CR 0x0D
+
 namespace ZigBeeDaemon
 {
 
 CCircularATLineExtractor::CCircularATLineExtractor( size_t bufferSize, IATLineConsumer* pATLineConsumer )
 : m_bufferSize(bufferSize)
 , m_buffer(new Int8[m_bufferSize+1])
-,	m_writeBufferSpace(m_bufferSize)
+, m_writeBufferSpace(m_bufferSize)
 , m_readContentSize(0)
 , m_writePosition(0)
 , m_readPosition(0)
@@ -44,7 +47,7 @@ bool CCircularATLineExtractor::WriteBuffer(Int8* buffer, size_t chunkSize)
 		size_t readPosition(m_readPosition);
 		for( size_t cnt= m_readContentSize; cnt > 1 ; --cnt )
 		{
-			if ( m_buffer[readPosition%m_bufferSize]=='\n' && m_buffer[(readPosition+1)%m_bufferSize]=='\r')
+			if ( m_buffer[readPosition%m_bufferSize]== CR && m_buffer[(readPosition+1)%m_bufferSize]== LF )
 			{
 
 				if (readPosition!= m_readPosition)

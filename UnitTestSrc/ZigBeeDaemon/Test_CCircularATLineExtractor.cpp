@@ -3,12 +3,12 @@
 #include <ZigBeeDaemon/CCircularATLineExtractor.h>
 #include <ZigBeeDaemon/IATLineConsumer.h>
 
-using ::testing::AtLeast;
-using ::testing::Return;
+//using ::testing::AtLeast;
+//using ::testing::Return;
 using ::testing::EndsWith;
-using ::testing::NotNull;
-using ::testing::InSequence;
-using ::testing::_;
+//using ::testing::NotNull;
+//using ::testing::InSequence;
+//using ::testing::_;
 
 
 class ATLineConsumerMock : public ZigBeeDaemon::IATLineConsumer
@@ -45,12 +45,23 @@ TEST( CCircularATLineExtractor, BufferSizeCalculation_Basic )
 	ASSERT_EQ(extractor.GetRemainingSpaceSize(), 5);
 }
 
+TEST( CCircularATLineExtractor, BufferSizeCalculation_ATCommandsReceived )
+{
+	char test[] = {"\r\n12345\r\n67890"};
 
+	ZigBeeDaemon::CCircularATLineExtractor extractor(30,0);
+
+	ASSERT_TRUE(extractor.WriteBuffer(test,5) );
+	ASSERT_EQ(extractor.GetRemainingSpaceSize(), 27);
+
+	ASSERT_TRUE(extractor.WriteBuffer(test+5,8) );
+	ASSERT_EQ(extractor.GetRemainingSpaceSize(), 26);
+}
 
 TEST( CCircularATLineExtractor, BufferSizeCalculation_ATCommandsReceived_BufferOverrun )
 {
 	const size_t cyclicBufferSize(10);
-	char test[] = {"\n\r12345\n\r6789019\n\r111"};
+	char test[] = {"\r\n12345\r\n6789019\r\n111"};
 
 	ZigBeeDaemon::CCircularATLineExtractor extractor(cyclicBufferSize,0);
 
@@ -67,23 +78,9 @@ TEST( CCircularATLineExtractor, BufferSizeCalculation_ATCommandsReceived_BufferO
 	ASSERT_EQ(extractor.GetRemainingSpaceSize(), cyclicBufferSize);
 }
 
-TEST( CCircularATLineExtractor, BufferSizeCalculation_ATCommandsReceived )
-{
-	char test[] = {"\n\r12345\n\r67890"};
-
-	ZigBeeDaemon::CCircularATLineExtractor extractor(30,0);
-
-	ASSERT_TRUE(extractor.WriteBuffer(test,5) );
-	ASSERT_EQ(extractor.GetRemainingSpaceSize(), 27);
-
-	ASSERT_TRUE(extractor.WriteBuffer(test+5,8) );
-	ASSERT_EQ(extractor.GetRemainingSpaceSize(), 26);
-}
-
-
 TEST( CCircularATLineExtractor, LineExtraction_Basic )
 {
-	char test[] = {"\n\rTest1\n\rKaka1\n\r12345678\n\rddddddd"};
+	char test[] = {"\r\nTest1\r\nKaka1\r\n12345678\r\nddddddd"};
 
 	ATLineConsumerMock atLineConsumerMock;
 
@@ -101,9 +98,9 @@ TEST( CCircularATLineExtractor, LineExtraction_Basic )
 	extractor.WriteBuffer(test+25,5);
 }
 
-TEST( CCircularATLineExtractor, LineExtraction_BufferOverrun )
+TEST( CCircularATLineExtractor, LineExtraction_LongLine )
 {
-	char test[] = {"\n\rTest1\n\rKaka1\n\r12345678\n\rddddddd"};
+	char test[] = {"\r\nTest1\r\nKaka1\r\n12345678\r\nddddddd"};
 
 	ATLineConsumerMock atLineConsumerMock;
 
@@ -121,9 +118,9 @@ TEST( CCircularATLineExtractor, LineExtraction_BufferOverrun )
 	ASSERT_TRUE(extractor.WriteBuffer(test+25,2));
 }
 
-TEST( CCircularATLineExtractor, LineExtraction_BufferOverrun_TerminationSequenceOnBorder )
+TEST( CCircularATLineExtractor, LineExtraction_TerminationSequenceOnBorder )
 {
-	char test[] = {"\n\rTest1\n\rKaka1\n\r12345678\n\rddddddd"};
+	char test[] = {"\r\nTest1\r\nKaka1\r\n12345678\r\nddddddd"};
 
 	ATLineConsumerMock atLineConsumerMock;
 
@@ -141,9 +138,9 @@ TEST( CCircularATLineExtractor, LineExtraction_BufferOverrun_TerminationSequence
 	ASSERT_TRUE(extractor.WriteBuffer(test+25,2));
 }
 
-TEST( CCircularATLineExtractor, LineExtraction_BufferOverrun_TerminationSequenceRightBeforeBorder )
+TEST( CCircularATLineExtractor, LineExtraction_TerminationSequenceRightBeforeBorder )
 {
-	char test[] = {"\n\rTest1\n\rKaka1\n\r12345678\n\rddddddd"};
+	char test[] = {"\r\nTest1\r\nKaka1\r\n12345678\r\nddddddd"};
 
 	ATLineConsumerMock atLineConsumerMock;
 
@@ -162,9 +159,9 @@ TEST( CCircularATLineExtractor, LineExtraction_BufferOverrun_TerminationSequence
 }
 
 
-TEST( CCircularATLineExtractor, PromptExtraction_BufferOverrun )
+TEST( CCircularATLineExtractor, PromptExtraction_LongLine )
 {
-	char test[] = {"\n\rTest1\n\r<Kaka1>\n\r12345678\n\rddddddd"};
+	char test[] = {"\r\nTest1\r\n<Kaka1>\r\n12345678\r\nddddddd"};
 
 	ATLineConsumerMock atLineConsumerMock;
 
@@ -184,7 +181,7 @@ TEST( CCircularATLineExtractor, PromptExtraction_BufferOverrun )
 
 TEST( CCircularATLineExtractor, PromptExtraction_IgnoreNotTerminated )
 {
-	char test[] = {"\n\rTest1\n\r<Kaka1\n\r12345678\n\rddddddd"};
+	char test[] = {"\r\nTest1\r\n<Kaka1\r\n12345678\r\nddddddd"};
 
 	ATLineConsumerMock atLineConsumerMock;
 
@@ -204,7 +201,7 @@ TEST( CCircularATLineExtractor, PromptExtraction_IgnoreNotTerminated )
 
 TEST( CCircularATLineExtractor, PromptExtraction_IgnoreNotStarted )
 {
-	char test[] = {"\n\rTest1\n\rKaka1>\n\r12345678\n\rddddddd"};
+	char test[] = {"\r\nTest1\r\nKaka1>\r\n12345678\r\nddddddd"};
 
 	ATLineConsumerMock atLineConsumerMock;
 
@@ -225,7 +222,7 @@ TEST( CCircularATLineExtractor, PromptExtraction_IgnoreNotStarted )
 
 TEST( CCircularATLineExtractor, PromptExtraction_IgnorePromptMarkupInTheMiddle )
 {
-	char test[] = {"\n\rTest1\n\rK<aka>1\n\r12345678\n\rddddddd"};
+	char test[] = {"\r\nTest1\r\nK<aka>1\r\n12345678\r\nddddddd"};
 
 	ATLineConsumerMock atLineConsumerMock;
 
