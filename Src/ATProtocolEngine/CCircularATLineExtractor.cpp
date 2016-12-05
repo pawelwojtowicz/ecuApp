@@ -6,7 +6,7 @@
 #define LF 0x0A
 #define CR 0x0D
 
-namespace ZigBeeDaemon
+namespace ATProtocolEngine
 {
 
 CCircularATLineExtractor::CCircularATLineExtractor( size_t bufferSize, IATLineConsumer* pATLineConsumer )

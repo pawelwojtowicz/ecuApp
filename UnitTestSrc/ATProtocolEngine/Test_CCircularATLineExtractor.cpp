@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
-#include <ZigBeeDaemon/CCircularATLineExtractor.h>
-#include <ZigBeeDaemon/IATLineConsumer.h>
+#include <ATProtocolEngine/CCircularATLineExtractor.h>
+#include <ATProtocolEngine/IATLineConsumer.h>
 
 //using ::testing::AtLeast;
 //using ::testing::Return;
@@ -11,7 +11,7 @@ using ::testing::EndsWith;
 //using ::testing::_;
 
 
-class ATLineConsumerMock : public ZigBeeDaemon::IATLineConsumer
+class ATLineConsumerMock : public ATProtocolEngine::IATLineConsumer
 {
 public:
 	ATLineConsumerMock(){};
@@ -27,7 +27,7 @@ TEST( CCircularATLineExtractor, BufferSizeCalculation_Basic )
 {
 	char test[] = {"1234567890"};
 
-	ZigBeeDaemon::CCircularATLineExtractor extractor(30,0);
+	ATProtocolEngine::CCircularATLineExtractor extractor(30,0);
 
 	ASSERT_TRUE(extractor.WriteBuffer(test,5) );
 	ASSERT_EQ(extractor.GetRemainingSpaceSize(), 25);
@@ -49,7 +49,7 @@ TEST( CCircularATLineExtractor, BufferSizeCalculation_ATCommandsReceived )
 {
 	char test[] = {"\r\n12345\r\n67890"};
 
-	ZigBeeDaemon::CCircularATLineExtractor extractor(30,0);
+	ATProtocolEngine::CCircularATLineExtractor extractor(30,0);
 
 	ASSERT_TRUE(extractor.WriteBuffer(test,5) );
 	ASSERT_EQ(extractor.GetRemainingSpaceSize(), 27);
@@ -63,7 +63,7 @@ TEST( CCircularATLineExtractor, BufferSizeCalculation_ATCommandsReceived_BufferO
 	const size_t cyclicBufferSize(10);
 	char test[] = {"\r\n12345\r\n6789019\r\n111"};
 
-	ZigBeeDaemon::CCircularATLineExtractor extractor(cyclicBufferSize,0);
+	ATProtocolEngine::CCircularATLineExtractor extractor(cyclicBufferSize,0);
 
 	ASSERT_TRUE(extractor.WriteBuffer(test,5) );
 	ASSERT_EQ(extractor.GetRemainingSpaceSize(), cyclicBufferSize-3);
@@ -85,7 +85,7 @@ TEST( CCircularATLineExtractor, LineExtraction_Basic )
 	ATLineConsumerMock atLineConsumerMock;
 
 
-	ZigBeeDaemon::CCircularATLineExtractor extractor(100,&atLineConsumerMock);
+	ATProtocolEngine::CCircularATLineExtractor extractor(100,&atLineConsumerMock);
 	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("Test1") )).Times(1);
 	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("Kaka1") )).Times(1);
 	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("12345678") )).Times(1);
@@ -105,7 +105,7 @@ TEST( CCircularATLineExtractor, LineExtraction_LongLine )
 	ATLineConsumerMock atLineConsumerMock;
 
 
-	ZigBeeDaemon::CCircularATLineExtractor extractor(11,&atLineConsumerMock);
+	ATProtocolEngine::CCircularATLineExtractor extractor(11,&atLineConsumerMock);
 	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("Test1") )).Times(1);
 	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("Kaka1") )).Times(1);
 	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("12345678") )).Times(1);
@@ -125,7 +125,7 @@ TEST( CCircularATLineExtractor, LineExtraction_TerminationSequenceOnBorder )
 	ATLineConsumerMock atLineConsumerMock;
 
 
-	ZigBeeDaemon::CCircularATLineExtractor extractor(15,&atLineConsumerMock);
+	ATProtocolEngine::CCircularATLineExtractor extractor(15,&atLineConsumerMock);
 	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("Test1") )).Times(1);
 	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("Kaka1") )).Times(1);
 	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("12345678") )).Times(1);
@@ -145,7 +145,7 @@ TEST( CCircularATLineExtractor, LineExtraction_TerminationSequenceRightBeforeBor
 	ATLineConsumerMock atLineConsumerMock;
 
 
-	ZigBeeDaemon::CCircularATLineExtractor extractor(16,&atLineConsumerMock);
+	ATProtocolEngine::CCircularATLineExtractor extractor(16,&atLineConsumerMock);
 	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("Test1") )).Times(1);
 	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("Kaka1") )).Times(1);
 	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("12345678") )).Times(1);
@@ -166,7 +166,7 @@ TEST( CCircularATLineExtractor, PromptExtraction_LongLine )
 	ATLineConsumerMock atLineConsumerMock;
 
 
-	ZigBeeDaemon::CCircularATLineExtractor extractor(16,&atLineConsumerMock);
+	ATProtocolEngine::CCircularATLineExtractor extractor(16,&atLineConsumerMock);
 	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("Test1") )).Times(1);
 	EXPECT_CALL(atLineConsumerMock, NotifyATPromptExtracted(	EndsWith("Kaka1") )).Times(1);
 	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("12345678") )).Times(1);
@@ -186,7 +186,7 @@ TEST( CCircularATLineExtractor, PromptExtraction_IgnoreNotTerminated )
 	ATLineConsumerMock atLineConsumerMock;
 
 
-	ZigBeeDaemon::CCircularATLineExtractor extractor(16,&atLineConsumerMock);
+	ATProtocolEngine::CCircularATLineExtractor extractor(16,&atLineConsumerMock);
 	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("Test1") )).Times(1);
 	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("<Kaka1") )).Times(1);
 	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("12345678") )).Times(1);
@@ -206,7 +206,7 @@ TEST( CCircularATLineExtractor, PromptExtraction_IgnoreNotStarted )
 	ATLineConsumerMock atLineConsumerMock;
 
 
-	ZigBeeDaemon::CCircularATLineExtractor extractor(16,&atLineConsumerMock);
+	ATProtocolEngine::CCircularATLineExtractor extractor(16,&atLineConsumerMock);
 	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("Test1") )).Times(1);
 	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("Kaka1>") )).Times(1);
 	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("12345678") )).Times(1);
@@ -227,7 +227,7 @@ TEST( CCircularATLineExtractor, PromptExtraction_IgnorePromptMarkupInTheMiddle )
 	ATLineConsumerMock atLineConsumerMock;
 
 
-	ZigBeeDaemon::CCircularATLineExtractor extractor(16,&atLineConsumerMock);
+	ATProtocolEngine::CCircularATLineExtractor extractor(16,&atLineConsumerMock);
 	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("Test1") )).Times(1);
 	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("K<aka>1") )).Times(1);
 	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("12345678") )).Times(1);

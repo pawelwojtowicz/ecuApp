@@ -1,7 +1,7 @@
 #pragma once
 #include <Global/GlobalTypes.h>
 
-namespace ZigBeeDaemon
+namespace ATProtocolEngine
 {
 class IATLineConsumer
 {
