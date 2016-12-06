@@ -5,6 +5,7 @@ add_compile_options( -Wall -pedantic -std=c++0x )
 include_directories ( ${ECUAPP_SRC} )
 include_directories ( ${ECUAPP_SRC}/Global)
 
+add_subdirectory ( ATProtocolEngine )
 add_subdirectory ( CGIProcessor )
 add_subdirectory ( Configuration )
 add_subdirectory ( Controller )
