@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <sys/types.h>
+#include <sys/time.h>
+#include <sys/select.h>
 #include "CTokenizer.h"
 #include <stdio.h>
 #include <Logger/Logger.h>
@@ -269,5 +271,20 @@ namespace UCL
     }
     return false;
   }
+
+	bool CSerialPort::WaitRxDataAvailable( UInt32 readTimeout )
+	{
+		fd_set inputSet;
+		
+		FD_ZERO(&inputSet);
+		FD_SET(m_portHandle,&inputSet);
+
+		struct timeval timeoutStructure;
+		timeoutStructure.tv_sec = readTimeout;
+		timeoutStructure.tv_usec = 0;
+
+		return ( 0 < select(m_portHandle, &inputSet,NULL, NULL, &timeoutStructure ) );
+	}
+
 
 }

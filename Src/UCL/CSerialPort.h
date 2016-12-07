@@ -23,6 +23,8 @@ class CSerialPort
   Int32 Write( Int8* ttxBuffer,const Int32& bytesToWrite );
 
   bool WaitTxEmpty();
+	bool WaitRxDataAvailable( UInt32 readTimeout );
+
   bool ClearRx();
   bool ClearTx();
 
