@@ -1,5 +1,6 @@
 #pragma once
 #include <Global/GlobalTypes.h>
+#include "IActionExecutionContext.h"
 #include "CATProtocolActionFactory.h"
 #include <CSM/CStateMachine.h>
 #include "CParameterBundle.h"
@@ -13,15 +14,16 @@ class IActionFactory;
 namespace ATProtocolEngine
 {
 class ISerializationEngine;
+class ISerialPortHandler;
 
-class CATProtocolEngine
+class CATProtocolEngine : public IActionExecutionContext
 {
 public:
 	CATProtocolEngine(	ISerializationEngine& serializationEngine,
-											CSM::ICSMConfigurator& stateMachineConfigurator );
+											CSM::ICSMConfigurator& stateMachineConfigurator,
+											ISerialPortHandler& rSerialPortHandler );
 	virtual ~CATProtocolEngine();
 
-	void RegisterATProtocolAction( const std::string& commandName, CATProtocolAction* pATProtocolAction);
 
 	bool Initialize();
 	void Shutdown();
@@ -29,6 +31,15 @@ public:
 	void NotifyResponseReceived( const std::string& response );
 
 	void NotifyPromptReceived(const std::string& prompt );
+
+private:
+	/** IActionExecutionContext implementation */
+	virtual ISerializationEngine& GetSerializationEngine();
+
+	virtual ISerialPortHandler& GetSerialPortHandler();
+
+	virtual CParameterBundle& GetParameterBundle();
+
 
 private:
 	ISerializationEngine& m_rSerializationEngine;
@@ -40,6 +51,8 @@ private:
 	CSM::CStateMachine m_stateMachine;
 
 	CParameterBundle m_parameterBundle;
+
+	ISerialPortHandler& m_rSerialPortHandler;
 };
 
 }

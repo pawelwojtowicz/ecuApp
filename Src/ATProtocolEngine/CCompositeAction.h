@@ -11,7 +11,7 @@ class CCompositeAction : public CATProtocolAction
 
 	typedef std::list<CATProtocolAction*> tATProtocolActions;
 public:
-	CCompositeAction();
+	CCompositeAction(IActionExecutionContext& executionContext);
 	virtual ~CCompositeAction();
 
 	virtual void Execute();

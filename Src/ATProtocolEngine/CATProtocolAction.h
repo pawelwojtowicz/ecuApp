@@ -1,39 +1,35 @@
 #pragma once
+#include <Global/GlobalTypes.h>
 #include <CSM/IAction.h>
+#include "IActionExecutionContext.h"
 
 namespace ATProtocolEngine
 {
-class CParameterBundle;
 
 class CATProtocolAction: public CSM::IAction
 {
 public:
-	CATProtocolAction()
-	: m_parameterBundle(0)
-	{
-	};
-
-	CATProtocolAction( CParameterBundle* pBundle )
-	: m_parameterBundle( pBundle)	
+	CATProtocolAction(IActionExecutionContext& executionContext)
+	: m_rExecutionContext(executionContext)
 	{
 	};
 
 	virtual ~CATProtocolAction()
 	{
 	};
-	
-	void SetBundle( CParameterBundle* pBundle)
-	{
-		m_parameterBundle = pBundle;
-	};
 
-protected:
-	CParameterBundle* GetParameterBundle()
+ 	virtual bool Configure( const std::string& )
 	{
-		return m_parameterBundle;
-	};
+		return true;
+	}
+	
+protected:
+	IActionExecutionContext& GetExecutionContext()
+	{
+		return m_rExecutionContext;
+	}
 
 private:
-	CParameterBundle* m_parameterBundle;
+	IActionExecutionContext& m_rExecutionContext;
 };
 }

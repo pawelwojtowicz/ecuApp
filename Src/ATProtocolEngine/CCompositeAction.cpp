@@ -3,7 +3,8 @@
 
 namespace ATProtocolEngine
 {
-CCompositeAction::CCompositeAction()
+CCompositeAction::CCompositeAction(IActionExecutionContext& executionContext)
+: CATProtocolAction(executionContext)
 {
 }
 

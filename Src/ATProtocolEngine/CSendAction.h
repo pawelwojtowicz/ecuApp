@@ -8,10 +8,11 @@ class CSendAction : public CATProtocolAction
 /** Used Send(msgId)
 		serializes the msg, using the IserializationEngine+CParameterBundle, and writes serialized data into the ISerialPortHandler */
 
-	std::list<CATProtocolAction*> tATProtocolActions;
 public:
-	CSendAction();
+	CSendAction(IActionExecutionContext& actionExecutionContext);
 	virtual ~CSendAction();
+
+	virtual bool Configure( const std::string& configurationString );
 
 	virtual void Execute();
 
@@ -19,7 +20,6 @@ private:
 	CSendAction(const CSendAction&);
 	CSendAction& operator=(const CSendAction&);
 
-	tATProtocolActions m_actions;
+	std::string m_messageTag;
 };
 }
-

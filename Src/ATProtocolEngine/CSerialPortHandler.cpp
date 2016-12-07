@@ -8,8 +8,7 @@ namespace ATProtocolEngine
 CSerialPortHandler::CSerialPortHandler()
 : m_run(true)
 , m_serialPort()
-, m_atLineExtrator( CIRCULAR_BUFFER_SIZE, 
-this)
+, m_atLineExtrator( CIRCULAR_BUFFER_SIZE, this)
 
 {
 }
@@ -66,6 +65,14 @@ void CSerialPortHandler::Run()
 bool CSerialPortHandler::SendCommand( const std::string& serializeCommand )
 {
 	return true;
+}
+
+void CSerialPortHandler::NotifyATResponseExtracted( const std::string line )
+{
+}
+
+void CSerialPortHandler::NotifyATPromptExtracted( const std::string line )
+{
 }
 
 }

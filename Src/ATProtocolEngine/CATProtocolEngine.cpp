@@ -1,5 +1,6 @@
 #include "CATProtocolEngine.h"
 #include "ISerializationEngine.h"
+#include "ISerialPortHandler.h"
 #include <CSM/ICSMConfigurator.h>
 #include <CSM/IActionFactory.h>
 #include "CATProtocolAction.h"
@@ -7,24 +8,17 @@
 namespace ATProtocolEngine
 {
 CATProtocolEngine::CATProtocolEngine(	ISerializationEngine& serializationEngine,
-																			CSM::ICSMConfigurator& stateMachineConfigurator)
+																			CSM::ICSMConfigurator& stateMachineConfigurator,
+																			ISerialPortHandler& rSerialPortHandler)
 : m_rSerializationEngine(serializationEngine)
 , m_rStateMachineConfigurator(stateMachineConfigurator)
-, m_ATProtocolActionFactory()
+, m_ATProtocolActionFactory(*this)
+, m_rSerialPortHandler(rSerialPortHandler)
 {
 }
 
 CATProtocolEngine::~CATProtocolEngine()
 {
-}
-
-void CATProtocolEngine::RegisterATProtocolAction( const std::string& commandName, CATProtocolAction* pATProtocolAction)
-{
-	if ( !commandName.empty() && (0 != pATProtocolAction) )
-	{
-		pATProtocolAction->SetBundle(&m_parameterBundle);
-		m_ATProtocolActionFactory.RegisterAction(commandName,pATProtocolAction);
-	}
 }
 
 bool CATProtocolEngine::Initialize()
@@ -37,6 +31,23 @@ bool CATProtocolEngine::Initialize()
 void CATProtocolEngine::Shutdown()
 {
 }
+
+ISerializationEngine& CATProtocolEngine::GetSerializationEngine()
+{
+	return m_rSerializationEngine;
+}
+
+ISerialPortHandler& CATProtocolEngine::GetSerialPortHandler()
+{
+	return m_rSerialPortHandler;
+}
+
+CParameterBundle& CATProtocolEngine::GetParameterBundle()
+{
+	return m_parameterBundle;
+}
+
+
 
 void CATProtocolEngine::NotifyResponseReceived( const std::string& response )
 {
