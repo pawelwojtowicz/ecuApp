@@ -21,7 +21,7 @@ bool CParameterBundle::IsAvailable( const std::string& paramName)
 	return ( m_parametersMap.end() != m_parametersMap.find(paramName) );
 }
 
-const std::string& CParameterBundle::GetParameter(const std::string& paramName)
+const std::string& CParameterBundle::GetParameter(const std::string& paramName) const
 {
 	tParameterIterator pCIter( m_parametersMap.find(paramName) );
 	if ( m_parametersMap.end() != pCIter )

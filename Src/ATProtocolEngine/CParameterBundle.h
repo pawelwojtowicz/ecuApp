@@ -15,7 +15,7 @@ public:
 	
 	bool IsAvailable( const std::string& paramName);
 
-	const std::string& GetParameter(const std::string& paramName);
+	const std::string& GetParameter(const std::string& paramName) const ;
 
 	void ResetBundle();
 
