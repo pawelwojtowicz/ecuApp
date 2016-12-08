@@ -1,7 +1,10 @@
 #pragma once
 #include <Global/GlobalTypes.h>
+#include <CSM/IActionFactory.h>
 #include <CSM/IAction.h>
 #include "IActionExecutionContext.h"
+
+
 
 namespace ATProtocolEngine
 {
@@ -18,7 +21,7 @@ public:
 	{
 	};
 
- 	virtual bool Configure( const std::string& )
+ 	virtual bool Configure( const CSM::IActionFactory& ,const std::string& )
 	{
 		return true;
 	}

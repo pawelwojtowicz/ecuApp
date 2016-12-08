@@ -53,7 +53,7 @@ CSM::IAction* CATProtocolActionFactory::GetAction( const std::string& actionName
 
 	if ( 0!= pAction )
 	{
-		if (!pAction->Configure(actionParameters))
+		if (!pAction->Configure(*this, actionParameters))
 		{
 			delete pAction;
 			pAction = 0;

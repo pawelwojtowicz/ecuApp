@@ -1,5 +1,6 @@
 #pragma once
 #include <Global/GlobalTypes.h>
+#include <CSM/IActionFactory.h>
 #include "ISerializationEngine.h"
 #include "ISerialPortHandler.h"
 #include "CParameterBundle.h"

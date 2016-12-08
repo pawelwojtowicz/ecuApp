@@ -9,10 +9,12 @@ class CCompositeAction : public CATProtocolAction
 /** Used when the action line consist of many actions separated by ;
 		Actions will be executed one after another. */
 
-	typedef std::list<CATProtocolAction*> tATProtocolActions;
+	typedef std::list<CSM::IAction*> tATProtocolActions;
 public:
 	CCompositeAction(IActionExecutionContext& executionContext);
 	virtual ~CCompositeAction();
+
+	virtual bool Configure( const CSM::IActionFactory& rFactory,const std::string& configurationString );
 
 	virtual void Execute();
 

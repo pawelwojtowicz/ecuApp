@@ -12,7 +12,7 @@ CSendAction::~CSendAction()
 {
 }
 
-bool CSendAction::Configure( const std::string& config )
+bool CSendAction::Configure( const CSM::IActionFactory& ,const std::string& config )
 {
 	m_messageTag = config;
 	return true;

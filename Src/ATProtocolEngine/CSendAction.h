@@ -12,7 +12,7 @@ public:
 	CSendAction(IActionExecutionContext& actionExecutionContext);
 	virtual ~CSendAction();
 
-	virtual bool Configure( const std::string& configurationString );
+	virtual bool Configure( const CSM::IActionFactory& , const std::string& configurationString );
 
 	virtual void Execute();
 

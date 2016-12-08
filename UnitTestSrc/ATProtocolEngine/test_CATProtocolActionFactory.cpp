@@ -79,3 +79,31 @@ TEST( CATProtocolActionFactory, SendCommand_StaticMessage )
 
 }
 
+TEST( CATProtocolActionFactory, CCompositeAction )
+{
+	CSerialPortHandlerMock serialPortMock;
+	ATProtocolEngine::CParameterBundle paramBundleInstance;
+	CSerializationEngineMock serializationEngineMock;
+	ActionContextMock actionExecutionContextForTest(serialPortMock, paramBundleInstance, serializationEngineMock);
+
+	ATProtocolEngine::CATProtocolActionFactory actionFactory(actionExecutionContextForTest);
+	CSM::IActionFactory& CSM_ActionFactory(actionFactory);
+
+	CSM::IAction* pAction = CSM_ActionFactory.GetAction( "send(AT+CALL);send(AT+PAPA);send(AT+XXX)" );
+
+	// the action was created
+	ASSERT_TRUE( 0 != pAction );
+
+
+	// prepare the parameters for calling the execute
+	paramBundleInstance.Store("outputValue", "exampleTelegram");
+	paramBundleInstance.Store("status", "false");
+
+	EXPECT_CALL(serialPortMock, Test_SendCommand(	EndsWith("AT+CALL") )).Times(1);
+	EXPECT_CALL(serialPortMock, Test_SendCommand(	EndsWith("AT+PAPA") )).Times(1);
+	EXPECT_CALL(serialPortMock, Test_SendCommand(	EndsWith("AT+XXX") )).Times(1);
+	
+	pAction->Execute();
+
+}
+
