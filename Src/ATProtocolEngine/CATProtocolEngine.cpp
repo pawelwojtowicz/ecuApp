@@ -32,6 +32,11 @@ void CATProtocolEngine::Shutdown()
 {
 }
 
+IResponseTimeoutHandler& CATProtocolEngine::GetTimeoutHandler()
+{
+	return *this;
+}
+
 ISerializationEngine& CATProtocolEngine::GetSerializationEngine()
 {
 	return m_rSerializationEngine;
@@ -47,7 +52,14 @@ CParameterBundle& CATProtocolEngine::GetParameterBundle()
 	return m_parameterBundle;
 }
 
+void CATProtocolEngine::StartTimeout( UInt32 timeout )
+{
+	timeout;
+}
 
+void CATProtocolEngine::StopTimeout()
+{
+}
 
 void CATProtocolEngine::NotifyResponseReceived( const std::string& response )
 {

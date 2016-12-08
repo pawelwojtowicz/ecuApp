@@ -7,6 +7,9 @@
 
 #include "CSendAction.h"
 #include "CCompositeAction.h"
+#include "CStartTimeoutAction.h"
+#include "CStopTimeoutAction.h"
+#include "CStoreAction.h"
 
 namespace ATProtocolEngine
 {
@@ -78,12 +81,15 @@ CATProtocolAction* CATProtocolActionFactory::CreateActionInstance( const std::st
 	}
 	else if ( !actionName.compare("startTimer") )
 	{
+		pActionInstance = new CStartTimeoutAction(m_rActionExecutionContext);
 	}
 	else if ( !actionName.compare("stopTimer") )
 	{
+		pActionInstance = new CStopTimeoutAction(m_rActionExecutionContext);
 	}
 	else if ( !actionName.compare("store") )
 	{
+		pActionInstance = new CStoreAction(m_rActionExecutionContext);
 	}
 	else if ( !actionName.compare("composite") )
 	{

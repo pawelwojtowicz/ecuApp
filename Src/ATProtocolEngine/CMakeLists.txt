@@ -9,8 +9,11 @@ CATProtocolAction.cpp
 CATProtocolEngine.cpp
 CATProtocolActionFactory.cpp
 CSerialPortHandler.cpp
-CCompositeAction.cpp
 CSendAction.cpp
+CStartTimeoutAction.cpp
+CStopTimeoutAction.cpp
+CCompositeAction.cpp
+CStoreAction.cpp
 )
 
 install ( TARGETS ${OUTPUT_NAME} LIBRARY DESTINATION ${ECUAPP_LIBRARY_INSTALL_DIR} )

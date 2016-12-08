@@ -7,10 +7,11 @@
 
 TEST( CATProtocolActionFactory, NonExistingActionWillNotBeValid )
 {
+	CTimeoutHandlerMock timerHandlerMock;
 	CSerialPortHandlerMock serialPortMock;
 	ATProtocolEngine::CParameterBundle paramBundleInstance;
 	CSerializationEngineMock serializationEngineMock;
-	ActionContextMock actionExecutionContextForTest(serialPortMock, paramBundleInstance, serializationEngineMock);
+	ActionContextMock actionExecutionContextForTest(timerHandlerMock,serialPortMock, paramBundleInstance, serializationEngineMock);
 
 	ATProtocolEngine::CATProtocolActionFactory actionFactory(actionExecutionContextForTest);
 	CSM::IActionFactory& CSM_ActionFactory(actionFactory);
@@ -25,10 +26,11 @@ TEST( CATProtocolActionFactory, NonExistingActionWillNotBeValid )
 
 TEST( CATProtocolActionFactory, SendCommand_DynamicallySerialized )
 {
+	CTimeoutHandlerMock timerHandlerMock;
 	CSerialPortHandlerMock serialPortMock;
 	ATProtocolEngine::CParameterBundle paramBundleInstance;
 	CSerializationEngineMock serializationEngineMock;
-	ActionContextMock actionExecutionContextForTest(serialPortMock, paramBundleInstance, serializationEngineMock);
+	ActionContextMock actionExecutionContextForTest(timerHandlerMock,serialPortMock, paramBundleInstance, serializationEngineMock);
 
 	ATProtocolEngine::CATProtocolActionFactory actionFactory(actionExecutionContextForTest);
 	CSM::IActionFactory& CSM_ActionFactory(actionFactory);
@@ -53,10 +55,11 @@ TEST( CATProtocolActionFactory, SendCommand_DynamicallySerialized )
 
 TEST( CATProtocolActionFactory, SendCommand_StaticMessage )
 {
+	CTimeoutHandlerMock timerHandlerMock;
 	CSerialPortHandlerMock serialPortMock;
 	ATProtocolEngine::CParameterBundle paramBundleInstance;
 	CSerializationEngineMock serializationEngineMock;
-	ActionContextMock actionExecutionContextForTest(serialPortMock, paramBundleInstance, serializationEngineMock);
+	ActionContextMock actionExecutionContextForTest(timerHandlerMock,serialPortMock, paramBundleInstance, serializationEngineMock);
 
 	ATProtocolEngine::CATProtocolActionFactory actionFactory(actionExecutionContextForTest);
 	CSM::IActionFactory& CSM_ActionFactory(actionFactory);
@@ -81,10 +84,11 @@ TEST( CATProtocolActionFactory, SendCommand_StaticMessage )
 
 TEST( CATProtocolActionFactory, CCompositeAction )
 {
+	CTimeoutHandlerMock timerHandlerMock;
 	CSerialPortHandlerMock serialPortMock;
 	ATProtocolEngine::CParameterBundle paramBundleInstance;
 	CSerializationEngineMock serializationEngineMock;
-	ActionContextMock actionExecutionContextForTest(serialPortMock, paramBundleInstance, serializationEngineMock);
+	ActionContextMock actionExecutionContextForTest(timerHandlerMock,serialPortMock, paramBundleInstance, serializationEngineMock);
 
 	ATProtocolEngine::CATProtocolActionFactory actionFactory(actionExecutionContextForTest);
 	CSM::IActionFactory& CSM_ActionFactory(actionFactory);
@@ -106,4 +110,80 @@ TEST( CATProtocolActionFactory, CCompositeAction )
 	pAction->Execute();
 
 }
+
+TEST( CATProtocolActionFactory, StartTimeout )
+{
+	CTimeoutHandlerMock timerHandlerMock;
+	CSerialPortHandlerMock serialPortMock;
+	ATProtocolEngine::CParameterBundle paramBundleInstance;
+	CSerializationEngineMock serializationEngineMock;
+	ActionContextMock actionExecutionContextForTest(timerHandlerMock,serialPortMock, paramBundleInstance, serializationEngineMock);
+
+	ATProtocolEngine::CATProtocolActionFactory actionFactory(actionExecutionContextForTest);
+	CSM::IActionFactory& CSM_ActionFactory(actionFactory);
+
+	CSM::IAction* pAction = CSM_ActionFactory.GetAction( "startTimer(5)" );
+
+	// the action was created
+	ASSERT_TRUE( 0 != pAction );
+
+
+	EXPECT_CALL(timerHandlerMock, StartTimeout(	5 )).Times(1);
+	
+	pAction->Execute();
+
+}
+
+TEST( CATProtocolActionFactory, StopTimeout )
+{
+	CTimeoutHandlerMock timerHandlerMock;
+	CSerialPortHandlerMock serialPortMock;
+	ATProtocolEngine::CParameterBundle paramBundleInstance;
+	CSerializationEngineMock serializationEngineMock;
+	ActionContextMock actionExecutionContextForTest(timerHandlerMock,serialPortMock, paramBundleInstance, serializationEngineMock);
+
+	ATProtocolEngine::CATProtocolActionFactory actionFactory(actionExecutionContextForTest);
+	CSM::IActionFactory& CSM_ActionFactory(actionFactory);
+
+	CSM::IAction* pAction = CSM_ActionFactory.GetAction( "stopTimer()" );
+
+	// the action was created
+	ASSERT_TRUE( 0 != pAction );
+
+
+	EXPECT_CALL(timerHandlerMock, StopTimeout( )).Times(1);
+	
+	pAction->Execute();
+
+}
+
+
+TEST( CATProtocolActionFactory, Store )
+{
+	CTimeoutHandlerMock timerHandlerMock;
+	CSerialPortHandlerMock serialPortMock;
+	ATProtocolEngine::CParameterBundle paramBundleInstance;
+	CSerializationEngineMock serializationEngineMock;
+	ActionContextMock actionExecutionContextForTest(timerHandlerMock,serialPortMock, paramBundleInstance, serializationEngineMock);
+
+	ATProtocolEngine::CATProtocolActionFactory actionFactory(actionExecutionContextForTest);
+	CSM::IActionFactory& CSM_ActionFactory(actionFactory);
+
+	CSM::IAction* pAction = CSM_ActionFactory.GetAction( "store(param1,param2)" );
+
+	// the action was created
+	ASSERT_TRUE( 0 != pAction );
+
+	paramBundleInstance.Store("param1", "testingStoreAction");
+
+	ASSERT_FALSE (  paramBundleInstance.IsAvailable("param2") );
+		
+	pAction->Execute();
+
+	ASSERT_TRUE (  paramBundleInstance.IsAvailable("param2") );
+	EXPECT_EQ ( std::string("testingStoreAction") , paramBundleInstance.GetParameter("param2") );
+
+}
+
+
 

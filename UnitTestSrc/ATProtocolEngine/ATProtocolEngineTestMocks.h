@@ -1,9 +1,18 @@
+#include <ATProtocolEngine/IResponseTimeoutHandler.h>
 #include <ATProtocolEngine/ISerialPortHandler.h>
 #include <ATProtocolEngine/IActionExecutionContext.h>
 #include <ATProtocolEngine/CParameterBundle.h>
 #include <ATProtocolEngine/ISerializationEngine.h>
 
 using ::testing::EndsWith;
+
+class CTimeoutHandlerMock: public ATProtocolEngine::IResponseTimeoutHandler
+{
+public:
+	MOCK_METHOD1( StartTimeout, void( UInt32 timeout ) );
+	MOCK_METHOD0( StopTimeout, void() );
+};
+
 
 
 class CSerialPortHandlerMock : public ATProtocolEngine::ISerialPortHandler
@@ -47,14 +56,18 @@ public:
 class ActionContextMock : public ATProtocolEngine::IActionExecutionContext
 {
 public:
-	ActionContextMock(ATProtocolEngine::ISerialPortHandler& portHandler, 
+	ActionContextMock(ATProtocolEngine::IResponseTimeoutHandler& timeoutHandler,
+										ATProtocolEngine::ISerialPortHandler& portHandler, 
 										ATProtocolEngine::CParameterBundle& paramBundle,
 										ATProtocolEngine::ISerializationEngine& serializationEngine )
-	: m_serialPortHandlerMock(portHandler)
+	: m_TimeoutHandler(timeoutHandler)
+	, m_serialPortHandlerMock(portHandler)
 	, m_parameterBundle(paramBundle)
 	, m_serializationEngine(serializationEngine)
 	{
 	}
+
+	virtual ATProtocolEngine::IResponseTimeoutHandler& GetTimeoutHandler() { return m_TimeoutHandler; };
 
 	virtual ATProtocolEngine::ISerializationEngine& GetSerializationEngine() { return m_serializationEngine;};
 
@@ -63,6 +76,8 @@ public:
 	virtual ATProtocolEngine::CParameterBundle& GetParameterBundle() { return m_parameterBundle;};
 
 private:
+	ATProtocolEngine::IResponseTimeoutHandler& m_TimeoutHandler;
+
 	ATProtocolEngine::ISerialPortHandler& m_serialPortHandlerMock;
 
 	ATProtocolEngine::CParameterBundle& m_parameterBundle;

@@ -1,6 +1,7 @@
 #pragma once
 #include <Global/GlobalTypes.h>
 #include "IActionExecutionContext.h"
+#include "IResponseTimeoutHandler.h"
 #include "CATProtocolActionFactory.h"
 #include <CSM/CStateMachine.h>
 #include "CParameterBundle.h"
@@ -17,6 +18,7 @@ class ISerializationEngine;
 class ISerialPortHandler;
 
 class CATProtocolEngine : public IActionExecutionContext
+												, public IResponseTimeoutHandler
 {
 public:
 	CATProtocolEngine(	ISerializationEngine& serializationEngine,
@@ -34,11 +36,19 @@ public:
 
 private:
 	/** IActionExecutionContext implementation */
+	virtual IResponseTimeoutHandler& GetTimeoutHandler();
+
 	virtual ISerializationEngine& GetSerializationEngine();
 
 	virtual ISerialPortHandler& GetSerialPortHandler();
 
 	virtual CParameterBundle& GetParameterBundle();
+
+private:
+	/** IResponseTimeoutHandler implementation */
+	virtual void StartTimeout( UInt32 timeout );
+
+	virtual void StopTimeout();
 
 
 private:

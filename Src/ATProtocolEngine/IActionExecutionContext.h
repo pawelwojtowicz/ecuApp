@@ -1,6 +1,7 @@
 #pragma once
 #include <Global/GlobalTypes.h>
 #include <CSM/IActionFactory.h>
+#include "IResponseTimeoutHandler.h"
 #include "ISerializationEngine.h"
 #include "ISerialPortHandler.h"
 #include "CParameterBundle.h"
@@ -12,6 +13,8 @@ class IActionExecutionContext
 public:
 	IActionExecutionContext() {};
 	virtual ~IActionExecutionContext() {};
+
+	virtual IResponseTimeoutHandler& GetTimeoutHandler() = 0;
 
 	virtual ISerializationEngine& GetSerializationEngine() = 0;
 
