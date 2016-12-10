@@ -9,11 +9,14 @@ namespace ATProtocolEngine
 {
 CATProtocolEngine::CATProtocolEngine(	ISerializationEngine& serializationEngine,
 																			CSM::ICSMConfigurator& stateMachineConfigurator,
-																			ISerialPortHandler& rSerialPortHandler)
+																			ISerialPortHandler& rSerialPortHandler,
+																			Runtime::ITimerManager& rTimerManager)
 : m_rSerializationEngine(serializationEngine)
 , m_rStateMachineConfigurator(stateMachineConfigurator)
 , m_ATProtocolActionFactory(*this)
 , m_rSerialPortHandler(rSerialPortHandler)
+, m_rTimerManager(rTimerManager)
+, m_atResponseTimeoutId(-1)
 {
 }
 
@@ -25,11 +28,15 @@ bool CATProtocolEngine::Initialize()
 {
 	bool retVal( m_stateMachine.Initialize(&m_rStateMachineConfigurator, &m_ATProtocolActionFactory) );
 
+
+	m_atResponseTimeoutId = m_rTimerManager.CreateTimer(this);
+
 	return retVal;
 }
 
 void CATProtocolEngine::Shutdown()
 {
+	m_rTimerManager.DisposeTimer(m_atResponseTimeoutId);
 }
 
 IResponseTimeoutHandler& CATProtocolEngine::GetTimeoutHandler()
@@ -54,11 +61,20 @@ CParameterBundle& CATProtocolEngine::GetParameterBundle()
 
 void CATProtocolEngine::StartTimeout( UInt32 timeout )
 {
-	timeout;
+	m_rTimerManager.SetTimer(m_atResponseTimeoutId,timeout,0);
+	m_rTimerManager.StartTimer(m_atResponseTimeoutId);	
 }
 
 void CATProtocolEngine::StopTimeout()
 {
+}
+
+void CATProtocolEngine::NotifyTimer( const Int32& timerId )
+{
+	if ( timerId == m_atResponseTimeoutId)
+	{
+		m_stateMachine.DispatchEvent("E_TIMEOUT");
+	}
 }
 
 void CATProtocolEngine::NotifyResponseReceived( const std::string& response )
@@ -68,6 +84,7 @@ void CATProtocolEngine::NotifyResponseReceived( const std::string& response )
 	{
 		m_stateMachine.DispatchEvent(eventName);
 	}
+	
 }
 
 void CATProtocolEngine::NotifyPromptReceived(const std::string& prompt )

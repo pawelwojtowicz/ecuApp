@@ -4,6 +4,8 @@
 #include "IResponseTimeoutHandler.h"
 #include "CATProtocolActionFactory.h"
 #include <CSM/CStateMachine.h>
+#include <Runtime/ITimerManager.h>
+#include <Runtime/ITimerListener.h>
 #include "CParameterBundle.h"
 
 namespace CSM
@@ -19,11 +21,13 @@ class ISerialPortHandler;
 
 class CATProtocolEngine : public IActionExecutionContext
 												, public IResponseTimeoutHandler
+												, public Runtime::ITimerListener
 {
 public:
 	CATProtocolEngine(	ISerializationEngine& serializationEngine,
 											CSM::ICSMConfigurator& stateMachineConfigurator,
-											ISerialPortHandler& rSerialPortHandler );
+											ISerialPortHandler& rSerialPortHandler,
+											Runtime::ITimerManager& rTimerManager );
 	virtual ~CATProtocolEngine();
 
 
@@ -50,6 +54,8 @@ private:
 
 	virtual void StopTimeout();
 
+private:
+	virtual void NotifyTimer( const Int32& timerId );
 
 private:
 	ISerializationEngine& m_rSerializationEngine;
@@ -63,6 +69,10 @@ private:
 	CParameterBundle m_parameterBundle;
 
 	ISerialPortHandler& m_rSerialPortHandler;
+
+	Runtime::ITimerManager& m_rTimerManager;
+
+	Int32 m_atResponseTimeoutId;
 };
 
 }
