@@ -34,6 +34,8 @@ public:
 	bool Initialize();
 	void Shutdown();
 
+	void DispatchEvent( const std::string& eventName );
+
 	void NotifyResponseReceived( const std::string& response );
 
 	void NotifyPromptReceived(const std::string& prompt );

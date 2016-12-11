@@ -13,7 +13,7 @@ public:
 
 	void Store(const std::string& paramName, const std::string& paramValue);
 	
-	bool IsAvailable( const std::string& paramName);
+	bool IsAvailable( const std::string& paramName) const;
 
 	const std::string& GetParameter(const std::string& paramName) const ;
 

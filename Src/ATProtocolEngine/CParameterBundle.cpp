@@ -16,7 +16,7 @@ void CParameterBundle::Store(const std::string& paramName, const std::string& pa
 	m_parametersMap[paramName] = paramValue;
 }
 	
-bool CParameterBundle::IsAvailable( const std::string& paramName)
+bool CParameterBundle::IsAvailable( const std::string& paramName) const
 {
 	return ( m_parametersMap.end() != m_parametersMap.find(paramName) );
 }

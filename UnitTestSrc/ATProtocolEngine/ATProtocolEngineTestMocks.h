@@ -1,9 +1,13 @@
+#pragma once
 #include <ATProtocolEngine/IResponseTimeoutHandler.h>
 #include <ATProtocolEngine/ISerialPortHandler.h>
 #include <ATProtocolEngine/IActionExecutionContext.h>
 #include <ATProtocolEngine/CParameterBundle.h>
 #include <ATProtocolEngine/ISerializationEngine.h>
+#include <Runtime/ITimerManager.h>
+#include <Runtime/ITimerListener.h>
 
+using ::testing::Return;
 using ::testing::EndsWith;
 
 class CTimeoutHandlerMock: public ATProtocolEngine::IResponseTimeoutHandler
@@ -32,10 +36,19 @@ public:
 	bool SerializeMsg( const std::string& msgId, const ATProtocolEngine::CParameterBundle& bundle, std::string& msgText )
 	{
 		SerializeMsgID = msgId;
-		std::string output = bundle.GetParameter(std::string("outputValue"));
-		msgText = output;
-		if (!bundle.GetParameter("status").compare("true") )
+
+		if ( bundle.IsAvailable(std::string("outputValue")) && bundle.IsAvailable("status") )
 		{
+			std::string output = bundle.GetParameter(std::string("outputValue"));
+			msgText = output;
+			if (!bundle.GetParameter("status").compare("true") )
+			{
+				return true;
+			}
+		}		
+		else if (!msgId.compare("REG"))
+		{
+			msgText = std::string("AT+REG");
 			return true;
 		}
 		return false;
@@ -84,4 +97,16 @@ private:
 
 	ATProtocolEngine::ISerializationEngine& m_serializationEngine;
 	
+};
+
+
+class TimerMock: public Runtime::ITimerManager
+{
+public:
+	MOCK_METHOD1( CreateTimer , Int32(Runtime::ITimerListener* timerListener) );
+	MOCK_METHOD1( DisposeTimer, void(const Int32 timerId ) );	
+	MOCK_METHOD3( SetTimer, bool( const Int32 timerId, const UInt32 delay, const UInt32 period) );
+	MOCK_METHOD1( StartTimer, bool (const Int32 timerId ) );
+	MOCK_METHOD1( StopTimer, bool(const Int32 timerId) );
+	MOCK_METHOD0( GetCurrentTime, const UInt32() );
 };

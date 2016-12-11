@@ -67,6 +67,7 @@ void CATProtocolEngine::StartTimeout( UInt32 timeout )
 
 void CATProtocolEngine::StopTimeout()
 {
+	m_rTimerManager.StopTimer(m_atResponseTimeoutId);
 }
 
 void CATProtocolEngine::NotifyTimer( const Int32& timerId )
@@ -91,5 +92,9 @@ void CATProtocolEngine::NotifyPromptReceived(const std::string& prompt )
 {
 }
 
+void CATProtocolEngine::DispatchEvent( const std::string& eventName )
+{
+	m_stateMachine.DispatchEvent(eventName);
+}
 
 }
