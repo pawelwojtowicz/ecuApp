@@ -72,3 +72,46 @@ TEST( CATProtocolEngine, BasicSend_Timeout)
 	atProtocolTimoutTrigger.NotifyTimer(112);
 	atProtocolEngine.Shutdown();
 }
+
+TEST( CATProtocolEngine, BasicSend_FullPath)
+{
+	// configurator initialization parameters
+	std::string configFile(UCL::SystemEnvironment::ResolveEnvironmentVariable("${UNITTEST_DIR}/ATProtocolEngine/ATProtocolEngine_test.xmi"));
+	std::string smName("BasicScenario");
+	CSM::CArgoConfigurator configurator(configFile, smName);
+
+	// Create serial port mock
+	CSerialPortHandlerMock serialPortMock;
+
+	// Serialization mock
+	CSerializationEngineMock serializationEngineMock;
+
+	// Timer manager mock
+	TimerMock timerMock;
+	
+	// class under tests
+	ATProtocolEngine::CATProtocolEngine atProtocolEngine(	serializationEngineMock, configurator, serialPortMock, timerMock);
+	ATProtocolEngine::IActionExecutionContext& actionContext(atProtocolEngine);
+	Runtime::ITimerListener& atProtocolTimoutTrigger(atProtocolEngine);
+
+	//  expected calls
+	EXPECT_CALL(	timerMock, CreateTimer(&atProtocolEngine)).WillOnce(Return(112));
+	EXPECT_CALL(	serialPortMock, Test_SendCommand(	EndsWith("AT+REG") )).Times(1);
+	EXPECT_CALL(  timerMock, SetTimer( 112, 5, 0) ).WillOnce(Return(true));
+	EXPECT_CALL(  timerMock, StartTimer( 112) ).WillOnce(Return(true));
+	EXPECT_CALL(	timerMock, DisposeTimer(112));
+
+	
+	atProtocolEngine.Initialize();
+
+	atProtocolEngine.DispatchEvent("E_SEND_DATA");
+
+	atProtocolEngine.NotifyResponseReceived("RESPONSE_WITH_LOTS_OF_DATA");
+	
+	atProtocolEngine.NotifyResponseReceived("OK");
+
+	ASSERT_TRUE ( actionContext.GetParameterBundle().IsAvailable("commandOutput"));
+	EXPECT_EQ ( std::string("RESPONSE_WITH_LOTS_OF_DATA") , actionContext.GetParameterBundle().GetParameter("commandOutput") );
+
+	atProtocolEngine.Shutdown();
+}

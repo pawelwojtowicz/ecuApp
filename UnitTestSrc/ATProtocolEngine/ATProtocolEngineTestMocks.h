@@ -57,8 +57,12 @@ public:
 	const std::string Deserialize( const std::string& inputData, ATProtocolEngine::CParameterBundle& bundle)
 	{
 		DeserializationInputData = inputData;
-		bundle.Store("outputValue", inputData);
-		return inputData;
+		if ( !inputData.compare("OK") )
+		{
+			return std::string("E_OK");
+		}		
+		bundle.Store("data", inputData);
+		return std::string("E_DATA_RECEIVED");
 	}
 
 	std::string SerializeMsgID;
