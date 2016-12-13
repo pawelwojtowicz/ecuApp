@@ -15,6 +15,7 @@ static const UInt32 cUInt32_CSM_HashSeed = 0x11FF;
 CStateMachine::CStateMachine()
 : m_pActionFactory(0)
 , m_pCurrentState(0)
+, m_transitionInProgress(false)
 {
 }
 
@@ -158,7 +159,6 @@ void CStateMachine::SetInitialState( const std::string& initialState)
 
 }
 
-
 bool CStateMachine::DispatchEvent( const std::string& eventName )
 {
 	UInt32 eventNameHash(UCL::CFastHash::CalculateHash32( eventName, cUInt32_CSM_HashSeed));
@@ -167,6 +167,26 @@ bool CStateMachine::DispatchEvent( const std::string& eventName )
 }
 
 bool CStateMachine::DispatchEvent( const UInt32 eventNameHash )
+{
+	bool returnValue(false);
+	m_eventsQueue.push(eventNameHash);
+
+	if (!m_transitionInProgress)
+	{
+		m_transitionInProgress = true;
+		while( !m_eventsQueue.empty() )
+		{
+			returnValue = ProcessEvent( m_eventsQueue.front() );
+			m_eventsQueue.pop();
+		}
+		m_transitionInProgress = false;
+	}
+
+	return returnValue;
+}
+
+
+bool CStateMachine::ProcessEvent( const UInt32 eventNameHash )
 {
 	if ( 0 != m_pCurrentState )
 	{

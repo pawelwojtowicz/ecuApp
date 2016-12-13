@@ -10,6 +10,7 @@
 
 using ::testing::Return;
 using ::testing::Sequence;
+using ::testing::InvokeWithoutArgs;
 
 void InitializeSMActionFactory( CSM::CActionFactory& actionFactory, TestOperationsMock* pMockPointer)
 {
@@ -157,4 +158,43 @@ TEST( CStateMachine, DetailedActionSpecialCase)
 	EXPECT_CALL(operationsMock, OperationH()).InSequence(executionSequence);
 	
 	EXPECT_TRUE(stateMachine.DispatchEvent("E_GO_WITHIN_SUPERPARENT"));	
+}
+
+class EventHelper
+{
+public:
+	EventHelper(CSM::CStateMachine& rStateMachine): m_rStateMachine(rStateMachine) {};
+
+	void FireEventB() { m_rStateMachine.DispatchEvent("E_IN_ACTION_B_EVENT");};
+	void FireEventC() { m_rStateMachine.DispatchEvent("E_IN_ACTION_C_EVENT");};
+
+private:
+	CSM::CStateMachine& m_rStateMachine;
+};
+
+TEST( CStateMachine, EventsFiredInsideTheSMActions)
+{
+	// action/condition mocks
+	CSM::CActionFactory actionFactory;
+	TestOperationsMock operationsMock;
+	InitializeSMActionFactory(actionFactory,&operationsMock);
+	
+	// configurator initialization parameters
+	std::string configFile(UCL::SystemEnvironment::ResolveEnvironmentVariable("${UNITTEST_DIR}/CSM/CSM_testConfig_2.xmi"));
+	std::string smName("NestedEventsScenario");
+	
+	CSM::CArgoConfigurator configurator(configFile, smName);
+	CSM::CStateMachine stateMachine;
+	EventHelper eventHelper(stateMachine);
+	stateMachine.Initialize( &configurator, &actionFactory );
+	
+	Sequence executionSequence;
+
+	EXPECT_CALL(operationsMock, OperationA()).InSequence(executionSequence);	
+	EXPECT_CALL(operationsMock, OperationB()).InSequence(executionSequence).WillOnce(InvokeWithoutArgs(&eventHelper,&EventHelper::FireEventB));
+	EXPECT_CALL(operationsMock, OperationC()).InSequence(executionSequence).WillOnce(InvokeWithoutArgs(&eventHelper,&EventHelper::FireEventC));
+	EXPECT_CALL(operationsMock, OperationA()).InSequence(executionSequence);	
+	EXPECT_CALL(operationsMock, OperationD()).InSequence(executionSequence);
+	
+	EXPECT_TRUE(stateMachine.DispatchEvent("E_GO_SECOND"));	
 }

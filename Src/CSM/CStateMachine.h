@@ -2,6 +2,7 @@
 #define CSM_CSTATEMACHINE_H
 #include <GlobalTypes.h>
 #include "ICSMBuilder.h"
+#include <queue>
 
 namespace CSM
 {
@@ -19,6 +20,9 @@ class CStateMachine : public ICSMBuilder
 	typedef std::list<CState*> tStateList;
 	typedef tStateList::iterator tStateListIterator;
 	typedef tStateList::reverse_iterator tStateListReverseIterator;
+
+	typedef std::queue<UInt32> tEventsHashQueue;
+	
 	
 public:
 	CStateMachine();
@@ -48,6 +52,8 @@ private:
 private:
 	bool DispatchEvent( const UInt32 eventNameHash );
 
+	bool ProcessEvent( const UInt32 eventNameHash);
+
 	
 private:
 	CStateMachine(const CStateMachine&);
@@ -58,6 +64,10 @@ private:
 	tStateMap m_stateMap;
 	
 	CState* m_pCurrentState;
+
+	bool m_transitionInProgress;
+
+	tEventsHashQueue m_eventsQueue;
 };
 }
 
