@@ -15,7 +15,7 @@ public:
 	CSerialPortHandler();
 	virtual ~CSerialPortHandler();
 
-	bool Initialize();
+	bool Initialize(const std::string& portName, std::string& portConfiguration);
 	void Shutdown();
 
 private:
@@ -24,6 +24,11 @@ private:
 
 private:
 	/** ISerialPortHandler */
+	virtual bool OpenPort();
+	virtual void ClosePort();
+
+	virtual void StartProcessing();
+	virtual void StopProcessing();
 	virtual bool SendCommand( const std::string& serializeCommand );
 
 private:
@@ -34,6 +39,9 @@ private:
 private:
 	CSerialPortHandler( const CSerialPortHandler& );
 	CSerialPortHandler& operator=(const CSerialPortHandler&);
+
+	std::string m_portName;
+	std::string m_portConfiguration;
 
 	bool m_run;
 

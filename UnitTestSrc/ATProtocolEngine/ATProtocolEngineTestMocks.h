@@ -27,6 +27,10 @@ public:
 			return Test_SendCommand(atCommand);	
 		};
 		MOCK_METHOD1(Test_SendCommand, bool(std::string atResponse) );
+		MOCK_METHOD0( OpenPort, bool() );
+		MOCK_METHOD0( ClosePort, void() );
+		MOCK_METHOD0( StartProcessing, void() );
+		MOCK_METHOD0( StopProcessing, void() );
 };
 
 

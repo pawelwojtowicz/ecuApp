@@ -19,6 +19,8 @@ class CSerialPort
   bool Configure(const std::string& configurationString);
   void Close();
 
+  bool IsValid() { return ( -1 != m_portHandle );};
+
   Int32 Read( Int8* rxBuffer, const Int32& bytesToRead );
   Int32 Write( Int8* ttxBuffer,const Int32& bytesToWrite );
 

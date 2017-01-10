@@ -14,6 +14,10 @@ CStartTimeoutAction.cpp
 CStopTimeoutAction.cpp
 CCompositeAction.cpp
 CStoreAction.cpp
+COpenPortAction.cpp
+CClosePortAction.cpp
+CStartAction.cpp
+CStopAction.cpp
 )
 
 install ( TARGETS ${OUTPUT_NAME} LIBRARY DESTINATION ${ECUAPP_LIBRARY_INSTALL_DIR} )

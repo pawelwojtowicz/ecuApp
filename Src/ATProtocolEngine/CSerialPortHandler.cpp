@@ -6,7 +6,9 @@
 namespace ATProtocolEngine
 {
 CSerialPortHandler::CSerialPortHandler()
-: m_run(true)
+: m_portName()
+, m_portConfiguration()
+, m_run(true)
 , m_serialPort()
 , m_atLineExtrator( CIRCULAR_BUFFER_SIZE, this)
 
@@ -17,15 +19,14 @@ CSerialPortHandler::~CSerialPortHandler()
 {
 }
 
-
-bool CSerialPortHandler::Initialize()
+bool CSerialPortHandler::Initialize( const std::string& portName, std::string& portConfiguration)
 {
-	std::string portName("com1");
-	std::string portConfiguration("taki config");
+	m_portName = portName;
+	m_portConfiguration = portConfiguration;
 
-	if (m_serialPort.Open(portName) && m_serialPort.Configure(portConfiguration) )
+	if ( m_portName.empty() || m_portConfiguration.empty() )
 	{
-		Start();
+		return false;
 	}
 
 	return true;
@@ -33,13 +34,19 @@ bool CSerialPortHandler::Initialize()
 
 void CSerialPortHandler::Shutdown()
 {
-	m_run= false;
-	if ( !WaitFor() )
-	{	
-		Terminate();
+	if (m_run)
+	{
+		m_run= false;
+		if ( !WaitFor() )
+		{	
+			Terminate();
+		}
 	}
 
-	m_serialPort.Close();
+	if ( m_serialPort.IsValid() )
+	{
+		m_serialPort.Close();
+	}
 }
 
 void CSerialPortHandler::Run()
@@ -61,6 +68,36 @@ void CSerialPortHandler::Run()
 		m_atLineExtrator.WriteBuffer( inputBuffer, bytesRead );
 	}
 }
+
+bool CSerialPortHandler::OpenPort()
+{
+	if (m_serialPort.Open(m_portName) && m_serialPort.Configure(m_portConfiguration) )
+	{
+		return true;
+	}
+	return false;
+
+}
+
+void CSerialPortHandler::ClosePort()
+{
+	m_serialPort.Close();
+}
+
+void CSerialPortHandler::StartProcessing()
+{
+	Start();
+}
+
+void CSerialPortHandler::StopProcessing()
+{
+	m_run= false;
+	if ( !WaitFor() )
+	{	
+		Terminate();
+	}
+}
+
 
 bool CSerialPortHandler::SendCommand( const std::string& serializeCommand )
 {
