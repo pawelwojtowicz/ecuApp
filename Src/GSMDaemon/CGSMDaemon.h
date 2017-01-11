@@ -1,6 +1,7 @@
 #pragma once
 #include <Runtime/CRuntimeUnit.h>
 #include "CGSMDaemonConfiguration.h"
+#include <ATProtocolEngine/CSerialPortHandler.h>
 #include "CModemManager.h"
 #include "CVoiceServiceManager.h"
 #include  "CSMSServiceManager.h"
@@ -20,6 +21,8 @@ public:
 
 private:
 	CGSMDaemonConfiguration m_daemonConfiguration;
+
+	ATProtocolEngine::CSerialPortHandler m_serialPortHandler;
 
 	IGSMModemService* m_pModemService;
 

@@ -21,7 +21,7 @@ public:
 	virtual void RegisterModemListener( IModemListener* pListener ) = 0;
 	virtual void UnregisterModemListener( IModemListener* pListener ) = 0;
 	virtual void Connect() = 0;
-	virtual void Disonnect() = 0;
+	virtual void Disconnect() = 0;
 
 	// voice service
 	virtual void RegisterVoiceServiceListener( IVoiceServiceListener* pVoiceServiceListener ) = 0;

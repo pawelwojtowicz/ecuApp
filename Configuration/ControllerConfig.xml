@@ -52,12 +52,12 @@
 				<Parameter Name="Detail3" Type="bool">true</Parameter>
 			</CNode>
 		</CNode>
-		<CNode Name="RBCGateway">
-			<Parameter Name="CommandLine" Type="String">rbcgateway</Parameter>
+		<CNode Name="GSMDaemon">
+			<Parameter Name="CommandLine" Type="String">gsmdaemon</Parameter>
 			<Parameter Name="StartupGroup" Type="UInt8">3</Parameter>
 			<Parameter Name="ShutdownGroup" Type="UInt8">1</Parameter>
 			<Parameter Name="HeartbeatPeriod" Type="UInt32">5</Parameter>
-			<Parameter Name="Shortname" Type="String">RBC</Parameter>
+			<Parameter Name="Shortname" Type="String">GSM</Parameter>
 			<CNode Name="DebugZones">
 				<Parameter Name="Info" Type="bool">true</Parameter>
 				<Parameter Name="Error" Type="bool">true</Parameter>
@@ -67,21 +67,6 @@
 				<Parameter Name="Detail3" Type="bool">true</Parameter>
 			</CNode>
 		</CNode>
-		<CNode Name="TrzeciProces">
-			<Parameter Name="CommandLine" Type="String">joystick</Parameter>
-			<Parameter Name="StartupGroup" Type="UInt8">1</Parameter>
-			<Parameter Name="ShutdownGroup" Type="UInt8">1</Parameter>
-			<Parameter Name="HeartbeatPeriod" Type="UInt32">5</Parameter>
-			<Parameter Name="Shortname" Type="String">JOY</Parameter>
-			<CNode Name="DebugLevel">
-				<Parameter Name="Info" Type="bool">true</Parameter>
-				<Parameter Name="Error" Type="bool">true</Parameter>
-				<Parameter Name="Warning" Type="bool">true</Parameter>
-				<Parameter Name="Detail1" Type="bool">true</Parameter>
-				<Parameter Name="Detail2" Type="bool">true</Parameter>
-				<Parameter Name="Detail3" Type="bool">true</Parameter>
-			</CNode>
-		</CNode>			
 		<CNode Name="TextToSpeech">
 			<Parameter Name="CommandLine" Type="String">tts</Parameter>
 			<Parameter Name="StartupGroup" Type="UInt8">1</Parameter>
@@ -97,6 +82,5 @@
 				<Parameter Name="Detail3" Type="bool">true</Parameter>
 			</CNode>
 		</CNode>			
-
 	</CNode>
 </Configuration>
