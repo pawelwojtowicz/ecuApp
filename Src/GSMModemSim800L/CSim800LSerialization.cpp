@@ -2,7 +2,12 @@
 #include <ATProtocolEngine/CParameterBundle.h>
 #include <UCL/CTokenizer.h>
 #include "IATIncomingMessage.h"
-#include "COKResponse.h"
+#include "CSimpleResponse.h"
+#include "CPINResponse.h"
+#include "CREGResponse.h"
+#include "CMGLResponse.h"
+#include "CMGLResponse.h"
+#include "CLIPResponse.h"
 
 
 namespace GSMModemSim800L
@@ -10,7 +15,16 @@ namespace GSMModemSim800L
 
 CSim800LSerialization::CSim800LSerialization()
 {
-	m_deserializers.insert(tMsgDeserializers::value_type(std::string("OK"), new COKResponse() ) );
+	m_deserializers.insert(tMsgDeserializers::value_type(std::string("OK"), new CSimpleResponse("E_OK") ) );
+	m_deserializers.insert(tMsgDeserializers::value_type(std::string("RING"), new CSimpleResponse("E_INCOMING_CALL") ) );
+	m_deserializers.insert(tMsgDeserializers::value_type(std::string("NO CARRIER"), new CSimpleResponse("E_NO_CARRIER") ) );
+	m_deserializers.insert(tMsgDeserializers::value_type(std::string("NO DIALTONE"), new CSimpleResponse("E_NO_DIALTONE") ) );
+	m_deserializers.insert(tMsgDeserializers::value_type(std::string("NO ANSWER"), new CSimpleResponse("E_NO_ANSWER") ) );
+	m_deserializers.insert(tMsgDeserializers::value_type(std::string("BUSY"), new CSimpleResponse("E_BUSY") ) );
+	m_deserializers.insert(tMsgDeserializers::value_type(std::string("+CPIN"), new CPINResponse() ) );
+	m_deserializers.insert(tMsgDeserializers::value_type(std::string("+CREG"), new CREGResponse() ) );
+	m_deserializers.insert(tMsgDeserializers::value_type(std::string("+CMGL"), new CMGLResponse() ) );
+	m_deserializers.insert(tMsgDeserializers::value_type(std::string("+CLIP"), new CLIPResponse() ) );
 }
 
 CSim800LSerialization::~CSim800LSerialization()
@@ -40,18 +54,12 @@ const std::string CSim800LSerialization::Deserialize( const std::string& inputDa
 	UCL::CTokenizer tokenizer(inputData, ":");
 
 	std::string msgId( tokenizer.GetToken(0) );
-	std::string msgParameters;
 	
-	if (2 == tokenizer.GetTokenCount())
-	{
-		msgParameters = tokenizer.GetToken(1);
-	}
-
 	tMsgDeserializers::const_iterator cIter(m_deserializers.find(msgId));
 
 	if (m_deserializers.end() != cIter)
 	{
-		return cIter->second->Deserialize(msgParameters, bundle);
+		return cIter->second->Deserialize(inputData, bundle);
 	}
 
 	bundle.Store( "DATA", inputData );
