@@ -204,3 +204,36 @@ TEST( CSim800LSerialization, CLIP )
 
 	serializationEngine.Shutdown();
 }
+
+TEST( CSim800LSerialization, CME_ERROR )
+{
+	ATProtocolEngine::CParameterBundle paramBundle;
+	GSMModemSim800L::CSim800LSerialization serializationEngine;
+	ASSERT_TRUE( serializationEngine.Initialize() );
+
+	ATProtocolEngine::ISerializationEngine& receiver(serializationEngine);
+
+	EXPECT_EQ (std::string("E_ERROR"), receiver.Deserialize(std::string("+CME ERROR: 123"), paramBundle) );
+	ASSERT_TRUE ( paramBundle.IsAvailable("ERROR_CODE") );
+	EXPECT_EQ (std::string("123"), paramBundle.GetParameter("ERROR_CODE") );
+
+	serializationEngine.Shutdown();
+}
+
+TEST( CSim800LSerialization, CMTI )
+{
+	ATProtocolEngine::CParameterBundle paramBundle;
+	GSMModemSim800L::CSim800LSerialization serializationEngine;
+	ASSERT_TRUE( serializationEngine.Initialize() );
+
+	ATProtocolEngine::ISerializationEngine& receiver(serializationEngine);
+
+	EXPECT_EQ (std::string("E_NEW_SMS_RECEIVED"), receiver.Deserialize(std::string("+CMTI: \"SM\",2"), paramBundle) );
+	ASSERT_TRUE ( paramBundle.IsAvailable("MEMORY") );
+	ASSERT_TRUE ( paramBundle.IsAvailable("INDEX") );
+	EXPECT_EQ (std::string("SM"), paramBundle.GetParameter("MEMORY") );
+	EXPECT_EQ (std::string("2"), paramBundle.GetParameter("INDEX") );
+
+	serializationEngine.Shutdown();
+}
+
