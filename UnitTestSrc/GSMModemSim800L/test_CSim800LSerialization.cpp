@@ -3,7 +3,7 @@
 #include <ATProtocolEngine/CParameterBundle.h>
 #include <GSMModemSim800L/CSim800LSerialization.h>
 
-TEST( CSim800LSerialization, RawData )
+TEST( CSim800LSerialization, RX_RawData )
 {
 	ATProtocolEngine::CParameterBundle paramBundle;
 	GSMModemSim800L::CSim800LSerialization serializationEngine;
@@ -18,7 +18,7 @@ TEST( CSim800LSerialization, RawData )
 	serializationEngine.Shutdown();
 }
 
-TEST( CSim800LSerialization, OK )
+TEST( CSim800LSerialization, RX_OK )
 {
 	ATProtocolEngine::CParameterBundle paramBundle;
 	GSMModemSim800L::CSim800LSerialization serializationEngine;
@@ -32,7 +32,7 @@ TEST( CSim800LSerialization, OK )
 	serializationEngine.Shutdown();
 }
 
-TEST( CSim800LSerialization, RING )
+TEST( CSim800LSerialization, RX_RING )
 {
 	ATProtocolEngine::CParameterBundle paramBundle;
 	GSMModemSim800L::CSim800LSerialization serializationEngine;
@@ -46,7 +46,7 @@ TEST( CSim800LSerialization, RING )
 	serializationEngine.Shutdown();
 }
 
-TEST( CSim800LSerialization, BUSY )
+TEST( CSim800LSerialization, RX_BUSY )
 {
 	ATProtocolEngine::CParameterBundle paramBundle;
 	GSMModemSim800L::CSim800LSerialization serializationEngine;
@@ -60,7 +60,7 @@ TEST( CSim800LSerialization, BUSY )
 	serializationEngine.Shutdown();
 }
 
-TEST( CSim800LSerialization, NO_DIALTONE )
+TEST( CSim800LSerialization, RX_NO_DIALTONE )
 {
 	ATProtocolEngine::CParameterBundle paramBundle;
 	GSMModemSim800L::CSim800LSerialization serializationEngine;
@@ -74,7 +74,7 @@ TEST( CSim800LSerialization, NO_DIALTONE )
 	serializationEngine.Shutdown();
 }
 
-TEST( CSim800LSerialization, NO_CARRIER )
+TEST( CSim800LSerialization, RX_NO_CARRIER )
 {
 	ATProtocolEngine::CParameterBundle paramBundle;
 	GSMModemSim800L::CSim800LSerialization serializationEngine;
@@ -88,7 +88,7 @@ TEST( CSim800LSerialization, NO_CARRIER )
 	serializationEngine.Shutdown();
 }
 
-TEST( CSim800LSerialization, NO_ANSWER )
+TEST( CSim800LSerialization, RX_NO_ANSWER )
 {
 	ATProtocolEngine::CParameterBundle paramBundle;
 	GSMModemSim800L::CSim800LSerialization serializationEngine;
@@ -103,7 +103,7 @@ TEST( CSim800LSerialization, NO_ANSWER )
 }
 
 
-TEST( CSim800LSerialization, CPIN )
+TEST( CSim800LSerialization, RX_CPIN )
 {
 	ATProtocolEngine::CParameterBundle paramBundle;
 	GSMModemSim800L::CSim800LSerialization serializationEngine;
@@ -118,7 +118,7 @@ TEST( CSim800LSerialization, CPIN )
 	serializationEngine.Shutdown();
 }
 
-TEST( CSim800LSerialization, CREG )
+TEST( CSim800LSerialization, RX_CREG )
 {
 	ATProtocolEngine::CParameterBundle paramBundle;
 	GSMModemSim800L::CSim800LSerialization serializationEngine;
@@ -135,7 +135,7 @@ TEST( CSim800LSerialization, CREG )
 	serializationEngine.Shutdown();
 }
 
-TEST( CSim800LSerialization, CREG_with_Location_info )
+TEST( CSim800LSerialization, RX_CREG_with_Location_info )
 {
 	ATProtocolEngine::CParameterBundle paramBundle;
 	GSMModemSim800L::CSim800LSerialization serializationEngine;
@@ -157,7 +157,7 @@ TEST( CSim800LSerialization, CREG_with_Location_info )
 }
 
 
-TEST( CSim800LSerialization, CMGL )
+TEST( CSim800LSerialization, RX_CMGL )
 {
 	ATProtocolEngine::CParameterBundle paramBundle;
 	GSMModemSim800L::CSim800LSerialization serializationEngine;
@@ -180,7 +180,7 @@ TEST( CSim800LSerialization, CMGL )
 	serializationEngine.Shutdown();
 }
 
-TEST( CSim800LSerialization, CLIP )
+TEST( CSim800LSerialization, RX_CLIP )
 {
 	ATProtocolEngine::CParameterBundle paramBundle;
 	GSMModemSim800L::CSim800LSerialization serializationEngine;
@@ -205,7 +205,7 @@ TEST( CSim800LSerialization, CLIP )
 	serializationEngine.Shutdown();
 }
 
-TEST( CSim800LSerialization, CME_ERROR )
+TEST( CSim800LSerialization, RX_CME_ERROR )
 {
 	ATProtocolEngine::CParameterBundle paramBundle;
 	GSMModemSim800L::CSim800LSerialization serializationEngine;
@@ -220,7 +220,7 @@ TEST( CSim800LSerialization, CME_ERROR )
 	serializationEngine.Shutdown();
 }
 
-TEST( CSim800LSerialization, CMTI )
+TEST( CSim800LSerialization, RX_CMTI )
 {
 	ATProtocolEngine::CParameterBundle paramBundle;
 	GSMModemSim800L::CSim800LSerialization serializationEngine;
@@ -235,5 +235,46 @@ TEST( CSim800LSerialization, CMTI )
 	EXPECT_EQ (std::string("2"), paramBundle.GetParameter("INDEX") );
 
 	serializationEngine.Shutdown();
+}
+
+TEST( CSim800LSerialization, TX_CMGS )
+{
+	ATProtocolEngine::CParameterBundle paramBundle;
+	GSMModemSim800L::CSim800LSerialization serializationEngine;
+	ATProtocolEngine::ISerializationEngine& transmitterSerialization(serializationEngine);
+
+	paramBundle.Store("NUMBER","+48796073785");
+	paramBundle.Store("TEXT","This is an example of the SMS");
+
+	std::string serializationOutput;
+
+	ASSERT_TRUE( transmitterSerialization.SerializeMsg("CMGS", paramBundle, serializationOutput ) );
+	EXPECT_EQ( std::string("AT+CMGS=\"+48796073785\"\rThis is an example of the SMS\x1A"), serializationOutput );
+}
+
+TEST( CSim800LSerialization, TX_ATD )
+{
+	ATProtocolEngine::CParameterBundle paramBundle;
+	GSMModemSim800L::CSim800LSerialization serializationEngine;
+	ATProtocolEngine::ISerializationEngine& transmitterSerialization(serializationEngine);
+
+	paramBundle.Store("NUMBER","+48796073785");
+	std::string serializationOutput;
+
+	ASSERT_TRUE( transmitterSerialization.SerializeMsg("ATD", paramBundle, serializationOutput ) );
+	EXPECT_EQ( std::string("ATD+48796073785;"), serializationOutput );
+}
+
+TEST( CSim800LSerialization, TX_CPIN )
+{
+	ATProtocolEngine::CParameterBundle paramBundle;
+	GSMModemSim800L::CSim800LSerialization serializationEngine;
+	ATProtocolEngine::ISerializationEngine& transmitterSerialization(serializationEngine);
+
+	paramBundle.Store("PIN","4312");
+	std::string serializationOutput;
+
+	ASSERT_TRUE( transmitterSerialization.SerializeMsg("CPIN", paramBundle, serializationOutput ) );
+	EXPECT_EQ( std::string("AT+CPIN=\"4312\""), serializationOutput );
 }
 

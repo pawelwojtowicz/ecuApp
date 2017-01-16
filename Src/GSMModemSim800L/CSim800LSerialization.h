@@ -4,9 +4,11 @@
 namespace GSMModemSim800L
 {
 class IATIncomingMessage;
+class IATMessageSerializer;
 
 class CSim800LSerialization : public ATProtocolEngine::ISerializationEngine
 {
+	typedef std::map<std::string, IATMessageSerializer*> tMsgSerializers;
 	typedef std::map<std::string, IATIncomingMessage*> tMsgDeserializers;
 public:
 	CSim800LSerialization();
@@ -22,7 +24,8 @@ private:
 
 
 private:
-	tMsgDeserializers m_deserializers;
+	tMsgSerializers m_serializers;
 
+	tMsgDeserializers m_deserializers;
 };
 }

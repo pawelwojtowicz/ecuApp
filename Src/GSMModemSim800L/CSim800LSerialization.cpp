@@ -2,6 +2,11 @@
 #include <ATProtocolEngine/CParameterBundle.h>
 #include <UCL/CTokenizer.h>
 #include "IATIncomingMessage.h"
+#include "CMGSSerializer.h"
+#include "ATDSerializer.h"
+#include "CPINSerializer.h"
+
+#include "IATMessageSerializer.h"
 #include "CSimpleResponse.h"
 #include "CPINResponse.h"
 #include "CREGResponse.h"
@@ -17,6 +22,10 @@ namespace GSMModemSim800L
 
 CSim800LSerialization::CSim800LSerialization()
 {
+	m_serializers.insert(tMsgSerializers::value_type(std::string("CMGS"), new CMGSSerializer() ));	
+	m_serializers.insert(tMsgSerializers::value_type(std::string("ATD"), new ATDSerializer() ));
+	m_serializers.insert(tMsgSerializers::value_type(std::string("CPIN"), new CPINSerializer() ));
+
 	m_deserializers.insert(tMsgDeserializers::value_type(std::string("OK"), new CSimpleResponse("E_OK") ) );
 	m_deserializers.insert(tMsgDeserializers::value_type(std::string("RING"), new CSimpleResponse("E_INCOMING_CALL") ) );
 	m_deserializers.insert(tMsgDeserializers::value_type(std::string("NO CARRIER"), new CSimpleResponse("E_NO_CARRIER") ) );
@@ -33,6 +42,11 @@ CSim800LSerialization::CSim800LSerialization()
 
 CSim800LSerialization::~CSim800LSerialization()
 {
+	for(tMsgSerializers::iterator iter = m_serializers.begin() ; m_serializers.end() != iter ; ++iter )
+	{
+		delete iter->second;
+	}
+
 	for(tMsgDeserializers::iterator iter = m_deserializers.begin() ; m_deserializers.end() != iter ; ++iter )
 	{
 		delete iter->second;
@@ -48,9 +62,16 @@ void CSim800LSerialization::Shutdown()
 {
 }
 
-bool CSim800LSerialization::SerializeMsg( const std::string& msdId, const ATProtocolEngine::CParameterBundle& bundle, std::string& msgText )
+bool CSim800LSerialization::SerializeMsg( const std::string& msgId, const ATProtocolEngine::CParameterBundle& bundle, std::string& msgText )
 {
-	return true;
+	tMsgSerializers::const_iterator foundSerializerIt( m_serializers.find(msgId) );
+
+	if ( m_serializers.end() != foundSerializerIt )
+	{
+		return foundSerializerIt->second->Serialize( bundle, msgText);
+	}
+
+	return false;
 }
 
 const std::string CSim800LSerialization::Deserialize( const std::string& inputData, ATProtocolEngine::CParameterBundle& bundle)
