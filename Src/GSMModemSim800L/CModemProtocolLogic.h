@@ -38,13 +38,21 @@ private:
 	virtual void UnregisterSMSServiceListener( GSMDaemon::ISMSServiceListener* pSMSServiceListener );
 	virtual void SendSMS ( const std::string& phoneNumber, const std::string& text );
 
+private:
+	// UCL::ITimerListener implementation
+	virtual void NotifyTimer( const Int32& timerId );
+
 
 private:
 	CModemProtocolLogic(const CModemProtocolLogic&);
 	CModemProtocolLogic& operator=(const CModemProtocolLogic&);
 
+	UInt32 m_pollingCyclePeriod;
+
 	CSim800LSerialization m_serializationEngine;
 
 	CSM::CArgoConfigurator m_csmConfigurator;
+
+	Int32 m_pollingTimerId;
 };
 }

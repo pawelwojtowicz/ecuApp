@@ -5,6 +5,7 @@
 namespace ATProtocolEngine
 {
 class IActionExecutionContext;
+class IATProtocolActionFactory;
 class CATProtocolAction;
 
 class CATProtocolActionFactory: public CSM::IActionFactory
@@ -13,6 +14,8 @@ class CATProtocolActionFactory: public CSM::IActionFactory
 public:
 	CATProtocolActionFactory(IActionExecutionContext& rExecutionContext);
 	virtual ~CATProtocolActionFactory();
+
+	void RegisterActionFactory( IATProtocolActionFactory& pATProtocolActionFactory );
 
 private:
 	/** Implementation of CSM::IActionFactory */
@@ -24,5 +27,7 @@ private:
 
 private:
 	IActionExecutionContext& m_rActionExecutionContext;
+
+	IATProtocolActionFactory* m_pAuxiliaryActionFactory;
 };
 }

@@ -56,8 +56,13 @@ private:
 
 	virtual void StopTimeout();
 
-private:
+protected:
 	virtual void NotifyTimer( const Int32& timerId );
+
+protected:
+	Runtime::ITimerManager& GetTimerManager();
+
+	void RegisterActionFactory( IATProtocolActionFactory& pATProtocolActionFactory );
 
 private:
 	ISerializationEngine& m_rSerializationEngine;

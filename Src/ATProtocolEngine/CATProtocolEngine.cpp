@@ -97,4 +97,10 @@ void CATProtocolEngine::DispatchEvent( const std::string& eventName )
 	m_stateMachine.DispatchEvent(eventName);
 }
 
+Runtime::ITimerManager& CATProtocolEngine::GetTimerManager()
+{
+	return m_rTimerManager;
+}
+
+
 }

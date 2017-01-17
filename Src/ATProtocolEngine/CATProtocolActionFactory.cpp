@@ -4,6 +4,7 @@
 #include "CATProtocolAction.h"
 #include <UCL/CTokenizer.h>
 #include "IActionExecutionContext.h"
+#include "IATProtocolActionFactory.h"
 
 #include "CSendAction.h"
 #include "CCompositeAction.h"
@@ -20,11 +21,17 @@ namespace ATProtocolEngine
 
 CATProtocolActionFactory::CATProtocolActionFactory(IActionExecutionContext& rExecutionContext)
 : m_rActionExecutionContext(rExecutionContext)
+, m_pAuxiliaryActionFactory(0)
 {
 }
 
 CATProtocolActionFactory::~CATProtocolActionFactory()
 {
+}
+
+void CATProtocolActionFactory::RegisterActionFactory( IATProtocolActionFactory& rATProtocolActionFactory )
+{
+	m_pAuxiliaryActionFactory = &rATProtocolActionFactory;
 }
 
 CSM::IAction* CATProtocolActionFactory::GetAction( const std::string& actionName ) const
@@ -114,6 +121,13 @@ CATProtocolAction* CATProtocolActionFactory::CreateActionInstance( const std::st
 	else if ( !actionName.compare("stop") )
 	{
 		pActionInstance = new CStopAction(m_rActionExecutionContext);
+	}
+	else
+	{
+		if ( 0 != m_pAuxiliaryActionFactory )
+		{
+			pActionInstance = m_pAuxiliaryActionFactory->CreateActionInstance(actionName);
+		}
 	}
 
 
