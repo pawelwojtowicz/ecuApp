@@ -8,12 +8,14 @@ CModemProtocolLogic::CModemProtocolLogic(ATProtocolEngine::ISerialPortHandler& r
 , m_serializationEngine()
 , m_csmConfigurator(std::string("File"), std::string("state"))
 , m_pollingTimerId(-1)
+, m_actionExecutionContext()
+, m_actionFactory(m_actionExecutionContext)
 {
+	RegisterActionFactory( m_actionFactory );
 }
 
 CModemProtocolLogic::~CModemProtocolLogic()
 {
-	//RegisterActionFactory( IATProtocolActionFactory& pATProtocolActionFactory );
 }
 
 bool CModemProtocolLogic::Initialize( GSMDaemon::IGSMDaemonConfiguration& configuration )

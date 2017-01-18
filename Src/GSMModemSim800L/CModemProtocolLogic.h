@@ -3,6 +3,8 @@
 #include <GSMDaemon/IGSMModemService.h>
 #include <CSM/CArgoConfigurator.h>
 #include "CSim800LSerialization.h"
+#include "CGSMActionContext.h"
+#include "CGSMModemActionFactory.h"
 
 namespace GSMModemSim800L
 {
@@ -54,5 +56,9 @@ private:
 	CSM::CArgoConfigurator m_csmConfigurator;
 
 	Int32 m_pollingTimerId;
+
+	CGSMActionContext m_actionExecutionContext;
+
+	CGSMModemActionFactory m_actionFactory;
 };
 }

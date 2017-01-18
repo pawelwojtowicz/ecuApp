@@ -102,5 +102,10 @@ Runtime::ITimerManager& CATProtocolEngine::GetTimerManager()
 	return m_rTimerManager;
 }
 
+void CATProtocolEngine::RegisterActionFactory( IATProtocolActionFactory& rATProtocolActionFactory )
+{
+	m_ATProtocolActionFactory.RegisterActionFactory( rATProtocolActionFactory );
+}
+
 
 }
