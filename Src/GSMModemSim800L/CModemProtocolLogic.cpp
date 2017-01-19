@@ -9,7 +9,7 @@ CModemProtocolLogic::CModemProtocolLogic(ATProtocolEngine::ISerialPortHandler& r
 , m_csmConfigurator(std::string("File"), std::string("state"))
 , m_pollingTimerId(-1)
 , m_actionExecutionContext()
-, m_actionFactory(m_actionExecutionContext)
+, m_actionFactory(m_actionExecutionContext, *this)
 {
 	RegisterActionFactory( m_actionFactory );
 }
