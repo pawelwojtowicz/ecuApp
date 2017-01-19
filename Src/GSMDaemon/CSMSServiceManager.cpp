@@ -39,11 +39,11 @@ void CSMSServiceManager::Shutdown()
 	}
 }
 
-void CSMSServiceManager::NotifySMSSentSuccess()
+void CSMSServiceManager::NotifySMSSendSuccess()
 {
 }
 
-void CSMSServiceManager::NotifySMSSentFailure()
+void CSMSServiceManager::NotifySMSSendFailure()
 {
 }
 

@@ -16,4 +16,7 @@ CMGSSerializer.cpp
 ATDSerializer.cpp
 CPINSerializer.cpp
 CGSMModemActionFactory.cpp
-CGSMActionContext.cpp)
+CGSMActionContext.cpp
+CActionNotifySMSSent.cpp
+CActionNotifySMSSendFailure.cpp
+CActionNotifyIncomingSMS.cpp )
