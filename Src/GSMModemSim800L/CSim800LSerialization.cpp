@@ -15,6 +15,8 @@
 #include "CLIPResponse.h"
 #include "CErrorResponse.h"
 #include "CMTIResponse.h"
+#include "CSQResponse.h"
+#include "COPSResponse.h"
 
 
 namespace GSMModemSim800L
@@ -38,6 +40,8 @@ CSim800LSerialization::CSim800LSerialization()
 	m_deserializers.insert(tMsgDeserializers::value_type(std::string("+CLIP"), new CLIPResponse() ) );
 	m_deserializers.insert(tMsgDeserializers::value_type(std::string("+CMTI"), new CMTIResponse() ) );
 	m_deserializers.insert(tMsgDeserializers::value_type(std::string("+CME ERROR"), new CErrorResponse() ) );
+	m_deserializers.insert(tMsgDeserializers::value_type(std::string("+CSQ"), new CSQResponse() ) );
+	m_deserializers.insert(tMsgDeserializers::value_type(std::string("+COPS"), new COPSResponse() ) );
 }
 
 CSim800LSerialization::~CSim800LSerialization()

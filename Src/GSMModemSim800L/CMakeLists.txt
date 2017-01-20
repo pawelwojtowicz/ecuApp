@@ -10,6 +10,8 @@ CPINResponse.cpp
 CREGResponse.cpp
 CMGLResponse.cpp
 CLIPResponse.cpp
+CSQResponse.cpp
+COPSResponse.cpp
 CErrorResponse.cpp
 CMTIResponse.cpp
 CMGSSerializer.cpp

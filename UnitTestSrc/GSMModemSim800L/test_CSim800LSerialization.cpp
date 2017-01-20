@@ -136,6 +136,42 @@ TEST( CSim800LSerialization, RX_CREG )
 	serializationEngine.Shutdown();
 }
 
+TEST( CSim800LSerialization, RX_CSQ )
+{
+	ATProtocolEngine::CParameterBundle paramBundle;
+	GSMModemSim800L::CSim800LSerialization serializationEngine;
+	ASSERT_TRUE( serializationEngine.Initialize() );
+
+	ATProtocolEngine::ISerializationEngine& receiver(serializationEngine);
+
+	EXPECT_EQ (std::string("E_SIG_STRENGTH"), receiver.Deserialize(std::string("+CSQ: 1,2"), paramBundle) );
+	ASSERT_TRUE ( paramBundle.IsAvailable(GSMModemSim800L::sc_CSQ_rssi) );
+	ASSERT_TRUE ( paramBundle.IsAvailable(GSMModemSim800L::sc_CSQ_ber) );
+	EXPECT_EQ (std::string("1"), paramBundle.GetParameter(GSMModemSim800L::sc_CSQ_rssi) );
+	EXPECT_EQ (std::string("2"), paramBundle.GetParameter(GSMModemSim800L::sc_CSQ_ber) );
+
+	serializationEngine.Shutdown();
+}
+
+TEST( CSim800LSerialization, RX_COPS )
+{
+	ATProtocolEngine::CParameterBundle paramBundle;
+	GSMModemSim800L::CSim800LSerialization serializationEngine;
+	ASSERT_TRUE( serializationEngine.Initialize() );
+
+	ATProtocolEngine::ISerializationEngine& receiver(serializationEngine);
+
+	EXPECT_EQ (std::string("E_OPERATOR_NAME"), receiver.Deserialize(std::string("+COPS: mode,format,\"operatorName\""), paramBundle) );
+	ASSERT_TRUE ( paramBundle.IsAvailable(GSMModemSim800L::sc_COPS_operatorName) );
+	ASSERT_TRUE ( paramBundle.IsAvailable(GSMModemSim800L::sc_COPS_operatorState) );
+	ASSERT_TRUE ( paramBundle.IsAvailable(GSMModemSim800L::sc_COPS_operatorFormat));
+	EXPECT_EQ (std::string("operatorName"), paramBundle.GetParameter(GSMModemSim800L::sc_COPS_operatorName) );
+	EXPECT_EQ (std::string("format"), paramBundle.GetParameter(GSMModemSim800L::sc_COPS_operatorFormat) );
+	EXPECT_EQ (std::string("mode"), paramBundle.GetParameter(GSMModemSim800L::sc_COPS_operatorState));
+	serializationEngine.Shutdown();
+}
+
+
 TEST( CSim800LSerialization, RX_CREG_with_Location_info )
 {
 	ATProtocolEngine::CParameterBundle paramBundle;
