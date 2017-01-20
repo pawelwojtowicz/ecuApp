@@ -1,6 +1,7 @@
 #include "CLIPResponse.h"
 #include <ATProtocolEngine/CParameterBundle.h>
 #include <UCL/CTokenizer.h>
+#include "GSMModemSim800LConst.h"
 #include <algorithm>
 
 namespace GSMModemSim800L
@@ -26,15 +27,15 @@ const std::string CLIPResponse::Deserialize( const std::string& input, ATProtoco
 
 		if ( 1 < paramCount )
 		{
-			bundle.Store("NUMBER", parameters.GetToken(0));
-			bundle.Store("TYPE", parameters.GetToken(1));
+			bundle.Store( sc_CLIP_number, parameters.GetToken(0));
+			bundle.Store(sc_CLIP_type, parameters.GetToken(1));
 		
 			if ( 2 < paramCount )
 			{
-				bundle.Store("SUBADDR", parameters.GetToken(2));
-				bundle.Store("SATYPE", parameters.GetToken(3));
-				bundle.Store("ALPHA_ID", parameters.GetToken(4));
-				bundle.Store("CLI_VALIDITY", parameters.GetToken(5));
+				bundle.Store(sc_CLIP_subaddr, parameters.GetToken(2));
+				bundle.Store(sc_CLIP_hrNumber, parameters.GetToken(3));
+				bundle.Store(sc_CLIP_alphaID, parameters.GetToken(4));
+				bundle.Store(sc_CLIP_cliValidity, parameters.GetToken(5));
 			}
 
 			return std::string("E_CALLER_IDENTIFICATION");

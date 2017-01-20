@@ -1,5 +1,6 @@
 #include "CErrorResponse.h"
 #include <ATProtocolEngine/CParameterBundle.h>
+#include "GSMModemSim800LConst.h"
 
 namespace GSMModemSim800L
 {
@@ -13,7 +14,7 @@ const std::string CErrorResponse::Deserialize( const std::string& input, ATProto
 	{
 		std::string errorCode(input, errorCodePosition);
 
-		bundle.Store("ERROR_CODE", errorCode);
+		bundle.Store(sc_CME_errorCode, errorCode);
 		return std::string("E_ERROR");
 	}
 	return std::string();

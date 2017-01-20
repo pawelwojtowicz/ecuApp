@@ -2,6 +2,7 @@
 #include <ATProtocolEngine/CParameterBundle.h>
 #include <UCL/CTokenizer.h>
 #include <algorithm>
+#include "GSMModemSim800LConst.h"
 
 namespace GSMModemSim800L
 {
@@ -27,18 +28,18 @@ const std::string CMGLResponse::Deserialize( const std::string& input, ATProtoco
 
 		if ( 2 < paramCount )
 		{
-			bundle.Store("MSG_ID", parameters.GetToken(0));
-			bundle.Store("MSG_STATE", parameters.GetToken(1));
-			bundle.Store("PHONE_NUMBER", parameters.GetToken(2));
+			bundle.Store( sc_CMGL_msgId, parameters.GetToken(0));
+			bundle.Store(	sc_CMGL_msgState, parameters.GetToken(1));
+			bundle.Store( sc_CMGL_msgOrgNo, parameters.GetToken(2));
 
 			if ( 3 < paramCount )
 			{
-				bundle.Store("PHONE_NUMBER_NAME", parameters.GetToken(3));
+				bundle.Store(sc_CMGL_msgOrgNoTxt, parameters.GetToken(3));
 			}
 
 			if ( 4 < paramCount )
 			{
-				bundle.Store("MSG_TIMESTAMP", parameters.GetToken(4));
+				bundle.Store(sc_CMGL_msgTimeStamp, parameters.GetToken(4));
 			}
 
 			return std::string("E_SMS_DETAILS");

@@ -9,6 +9,7 @@
 #include <ATProtocolEngine/CATProtocolActionFactory.h>
 #include "GSMActionContextMocks.h"
 #include <CSM/IAction.h>
+#include <GSMModemSim800L/GSMModemSim800LConst.h>
 
 class GSMMModemActionFactoryFixture: public ::testing::Test
 {
@@ -93,9 +94,9 @@ TEST_F( GSMMModemActionFactoryFixture, NotifyIncomingSMS )
 
 	EXPECT_CALL(  mock_SMSServiceListener, NotifyIncomingSMS( EndsWith("+48123456789"), EndsWith("19.01.2017 19:45"), EndsWith("Test message, for the unit test purposes") ) );
 
-	paramBundleInstance.Store("PHONE_NUMBER", "+48123456789");
-	paramBundleInstance.Store("MSG_TIMESTAMP", "19.01.2017 19:45");
-	paramBundleInstance.Store("MSG_TEXT", "Test message, for the unit test purposes");
+	paramBundleInstance.Store(GSMModemSim800L::sc_CMGL_msgOrgNo, "+48123456789");
+	paramBundleInstance.Store(GSMModemSim800L::sc_CMGL_msgTimeStamp, "19.01.2017 19:45");
+	paramBundleInstance.Store(GSMModemSim800L::sc_CMGL_msgContent, "Test message, for the unit test purposes");
 
 	pAction->Execute();
 

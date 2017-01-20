@@ -2,6 +2,7 @@
 #include <ATProtocolEngine/IActionExecutionContext.h>
 #include "IGSMActionContext.h"
 #include "GSMDaemon/ISMSServiceListener.h"
+#include "GSMModemSim800LConst.h"
 
 namespace GSMModemSim800L
 {
@@ -20,13 +21,13 @@ void CActionNotifyIncomingSMS::Execute()
 {
 	if ( 0 != m_rGSMActionContext.GetSMSServiceListener() )
 	{
-		if ( 	GetExecutionContext().GetParameterBundle().IsAvailable("PHONE_NUMBER") && 
-					GetExecutionContext().GetParameterBundle().IsAvailable("MSG_TIMESTAMP") &&
-					GetExecutionContext().GetParameterBundle().IsAvailable("MSG_TEXT") )
+		if ( 	GetExecutionContext().GetParameterBundle().IsAvailable(sc_CMGL_msgOrgNo) && 
+					GetExecutionContext().GetParameterBundle().IsAvailable(sc_CMGL_msgTimeStamp) &&
+					GetExecutionContext().GetParameterBundle().IsAvailable(sc_CMGL_msgContent) )
 		{
-			m_rGSMActionContext.GetSMSServiceListener()->NotifyIncomingSMS(	GetExecutionContext().GetParameterBundle().GetParameter("PHONE_NUMBER"),
-																																			GetExecutionContext().GetParameterBundle().GetParameter("MSG_TIMESTAMP"),
-																																			GetExecutionContext().GetParameterBundle().GetParameter("MSG_TEXT") );
+			m_rGSMActionContext.GetSMSServiceListener()->NotifyIncomingSMS(	GetExecutionContext().GetParameterBundle().GetParameter(sc_CMGL_msgOrgNo),
+																																			GetExecutionContext().GetParameterBundle().GetParameter(sc_CMGL_msgTimeStamp),
+																																			GetExecutionContext().GetParameterBundle().GetParameter(sc_CMGL_msgContent) );
 		}
 	}
 }

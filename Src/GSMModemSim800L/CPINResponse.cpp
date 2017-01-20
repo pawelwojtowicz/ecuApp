@@ -1,5 +1,6 @@
 #include "CPINResponse.h"
 #include <ATProtocolEngine/CParameterBundle.h>
+#include "GSMModemSim800LConst.h"
 
 namespace GSMModemSim800L
 {
@@ -15,7 +16,7 @@ const std::string CPINResponse::Deserialize( const std::string& input, ATProtoco
 	{
 		std::string pinStatus(input, statusPosition);
 
-		bundle.Store("SIMSTATUS", pinStatus);
+		bundle.Store(sc_CPIN_simStatus, pinStatus);
 		return std::string("E_SIM_STATUS");
 	}
 	return std::string();

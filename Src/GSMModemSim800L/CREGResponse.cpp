@@ -1,6 +1,7 @@
 #include "CREGResponse.h"
 #include <ATProtocolEngine/CParameterBundle.h>
 #include <UCL/CTokenizer.h>
+#include "GSMModemSim800LConst.h"
 
 namespace GSMModemSim800L
 {
@@ -21,13 +22,13 @@ const std::string CREGResponse::Deserialize( const std::string& input, ATProtoco
 
 		if ( 1 < parameters.GetTokenCount() )
 		{
-			bundle.Store("REG_MODE", parameters.GetToken(0));
-			bundle.Store("REG_STATE", parameters.GetToken(1));
+			bundle.Store(sc_CREG_regMode, parameters.GetToken(0));
+			bundle.Store(sc_CREG_regStatus, parameters.GetToken(1));
 
 			if ( 4 == parameters.GetTokenCount() )
 			{
-				bundle.Store("LAC", parameters.GetToken(2));
-				bundle.Store("CI", parameters.GetToken(3));
+				bundle.Store(sc_CREG_lac, parameters.GetToken(2));
+				bundle.Store(sc_CREG_ci, parameters.GetToken(3));
 			}
 
 			return std::string("E_REG_STATE");

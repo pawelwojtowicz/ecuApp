@@ -2,6 +2,7 @@
 #include <ATProtocolEngine/CParameterBundle.h>
 #include <UCL/CTokenizer.h>
 #include <algorithm>
+#include "GSMModemSim800LConst.h"
 
 namespace GSMModemSim800L
 {
@@ -21,7 +22,7 @@ const std::string CMTIResponse::Deserialize( const std::string& input, ATProtoco
 
 		if ( 2 == parameters.GetTokenCount() )
 		{
-			bundle.Store("MEMORY", parameters.GetToken(0));
+			bundle.Store(sc_CMTI_memoryKind, parameters.GetToken(0));
 			bundle.Store("INDEX", parameters.GetToken(1));
 
 			return std::string("E_NEW_SMS_RECEIVED");
