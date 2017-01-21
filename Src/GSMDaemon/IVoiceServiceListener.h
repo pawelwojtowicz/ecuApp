@@ -13,6 +13,8 @@ public:
 	virtual void NotifyConnectionEstablished() = 0;
 
 	virtual void NotifyIncomingCall() = 0;
+
+	virtual void NotifyIncomingCallNumber( const std::string& number) = 0;
 	
 private:
 	IVoiceServiceListener(IVoiceServiceListener&);

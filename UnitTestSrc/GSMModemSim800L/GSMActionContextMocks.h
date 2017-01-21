@@ -1,7 +1,7 @@
 #pragma once
 #include <GSMDaemon/ISMSServiceListener.h>
 #include <GSMDaemon/IModemListener.h>
-
+#include <GSMDaemon/IVoiceServiceListener.h>
 using ::testing::Return;
 using ::testing::EndsWith;
 
@@ -25,5 +25,17 @@ public:
 	MOCK_METHOD1(NotifySignalStrengthReceived, void( const UInt32& signalStrength )  );
 	MOCK_METHOD1(NotifyGSMProviderNameReceived, void( const std::string& providerName ) );
 	MOCK_METHOD1(NotifyRegistrationStateReceived, void( const GSMDaemon::tNetworkRegistrationState& regState ) );
+};
+
+class VoiceServiceListenerMock: public GSMDaemon::IVoiceServiceListener
+{
+public:
+	MOCK_METHOD0( NotifyBusy, void() );
+	MOCK_METHOD0( NotifyConnectionTerminated, void() );
+	MOCK_METHOD0( NotifyConnectionEstablished, void() );
+
+	MOCK_METHOD0( NotifyIncomingCall, void() );
+
+	MOCK_METHOD1( NotifyIncomingCallNumber, void( const std::string& number) );
 };
 

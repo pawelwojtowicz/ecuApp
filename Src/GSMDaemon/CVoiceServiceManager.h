@@ -21,6 +21,8 @@ private:
 	virtual void NotifyConnectionTerminated();
 	virtual void NotifyConnectionEstablished();
 	virtual void NotifyIncomingCall();
+	virtual void NotifyIncomingCallNumber( const std::string& number);
+
 
 private:
 	IGSMModemService* m_pModemService;

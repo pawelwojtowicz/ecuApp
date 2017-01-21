@@ -56,4 +56,8 @@ void CVoiceServiceManager::NotifyIncomingCall()
 {
 }
 
+void CVoiceServiceManager::NotifyIncomingCallNumber( const std::string& number)
+{
+}
+
 }

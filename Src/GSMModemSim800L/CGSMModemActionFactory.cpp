@@ -9,6 +9,7 @@
 #include "CActionNotifyRegistrationState.h"
 #include "CActionNotifySignalStrength.h"
 #include "CActionNotifyProviderName.h"
+#include "CActionNotifyVoiceServiceEvents.h"
 
 namespace GSMModemSim800L
 {
@@ -61,7 +62,27 @@ ATProtocolEngine::CATProtocolAction* CGSMModemActionFactory::CreateActionInstanc
 	}
 	else if (!actionName.compare("NotifyProviderNameReceived") )
 	{
-		pAction = new 	CActionNotifyProviderName(m_rGSMModemActionContext, m_rATProtocolEngineContext);
+		pAction = new CActionNotifyProviderName(m_rGSMModemActionContext, m_rATProtocolEngineContext);
+	}
+	else if (!actionName.compare("NotifyNumberBusy") )
+	{
+		pAction = new CActionNotifyVoiceServiceEvents(CActionNotifyVoiceServiceEvents::vcNumberBusy, m_rGSMModemActionContext, m_rATProtocolEngineContext);
+	}
+	else if (!actionName.compare("NotifyConnectionEstablished") )
+	{
+		pAction = new CActionNotifyVoiceServiceEvents(CActionNotifyVoiceServiceEvents::vcConnectionEstablished, m_rGSMModemActionContext, m_rATProtocolEngineContext);
+	}
+	else if (!actionName.compare("NotifyConnectionTerminated") )
+	{
+		pAction = new CActionNotifyVoiceServiceEvents(CActionNotifyVoiceServiceEvents::vcConnectionTerminated, m_rGSMModemActionContext, m_rATProtocolEngineContext);
+	}
+	else if (!actionName.compare("NotifyIncomingCall") )
+	{
+		pAction = new CActionNotifyVoiceServiceEvents(CActionNotifyVoiceServiceEvents::vcIncommingCall, m_rGSMModemActionContext, m_rATProtocolEngineContext);
+	}
+	else if (!actionName.compare("NotifyNumberCalling") )
+	{
+		pAction = new CActionNotifyVoiceServiceEvents(CActionNotifyVoiceServiceEvents::vcIncommingCallWithNumber, m_rGSMModemActionContext, m_rATProtocolEngineContext);
 	}
 
 	return pAction;

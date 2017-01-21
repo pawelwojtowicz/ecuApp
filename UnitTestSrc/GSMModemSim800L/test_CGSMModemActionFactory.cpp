@@ -36,6 +36,7 @@ public:
 		ATProtocolActionFactory.RegisterActionFactory(GSMActionFactory);
 		GSMActionContext.RegisterSMSServiceListener(&mock_SMSServiceListener);
 		GSMActionContext.RegisterModemListener(&mock_ModemListener);
+		GSMActionContext.RegisterVoiceServiceListener(&mock_VoiceServiceListener);
 	}
 
 	void TearDown()
@@ -64,6 +65,8 @@ public:
 	SMSServiceListenerMock mock_SMSServiceListener;
 
 	ModemListenerMock mock_ModemListener;
+
+	VoiceServiceListenerMock mock_VoiceServiceListener;
 };
 
 
@@ -187,4 +190,60 @@ TEST_F( GSMMModemActionFactoryFixture, NotifyProviderNameReceived )
 	pAction->Execute();
 }
 
+TEST_F( GSMMModemActionFactoryFixture, NotifyNumberBusy )
+{
+	CSM::IAction* pAction = CSM_ActionFactory.GetAction( "NotifyNumberBusy" );
+
+	ASSERT_TRUE ( 0!= pAction );
+
+	EXPECT_CALL(  mock_VoiceServiceListener, NotifyBusy( ) );
+
+	pAction->Execute();
+}
+
+TEST_F( GSMMModemActionFactoryFixture, NotifyConnectionEstablished )
+{
+	CSM::IAction* pAction = CSM_ActionFactory.GetAction( "NotifyConnectionEstablished" );
+
+	ASSERT_TRUE ( 0!= pAction );
+
+	EXPECT_CALL(  mock_VoiceServiceListener, NotifyConnectionEstablished() );
+
+	pAction->Execute();
+}
+
+TEST_F( GSMMModemActionFactoryFixture, NotifyConnectionTerminated )
+{
+	CSM::IAction* pAction = CSM_ActionFactory.GetAction( "NotifyConnectionTerminated" );
+
+	ASSERT_TRUE ( 0!= pAction );
+
+	EXPECT_CALL(  mock_VoiceServiceListener, NotifyConnectionTerminated() );
+
+	pAction->Execute();
+}
+
+TEST_F( GSMMModemActionFactoryFixture, NotifyIncomingCall )
+{
+	CSM::IAction* pAction = CSM_ActionFactory.GetAction( "NotifyIncomingCall" );
+
+	ASSERT_TRUE ( 0!= pAction );
+
+	EXPECT_CALL(  mock_VoiceServiceListener, NotifyIncomingCall() );
+
+	pAction->Execute();
+}
+
+TEST_F( GSMMModemActionFactoryFixture, NotifyNumberCalling )
+{
+	CSM::IAction* pAction = CSM_ActionFactory.GetAction( "NotifyNumberCalling" );
+
+	ASSERT_TRUE ( 0!= pAction );
+
+	EXPECT_CALL(  mock_VoiceServiceListener, NotifyIncomingCallNumber( EndsWith("+48696083896")) );
+
+	paramBundleInstance.Store(GSMModemSim800L::sc_CLIP_number, "+48696083896");
+
+	pAction->Execute();
+}
 
