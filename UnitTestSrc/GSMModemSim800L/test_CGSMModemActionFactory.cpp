@@ -134,6 +134,7 @@ TEST_F( GSMMModemActionFactoryFixture, NotifyModemTypeReceived )
 
 	
 }
+
 TEST_F( GSMMModemActionFactoryFixture, NotifyModemIMEIReceived )
 {
 	CSM::IAction* pAction = CSM_ActionFactory.GetAction( "NotifyModemIMEIReceived" );
@@ -145,8 +146,32 @@ TEST_F( GSMMModemActionFactoryFixture, NotifyModemIMEIReceived )
 	paramBundleInstance.Store(GSMModemSim800L::sc_RAW_DATA, "IMEI");
 
 	pAction->Execute();
+}
 
-	
+TEST_F( GSMMModemActionFactoryFixture, NotifyRegStateReceived )
+{
+	CSM::IAction* pAction = CSM_ActionFactory.GetAction( "NotifyRegStateReceived" );
+
+	ASSERT_TRUE ( 0!= pAction );
+
+	EXPECT_CALL(  mock_ModemListener, NotifyRegistrationStateReceived( GSMDaemon::gsmConnecting ) );
+
+	paramBundleInstance.Store(GSMModemSim800L::sc_CREG_regStatus, "2");
+
+	pAction->Execute();
+}
+
+TEST_F( GSMMModemActionFactoryFixture, NotifySignalStrengthReceived )
+{
+	CSM::IAction* pAction = CSM_ActionFactory.GetAction( "NotifySignalStrengthReceived" );
+
+	ASSERT_TRUE ( 0!= pAction );
+
+	EXPECT_CALL(  mock_ModemListener, NotifySignalStrengthReceived( 24 ) );
+
+	paramBundleInstance.Store(GSMModemSim800L::sc_CSQ_rssi, "24");
+
+	pAction->Execute();
 }
 
 

@@ -22,4 +22,6 @@ CGSMActionContext.cpp
 CActionNotifySMSSent.cpp
 CActionNotifySMSSendFailure.cpp
 CActionNotifyIncomingSMS.cpp
-CActionNotifyModemInfo.cpp )
+CActionNotifyModemInfo.cpp
+CActionNotifyRegistrationState.cpp
+CActionNotifySignalStrength.cpp )
