@@ -8,6 +8,7 @@
 #include "CActionNotifyModemInfo.h"
 #include "CActionNotifyRegistrationState.h"
 #include "CActionNotifySignalStrength.h"
+#include "CActionNotifyProviderName.h"
 
 namespace GSMModemSim800L
 {
@@ -57,6 +58,10 @@ ATProtocolEngine::CATProtocolAction* CGSMModemActionFactory::CreateActionInstanc
 	else if (!actionName.compare("NotifySignalStrengthReceived") )
 	{
 		pAction = new CActionNotifySignalStrength(m_rGSMModemActionContext, m_rATProtocolEngineContext);
+	}
+	else if (!actionName.compare("NotifyProviderNameReceived") )
+	{
+		pAction = new 	CActionNotifyProviderName(m_rGSMModemActionContext, m_rATProtocolEngineContext);
 	}
 
 	return pAction;

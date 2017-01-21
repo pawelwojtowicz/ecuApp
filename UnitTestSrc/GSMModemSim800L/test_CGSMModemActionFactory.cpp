@@ -174,4 +174,17 @@ TEST_F( GSMMModemActionFactoryFixture, NotifySignalStrengthReceived )
 	pAction->Execute();
 }
 
+TEST_F( GSMMModemActionFactoryFixture, NotifyProviderNameReceived )
+{
+	CSM::IAction* pAction = CSM_ActionFactory.GetAction( "NotifyProviderNameReceived" );
+
+	ASSERT_TRUE ( 0!= pAction );
+
+	EXPECT_CALL(  mock_ModemListener, NotifyGSMProviderNameReceived( "PLUS GSM" ) );
+
+	paramBundleInstance.Store(GSMModemSim800L::sc_COPS_operatorName, "PLUS GSM");
+
+	pAction->Execute();
+}
+
 

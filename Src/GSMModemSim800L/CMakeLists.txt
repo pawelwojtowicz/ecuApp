@@ -24,4 +24,5 @@ CActionNotifySMSSendFailure.cpp
 CActionNotifyIncomingSMS.cpp
 CActionNotifyModemInfo.cpp
 CActionNotifyRegistrationState.cpp
-CActionNotifySignalStrength.cpp )
+CActionNotifySignalStrength.cpp
+CActionNotifyProviderName.cpp )
