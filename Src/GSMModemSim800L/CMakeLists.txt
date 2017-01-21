@@ -21,4 +21,5 @@ CGSMModemActionFactory.cpp
 CGSMActionContext.cpp
 CActionNotifySMSSent.cpp
 CActionNotifySMSSendFailure.cpp
-CActionNotifyIncomingSMS.cpp )
+CActionNotifyIncomingSMS.cpp
+CActionNotifyModemInfo.cpp )

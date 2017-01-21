@@ -5,6 +5,7 @@
 #include "CActionNotifySMSSent.h"
 #include "CActionNotifySMSSendFailure.h"
 #include "CActionNotifyIncomingSMS.h"
+#include "CActionNotifyModemInfo.h"
 
 namespace GSMModemSim800L
 {
@@ -34,6 +35,18 @@ ATProtocolEngine::CATProtocolAction* CGSMModemActionFactory::CreateActionInstanc
 	else if (!actionName.compare("NotifyIncomingSMS"))
 	{
 		pAction = new CActionNotifyIncomingSMS(m_rGSMModemActionContext, m_rATProtocolEngineContext);
+	}
+	else if ( !actionName.compare( "NotifyModemManufacturerReceived" ))
+	{
+		pAction = new CActionNotifyModemInfo(CActionNotifyModemInfo::mdmManufacturer ,m_rGSMModemActionContext, m_rATProtocolEngineContext);
+	}
+	else if ( !actionName.compare( "NotifyModemTypeReceived" ))
+	{
+		pAction = new CActionNotifyModemInfo(CActionNotifyModemInfo::mdmTypeSeries ,m_rGSMModemActionContext, m_rATProtocolEngineContext);
+	}
+	else if ( !actionName.compare( "NotifyModemIMEIReceived" ))
+	{
+		pAction = new CActionNotifyModemInfo(CActionNotifyModemInfo::mdmIMEI ,m_rGSMModemActionContext, m_rATProtocolEngineContext);
 	}
 
 	return pAction;

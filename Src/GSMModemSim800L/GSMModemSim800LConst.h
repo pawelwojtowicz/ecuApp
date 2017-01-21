@@ -2,8 +2,9 @@
 
 namespace GSMModemSim800L
 {
+static const char sc_RAW_DATA[]					= {"DATA"};
 
-static const char sc_CME_errorCode[] = {"ERROR_CODE"};
+static const char sc_CME_errorCode[] 		= {"ERROR_CODE"};
 
 static const char sc_CLIP_number[] 			= {"ORG_NUMBER"};
 static const char sc_CLIP_type[] 				= {"TYPE"};

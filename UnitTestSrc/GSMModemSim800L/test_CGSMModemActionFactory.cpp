@@ -35,6 +35,7 @@ public:
 	{
 		ATProtocolActionFactory.RegisterActionFactory(GSMActionFactory);
 		GSMActionContext.RegisterSMSServiceListener(&mock_SMSServiceListener);
+		GSMActionContext.RegisterModemListener(&mock_ModemListener);
 	}
 
 	void TearDown()
@@ -61,6 +62,8 @@ public:
 	GSMModemSim800L::CGSMModemActionFactory GSMActionFactory;
 
 	SMSServiceListenerMock mock_SMSServiceListener;
+
+	ModemListenerMock mock_ModemListener;
 };
 
 
@@ -103,5 +106,47 @@ TEST_F( GSMMModemActionFactoryFixture, NotifyIncomingSMS )
 	
 }
 
+TEST_F( GSMMModemActionFactoryFixture, NotifyModemManufacturerReceived )
+{
+	CSM::IAction* pAction = CSM_ActionFactory.GetAction( "NotifyModemManufacturerReceived" );
+
+	ASSERT_TRUE ( 0!= pAction );
+
+	EXPECT_CALL(  mock_ModemListener, NotifyModemManufacturerReceived( EndsWith("WOJTECH BEJBI") ) );
+
+	paramBundleInstance.Store(GSMModemSim800L::sc_RAW_DATA, "WOJTECH BEJBI");
+
+	pAction->Execute();
+
+	
+}
+TEST_F( GSMMModemActionFactoryFixture, NotifyModemTypeReceived )
+{
+	CSM::IAction* pAction = CSM_ActionFactory.GetAction( "NotifyModemTypeReceived" );
+
+	ASSERT_TRUE ( 0!= pAction );
+
+	EXPECT_CALL(  mock_ModemListener, NotifyModemTypeReceived( EndsWith("modemType") ) );
+
+	paramBundleInstance.Store(GSMModemSim800L::sc_RAW_DATA, "modemType");
+
+	pAction->Execute();
+
+	
+}
+TEST_F( GSMMModemActionFactoryFixture, NotifyModemIMEIReceived )
+{
+	CSM::IAction* pAction = CSM_ActionFactory.GetAction( "NotifyModemIMEIReceived" );
+
+	ASSERT_TRUE ( 0!= pAction );
+
+	EXPECT_CALL(  mock_ModemListener, NotifyModemIMEIReceived( EndsWith("IMEI") ) );
+
+	paramBundleInstance.Store(GSMModemSim800L::sc_RAW_DATA, "IMEI");
+
+	pAction->Execute();
+
+	
+}
 
 
