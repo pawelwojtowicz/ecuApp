@@ -47,6 +47,7 @@ void CModemProtocolLogic::UnregisterModemListener( GSMDaemon::IModemListener* pL
 
 void CModemProtocolLogic::Connect()
 {
+	DispatchEvent( "E_CONNECT" );
 }
 
 void CModemProtocolLogic::Disconnect()

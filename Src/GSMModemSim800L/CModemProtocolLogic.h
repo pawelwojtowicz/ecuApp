@@ -8,7 +8,7 @@
 
 namespace GSMModemSim800L
 {
-class CModemProtocolLogic : ATProtocolEngine::CATProtocolEngine
+class CModemProtocolLogic : public ATProtocolEngine::CATProtocolEngine
 													, public GSMDaemon::IGSMModemService 
 {
 public:

@@ -5,6 +5,7 @@
 #include <GSMDaemon/IGSMDaemonConfiguration.h>
 using ::testing::Return;
 using ::testing::EndsWith;
+using ::testing::NotNull;
 
 
 class SMSServiceListenerMock: public GSMDaemon::ISMSServiceListener

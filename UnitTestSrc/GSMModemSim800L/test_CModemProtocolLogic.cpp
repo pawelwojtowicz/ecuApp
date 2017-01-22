@@ -21,6 +21,9 @@ public:
 
 	void SetUp()
 	{
+		EXPECT_CALL( mock_TimerManager , CreateTimer(NotNull()) ).Times(2).WillOnce(Return(1)).WillOnce(Return(2));
+		EXPECT_CALL( mock_TimerManager , SetTimer( 2, 0, 30 ) ).Times(1);
+		EXPECT_CALL( mock_TimerManager , StartTimer( 2 ) ).Times(1);
 		GSMSim800LService.Initialize(mock_configuration);
 	};
 
@@ -38,6 +41,40 @@ public:
 	GSMConfiguration mock_configuration;
 };
 
-TEST_F( CModemProtocolLogicTest , Basic )
+TEST_F( CModemProtocolLogicTest , Connect_ModemCheck_WithNoEcho )
 {
+	EXPECT_CALL( mock_SerialPortHandler , OpenPort() ).Times(1).WillOnce(Return(true));
+	EXPECT_CALL( mock_SerialPortHandler , StartProcessing() ).Times(1);
+	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT") ).Times(1).WillOnce(Return(true));
+	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+CLIP=1") ).Times(1).WillOnce(Return(true));
+	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+CMGF=1") ).Times(1).WillOnce(Return(true));
+	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+CSCS=\"GSM\"") ).Times(1).WillOnce(Return(true));
+	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+CREG=1") ).Times(1).WillOnce(Return(true));
+	GSMSim800LService.Connect();
+	ModemProtocolLogic.NotifyResponseReceived("OK");
+	ModemProtocolLogic.NotifyResponseReceived("OK");
+	ModemProtocolLogic.NotifyResponseReceived("OK");
+	ModemProtocolLogic.NotifyResponseReceived("OK");
+	ModemProtocolLogic.NotifyResponseReceived("OK");
+}
+
+TEST_F( CModemProtocolLogicTest , Connect_ModemCheck_WithEcho )
+{
+	EXPECT_CALL( mock_SerialPortHandler , OpenPort() ).Times(1).WillOnce(Return(true));
+	EXPECT_CALL( mock_SerialPortHandler , StartProcessing() ).Times(1);
+	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT") ).Times(1).WillOnce(Return(true));
+	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("ATE0") ).Times(1).WillOnce(Return(true));
+	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+CLIP=1") ).Times(1).WillOnce(Return(true));
+	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+CMGF=1") ).Times(1).WillOnce(Return(true));
+	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+CSCS=\"GSM\"") ).Times(1).WillOnce(Return(true));
+	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+CREG=1") ).Times(1).WillOnce(Return(true));
+
+	GSMSim800LService.Connect();
+	ModemProtocolLogic.NotifyResponseReceived("AT\rOK");
+	ModemProtocolLogic.NotifyResponseReceived("OK");
+	ModemProtocolLogic.NotifyResponseReceived("OK");
+	ModemProtocolLogic.NotifyResponseReceived("OK");
+	ModemProtocolLogic.NotifyResponseReceived("OK");
+	ModemProtocolLogic.NotifyResponseReceived("OK");
+	ModemProtocolLogic.NotifyResponseReceived("OK");
 }

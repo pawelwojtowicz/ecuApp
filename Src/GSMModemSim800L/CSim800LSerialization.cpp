@@ -29,6 +29,7 @@ CSim800LSerialization::CSim800LSerialization()
 	m_serializers.insert(tMsgSerializers::value_type(std::string("CPIN"), new CPINSerializer() ));
 
 	m_deserializers.insert(tMsgDeserializers::value_type(std::string("OK"), new CSimpleResponse("E_OK") ) );
+	m_deserializers.insert(tMsgDeserializers::value_type(std::string("AT\rOK"), new CSimpleResponse("E_OK_WITH_ECHO") ) );	
 	m_deserializers.insert(tMsgDeserializers::value_type(std::string("RING"), new CSimpleResponse("E_INCOMING_CALL") ) );
 	m_deserializers.insert(tMsgDeserializers::value_type(std::string("NO CARRIER"), new CSimpleResponse("E_NO_CARRIER") ) );
 	m_deserializers.insert(tMsgDeserializers::value_type(std::string("NO DIALTONE"), new CSimpleResponse("E_NO_DIALTONE") ) );
