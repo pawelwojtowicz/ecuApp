@@ -13,6 +13,9 @@ COpenPortAction::~COpenPortAction()
 
 void COpenPortAction::Execute()
 {
-	GetExecutionContext().GetSerialPortHandler().OpenPort();
+	if ( GetExecutionContext().GetSerialPortHandler().OpenPort() )
+	{
+		GetExecutionContext().DispatchEvent("E_PORT_OK");
+	}
 }
 }

@@ -1,6 +1,7 @@
 #include "CArgoConfigurator.h"
 #include "ICSMBuilder.h"
 #include <XMLParser/xmlParser.h>
+#include <UCL/SystemEnvironment.h>
 #include <stdio.h>
 namespace CSM
 {
@@ -73,7 +74,7 @@ bool CArgoConfigurator::InitializeStateMachine(	ICSMBuilder* pBuilder )
 		return false;
 	}
 	
-	XMLNode xMainNode=XMLNode::openFileHelper(m_xmiFileName.c_str(),s_constXMI);
+	XMLNode xMainNode=XMLNode::openFileHelper(	UCL::SystemEnvironment::ResolveEnvironmentVariable(m_xmiFileName.c_str()).c_str(),s_constXMI);
 	
 	if ( 1 !=  xMainNode.nChildNode(s_constXMI_Content) )
 	{

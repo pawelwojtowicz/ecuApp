@@ -2,6 +2,7 @@
 #include <GSMDaemon/ISMSServiceListener.h>
 #include <GSMDaemon/IModemListener.h>
 #include <GSMDaemon/IVoiceServiceListener.h>
+#include <GSMDaemon/IGSMDaemonConfiguration.h>
 using ::testing::Return;
 using ::testing::EndsWith;
 
@@ -37,5 +38,10 @@ public:
 	MOCK_METHOD0( NotifyIncomingCall, void() );
 
 	MOCK_METHOD1( NotifyIncomingCallNumber, void( const std::string& number) );
+};
+
+class GSMConfiguration : public GSMDaemon::IGSMDaemonConfiguration
+{
+public:
 };
 

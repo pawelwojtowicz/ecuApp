@@ -96,6 +96,8 @@ public:
 
 	virtual ATProtocolEngine::CParameterBundle& GetParameterBundle() { return m_parameterBundle;};
 
+	virtual void DispatchEvent( const std::string& ) { };
+
 private:
 	ATProtocolEngine::IResponseTimeoutHandler& m_TimeoutHandler;
 

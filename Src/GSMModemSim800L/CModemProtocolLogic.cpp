@@ -6,7 +6,7 @@ CModemProtocolLogic::CModemProtocolLogic(ATProtocolEngine::ISerialPortHandler& r
 : ATProtocolEngine::CATProtocolEngine( m_serializationEngine, m_csmConfigurator ,rSerialPortHandler, rTimerManager)
 , m_pollingCyclePeriod(30)
 , m_serializationEngine()
-, m_csmConfigurator(std::string("File"), std::string("state"))
+, m_csmConfigurator(std::string("${CONFIG_DIR}//GSMModemSim800L.xmi"), std::string("Sim800LLogic"))
 , m_pollingTimerId(-1)
 , m_actionExecutionContext()
 , m_actionFactory(m_actionExecutionContext, *this)

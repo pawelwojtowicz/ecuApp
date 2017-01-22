@@ -21,6 +21,8 @@ public:
 	virtual ISerialPortHandler& GetSerialPortHandler() = 0;
 
 	virtual CParameterBundle& GetParameterBundle() = 0;
+
+	virtual void DispatchEvent( const std::string& eventName ) = 0;
 	
 private:
 	IActionExecutionContext(const IActionExecutionContext&);
