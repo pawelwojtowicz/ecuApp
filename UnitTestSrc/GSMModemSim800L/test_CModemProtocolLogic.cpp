@@ -39,6 +39,8 @@ public:
 	CSerialPortHandlerMock mock_SerialPortHandler;
 
 	GSMConfiguration mock_configuration;
+
+	ModemListenerMock mock_ModemListener;
 };
 
 TEST_F( CModemProtocolLogicTest , Connect_ModemCheck_WithNoEcho )
@@ -50,6 +52,7 @@ TEST_F( CModemProtocolLogicTest , Connect_ModemCheck_WithNoEcho )
 	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+CMGF=1") ).Times(1).WillOnce(Return(true));
 	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+CSCS=\"GSM\"") ).Times(1).WillOnce(Return(true));
 	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+CREG=1") ).Times(1).WillOnce(Return(true));
+	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+CGMI") ).Times(1).WillOnce(Return(true));
 	GSMSim800LService.Connect();
 	ModemProtocolLogic.NotifyResponseReceived("OK");
 	ModemProtocolLogic.NotifyResponseReceived("OK");
@@ -68,7 +71,12 @@ TEST_F( CModemProtocolLogicTest , Connect_ModemCheck_WithEcho )
 	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+CMGF=1") ).Times(1).WillOnce(Return(true));
 	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+CSCS=\"GSM\"") ).Times(1).WillOnce(Return(true));
 	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+CREG=1") ).Times(1).WillOnce(Return(true));
-
+	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+CGMI") ).Times(1).WillOnce(Return(true));
+	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+CGMM") ).Times(1).WillOnce(Return(true));
+	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+CGSN") ).Times(1).WillOnce(Return(true));
+	EXPECT_CALL( mock_ModemListener			, NotifyModemIMEIReceived("123456789") ).Times(1);
+	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+COPS?") ).Times(1).WillOnce(Return(true));
+	
 	GSMSim800LService.Connect();
 	ModemProtocolLogic.NotifyResponseReceived("AT\rOK");
 	ModemProtocolLogic.NotifyResponseReceived("OK");
@@ -77,4 +85,9 @@ TEST_F( CModemProtocolLogicTest , Connect_ModemCheck_WithEcho )
 	ModemProtocolLogic.NotifyResponseReceived("OK");
 	ModemProtocolLogic.NotifyResponseReceived("OK");
 	ModemProtocolLogic.NotifyResponseReceived("OK");
+	ModemProtocolLogic.NotifyResponseReceived("OK");
+	//imei
+	ModemProtocolLogic.NotifyResponseReceived("123456789");
+	ModemProtocolLogic.NotifyResponseReceived("OK");
+
 }
