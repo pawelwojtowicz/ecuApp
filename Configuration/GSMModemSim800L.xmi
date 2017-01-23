@@ -1,5 +1,5 @@
 <?xml version = '1.0' encoding = 'UTF-8' ?>
-<XMI xmi.version = '1.2' xmlns:UML = 'org.omg.xmi.namespace.UML' timestamp = 'Mon Jan 23 17:04:21 EST 2017'>
+<XMI xmi.version = '1.2' xmlns:UML = 'org.omg.xmi.namespace.UML' timestamp = 'Mon Jan 23 17:34:55 EST 2017'>
   <XMI.header>    <XMI.documentation>
       <XMI.exporter>ArgoUML (using Netbeans XMI Writer version 1.0)</XMI.exporter>
       <XMI.exporterVersion>0.34(6) revised on $Date: 2010-01-11 22:20:14 +0100 (Mon, 11 Jan 2010) $ </XMI.exporterVersion>
@@ -64,6 +64,9 @@
                           <UML:CompositeState.subvertex>
                             <UML:CompositeState xmi.id = '127-0-1-1-1d6d7fa3:159c7ba67c1:-8000:0000000000000EBF'
                               name = 'ModemConfiguration' isSpecification = 'false' isConcurrent = 'false'>
+                              <UML:StateVertex.outgoing>
+                                <UML:Transition xmi.idref = '127-0-1-1-1d6d7fa3:159c7ba67c1:-8000:0000000000000EDB'/>
+                              </UML:StateVertex.outgoing>
                               <UML:CompositeState.subvertex>
                                 <UML:SimpleState xmi.id = '127-0-1-1-1d6d7fa3:159c7ba67c1:-8000:0000000000000EC0'
                                   name = 'EchoOff' isSpecification = 'false'>
@@ -120,9 +123,6 @@
                                 </UML:SimpleState>
                                 <UML:SimpleState xmi.id = '127-0-1-1-1d6d7fa3:159c7ba67c1:-8000:0000000000000ED4'
                                   name = 'CREG_ON' isSpecification = 'false'>
-                                  <UML:StateVertex.outgoing>
-                                    <UML:Transition xmi.idref = '127-0-1-1-1d6d7fa3:159c7ba67c1:-8000:0000000000000EDB'/>
-                                  </UML:StateVertex.outgoing>
                                   <UML:StateVertex.incoming>
                                     <UML:Transition xmi.idref = '127-0-1-1-1d6d7fa3:159c7ba67c1:-8000:0000000000000ED5'/>
                                   </UML:StateVertex.incoming>
@@ -403,7 +403,7 @@
                 <UML:SignalEvent xmi.idref = '127-0-1-1-1d6d7fa3:159c7ba67c1:-8000:0000000000000EDC'/>
               </UML:Transition.trigger>
               <UML:Transition.source>
-                <UML:SimpleState xmi.idref = '127-0-1-1-1d6d7fa3:159c7ba67c1:-8000:0000000000000ED4'/>
+                <UML:CompositeState xmi.idref = '127-0-1-1-1d6d7fa3:159c7ba67c1:-8000:0000000000000EBF'/>
               </UML:Transition.source>
               <UML:Transition.target>
                 <UML:SimpleState xmi.idref = '127-0-1-1-1d6d7fa3:159c7ba67c1:-8000:0000000000000ED9'/>
