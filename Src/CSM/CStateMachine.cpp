@@ -190,7 +190,14 @@ bool CStateMachine::ProcessEvent( const UInt32 eventNameHash )
 {
 	if ( 0 != m_pCurrentState )
 	{
-		CTransition* pTransition( m_pCurrentState->GetTransition( eventNameHash ) );
+		CTransition* pTransition(0);
+		CState* pTransitionSrc(m_pCurrentState);
+		// search for the starting from the current state, up to the root parent
+		while(0!=pTransitionSrc && 0==pTransition)
+		{
+			pTransition = pTransitionSrc->GetTransition( eventNameHash );
+			pTransitionSrc = pTransitionSrc->GetParent();
+		}
 		
 		// there is a transition, which fits the nameHash and the condition
 		if ( 0 != pTransition )
