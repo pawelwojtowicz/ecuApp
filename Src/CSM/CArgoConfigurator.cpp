@@ -9,12 +9,13 @@ namespace CSM
 static const char s_constXMI[] 							= {"XMI"};
 static const char s_constXMI_Content[] 			= {"XMI.content"};
 static const char s_constUML_Model[] 				= {"UML:Model"};
-static const char s_constUML_OwnedElement[] = {"UML:Namespace.ownedElement"};
-static const char s_constUML_StateMachine[]	= {"UML:StateMachine"};
+static const char s_constUML_OwnedElement[]		= {"UML:Namespace.ownedElement"};
+static const char s_constUML_StateMachine[]		= {"UML:StateMachine"};
 static const char s_constUML_TopState[]			= {"UML:StateMachine.top"};
 
 static const char s_constUML_Transitions[]		= {"UML:StateMachine.transitions"};
-static const char s_constUML_Transition[]			= {"UML:Transition"};
+static const char s_constUML_Transition[]		= {"UML:Transition"};
+static const char s_constUML_InternalTransition[]	= {"UML:State.internalTransition"};
 static const char s_constUML_TransitionTrigger[] 	= {"UML:Transition.trigger"};
 static const char s_constUML_TransitionAction[]		= {"UML:Transition.effect"};
 static const char s_constUML_TransitionSource[]		= {"UML:Transition.source"};
@@ -82,6 +83,16 @@ bool CArgoConfigurator::InitializeStateMachine(	ICSMBuilder* pBuilder )
 	}
 	
 	const XMLNode& contentNode = xMainNode.getChildNode( s_constXMI_Content , 0 );
+
+	{
+		const UInt32 numberOfSignalEvents(contentNode.nChildNode(s_constUML_SignalEvent));
+		for ( UInt32 i = 0 ; i < numberOfSignalEvents; ++i )
+		{
+			const XMLNode& signalEventNode = contentNode.getChildNode( s_constUML_SignalEvent , i );
+			
+			m_IdToNameMap.insert( tIdToNameMap::value_type( signalEventNode.getAttribute(s_constUML_xmiId) , signalEventNode.getAttribute(s_constUML_name) ) );
+		}
+	}
 	
 	if (1 !=  contentNode.nChildNode(s_constUML_Model) )
 	{
@@ -197,7 +208,36 @@ void CArgoConfigurator::ReadCompositeStateConfiguration ( const std::string& par
 													 stateStructure.StateName,
 													 stateStructure.EnterActionName,
 													 stateStructure.LeafActionName,
-													 stateStructure.ExitActionName);																						
+													 stateStructure.ExitActionName);
+	UInt32 internalTransitionsCount(stateConfigNode.nChildNode( s_constUML_InternalTransition ) );
+
+	//read internal transitions of the state and add them
+	for( UInt32 i = 0 ; i < internalTransitionsCount ; ++i )
+	{
+		const XMLNode& internalTransitionNode = stateConfigNode.getChildNode(s_constUML_InternalTransition , i );
+
+		if ( 1 == internalTransitionNode.nChildNode( s_constUML_Transition ) )
+		{
+			std::string triggerName;
+
+			const XMLNode& transitionNode = internalTransitionNode.getChildNode(s_constUML_Transition , 0 );
+
+			std::string eventNameId( ReadNestedProperty(transitionNode, s_constUML_TransitionTrigger, s_constUML_SignalEvent, s_constUML_xmiIdRef));
+			tIdToNameMapConstIterator cIter = m_IdToNameMap.find(eventNameId);
+			if (m_IdToNameMap.end() != cIter )
+			{
+				triggerName = cIter->second;
+			}
+
+			std::string guardName(ReadNestedProperty( transitionNode, s_constUML_TransitionGuard, s_constUML_Guard, s_constUML_name));
+			std::string actionName(ReadNestedProperty( transitionNode, s_constUML_TransitionAction, s_constUML_CallAction, s_constUML_name ));
+
+			m_pCSMBuilder->AddTransition(	triggerName, 
+							stateStructure.StateName,
+							stateStructure.StateName,																		guardName,
+							actionName);
+		}
+	}																					
 }
 
 //------------------------------------------------------------------------------------------
