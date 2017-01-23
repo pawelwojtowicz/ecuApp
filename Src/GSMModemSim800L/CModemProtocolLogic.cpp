@@ -39,10 +39,12 @@ void CModemProtocolLogic::Shutdown()
 
 void CModemProtocolLogic::RegisterModemListener( GSMDaemon::IModemListener* pListener )
 {
+	m_actionExecutionContext.RegisterModemListener(pListener);
 }
 
 void CModemProtocolLogic::UnregisterModemListener( GSMDaemon::IModemListener* pListener )
 {
+	m_actionExecutionContext.UnregisterModemListener(pListener);
 }
 
 void CModemProtocolLogic::Connect()
@@ -56,10 +58,12 @@ void CModemProtocolLogic::Disconnect()
 
 void CModemProtocolLogic::RegisterVoiceServiceListener( GSMDaemon::IVoiceServiceListener* pVoiceServiceListener )
 {
+	m_actionExecutionContext.RegisterVoiceServiceListener(pVoiceServiceListener);
 }
 
 void CModemProtocolLogic::UnregisterVoiceServiceListener( GSMDaemon::IVoiceServiceListener* pVoiceServiceListener )
 {
+	m_actionExecutionContext.UnregisterVoiceServiceListener(pVoiceServiceListener);
 }
 
 void CModemProtocolLogic::MakeCall( const std::string& phoneNumber )
@@ -80,10 +84,12 @@ void CModemProtocolLogic::RejectIncomingCall()
 
 void CModemProtocolLogic::RegisterSMSServiceListener( GSMDaemon::ISMSServiceListener* pSMSServiceListener )
 {
+	m_actionExecutionContext.RegisterSMSServiceListener(pSMSServiceListener);
 }
 
 void CModemProtocolLogic::UnregisterSMSServiceListener( GSMDaemon::ISMSServiceListener* pSMSServiceListener )
 {
+	m_actionExecutionContext.UnregisterSMSServiceListener(pSMSServiceListener);
 }
 
 void CModemProtocolLogic::SendSMS ( const std::string& phoneNumber, const std::string& text )
