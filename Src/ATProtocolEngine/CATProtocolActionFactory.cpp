@@ -88,7 +88,11 @@ CATProtocolAction* CATProtocolActionFactory::CreateActionInstance( const std::st
 
 	if ( !actionName.compare("send") )
 	{
-		pActionInstance = new CSendAction(m_rActionExecutionContext);
+		pActionInstance = new CSendAction(m_rActionExecutionContext, false);
+	}
+	else if ( !actionName.compare("sendLine") )
+	{
+		pActionInstance = new CSendAction(m_rActionExecutionContext, true);
 	}
 	else if ( !actionName.compare("startTimer") )
 	{

@@ -1,5 +1,5 @@
 <?xml version = '1.0' encoding = 'UTF-8' ?>
-<XMI xmi.version = '1.2' xmlns:UML = 'org.omg.xmi.namespace.UML' timestamp = 'Mon Jan 23 17:34:55 EST 2017'>
+<XMI xmi.version = '1.2' xmlns:UML = 'org.omg.xmi.namespace.UML' timestamp = 'Wed Jan 25 12:31:27 EST 2017'>
   <XMI.header>    <XMI.documentation>
       <XMI.exporter>ArgoUML (using Netbeans XMI Writer version 1.0)</XMI.exporter>
       <XMI.exporterVersion>0.34(6) revised on $Date: 2010-01-11 22:20:14 +0100 (Mon, 11 Jan 2010) $ </XMI.exporterVersion>
@@ -56,7 +56,7 @@
                           </UML:StateVertex.incoming>
                           <UML:State.entry>
                             <UML:CallAction xmi.id = '127-0-1-1-1d6d7fa3:159c7ba67c1:-8000:0000000000000EBC'
-                              name = 'send(AT)' isSpecification = 'false' isAsynchronous = 'false'/>
+                              name = 'sendLine(AT)' isSpecification = 'false' isAsynchronous = 'false'/>
                           </UML:State.entry>
                         </UML:SimpleState>
                         <UML:CompositeState xmi.id = '127-0-1-1-1d6d7fa3:159c7ba67c1:-8000:0000000000000A67'
@@ -78,7 +78,7 @@
                                   </UML:StateVertex.incoming>
                                   <UML:State.entry>
                                     <UML:CallAction xmi.id = '127-0-1-1-1d6d7fa3:159c7ba67c1:-8000:0000000000000ECA'
-                                      name = 'send(ATE0)' isSpecification = 'false' isAsynchronous = 'false'/>
+                                      name = 'sendLine(ATE0)' isSpecification = 'false' isAsynchronous = 'false'/>
                                   </UML:State.entry>
                                 </UML:SimpleState>
                                 <UML:CompositeState xmi.id = '127-0-1-1-1d6d7fa3:159c7ba67c1:-8000:0000000000000EC1'
@@ -92,7 +92,7 @@
                                   </UML:StateVertex.incoming>
                                   <UML:State.entry>
                                     <UML:CallAction xmi.id = '127-0-1-1-1d6d7fa3:159c7ba67c1:-8000:0000000000000ECB'
-                                      name = 'send(AT+CLIP=1)' isSpecification = 'false' isAsynchronous = 'false'/>
+                                      name = 'sendLine(AT+CLIP=1)' isSpecification = 'false' isAsynchronous = 'false'/>
                                   </UML:State.entry>
                                 </UML:CompositeState>
                                 <UML:SimpleState xmi.id = '127-0-1-1-1d6d7fa3:159c7ba67c1:-8000:0000000000000ECC'
@@ -105,7 +105,7 @@
                                   </UML:StateVertex.incoming>
                                   <UML:State.entry>
                                     <UML:CallAction xmi.id = '127-0-1-1-1d6d7fa3:159c7ba67c1:-8000:0000000000000ECD'
-                                      name = 'send(AT+CMGF=1)' isSpecification = 'false' isAsynchronous = 'false'/>
+                                      name = 'sendLine(AT+CMGF=1)' isSpecification = 'false' isAsynchronous = 'false'/>
                                   </UML:State.entry>
                                 </UML:SimpleState>
                                 <UML:SimpleState xmi.id = '127-0-1-1-1d6d7fa3:159c7ba67c1:-8000:0000000000000ED0'
@@ -118,7 +118,7 @@
                                   </UML:StateVertex.incoming>
                                   <UML:State.entry>
                                     <UML:CallAction xmi.id = '127-0-1-1-1d6d7fa3:159c7ba67c1:-8000:0000000000000ED1'
-                                      name = 'send(AT+CSCS=&quot;GSM&quot;)' isSpecification = 'false' isAsynchronous = 'false'/>
+                                      name = 'sendLine(AT+CSCS=&quot;GSM&quot;)' isSpecification = 'false' isAsynchronous = 'false'/>
                                   </UML:State.entry>
                                 </UML:SimpleState>
                                 <UML:SimpleState xmi.id = '127-0-1-1-1d6d7fa3:159c7ba67c1:-8000:0000000000000ED4'
@@ -128,7 +128,7 @@
                                   </UML:StateVertex.incoming>
                                   <UML:State.entry>
                                     <UML:CallAction xmi.id = '127-0-1-1-1d6d7fa3:159c7ba67c1:-8000:0000000000000ED7'
-                                      name = 'send(AT+CREG=1)' isSpecification = 'false' isAsynchronous = 'false'/>
+                                      name = 'sendLine(AT+CREG=1)' isSpecification = 'false' isAsynchronous = 'false'/>
                                   </UML:State.entry>
                                 </UML:SimpleState>
                               </UML:CompositeState.subvertex>
@@ -148,7 +148,7 @@
                                   </UML:StateVertex.incoming>
                                   <UML:State.entry>
                                     <UML:CallAction xmi.id = '127-0-1-1-1d6d7fa3:159c7ba67c1:-8000:0000000000000EDE'
-                                      name = 'send(AT+CGMI)' isSpecification = 'false' isAsynchronous = 'false'/>
+                                      name = 'sendLine(AT+CGMI)' isSpecification = 'false' isAsynchronous = 'false'/>
                                   </UML:State.entry>
                                   <UML:State.internalTransition>
                                     <UML:Transition xmi.id = '127-0-1-1-1d6d7fa3:159c7ba67c1:-8000:0000000000000EED'
@@ -181,7 +181,7 @@
                                   </UML:StateVertex.incoming>
                                   <UML:State.entry>
                                     <UML:CallAction xmi.id = '127-0-1-1-1d6d7fa3:159c7ba67c1:-8000:0000000000000EE2'
-                                      name = 'send(AT+CGMM)' isSpecification = 'false' isAsynchronous = 'false'/>
+                                      name = 'sendLine(AT+CGMM)' isSpecification = 'false' isAsynchronous = 'false'/>
                                   </UML:State.entry>
                                   <UML:State.internalTransition>
                                     <UML:Transition xmi.id = '127-0-1-1-1d6d7fa3:159c7ba67c1:-8000:0000000000000EF5'
@@ -214,7 +214,7 @@
                                   </UML:StateVertex.incoming>
                                   <UML:State.entry>
                                     <UML:CallAction xmi.id = '127-0-1-1-1d6d7fa3:159c7ba67c1:-8000:0000000000000EE3'
-                                      name = 'send(AT+CGSN)' isSpecification = 'false' isAsynchronous = 'false'/>
+                                      name = 'sendLine(AT+CGSN)' isSpecification = 'false' isAsynchronous = 'false'/>
                                   </UML:State.entry>
                                   <UML:State.internalTransition>
                                     <UML:Transition xmi.id = '127-0-1-1-1d6d7fa3:159c7ba67c1:-8000:0000000000000EF0'
@@ -241,12 +241,12 @@
                                     <UML:Transition xmi.idref = '127-0-1-1--69ce6777:159cd0b4bc3:-8000:0000000000000AA8'/>
                                   </UML:StateVertex.outgoing>
                                   <UML:StateVertex.incoming>
-                                    <UML:Transition xmi.idref = '127-0-1-1-1d6d7fa3:159c7ba67c1:-8000:0000000000000EE8'/>
                                     <UML:Transition xmi.idref = '127-0-1-1--69ce6777:159cd0b4bc3:-8000:0000000000000AA8'/>
+                                    <UML:Transition xmi.idref = '127-0-1-1-1d6d7fa3:159c7ba67c1:-8000:0000000000000EE8'/>
                                   </UML:StateVertex.incoming>
                                   <UML:State.entry>
                                     <UML:CallAction xmi.id = '127-0-1-1-1d6d7fa3:159c7ba67c1:-8000:0000000000000EE7'
-                                      name = 'send(AT+COPS?)' isSpecification = 'false' isAsynchronous = 'false'/>
+                                      name = 'sendLine(AT+COPS?)' isSpecification = 'false' isAsynchronous = 'false'/>
                                   </UML:State.entry>
                                   <UML:State.internalTransition>
                                     <UML:Transition xmi.id = '127-0-1-1--69ce6777:159cd0b4bc3:-8000:0000000000000AA8'

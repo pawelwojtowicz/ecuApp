@@ -9,7 +9,7 @@ class CSendAction : public CATProtocolAction
 		serializes the msg, using the IserializationEngine+CParameterBundle, and writes serialized data into the ISerialPortHandler */
 
 public:
-	CSendAction(IActionExecutionContext& actionExecutionContext);
+	CSendAction(IActionExecutionContext& actionExecutionContext, bool sendLine);
 	virtual ~CSendAction();
 
 	virtual bool Configure( const CSM::IActionFactory& , const std::string& configurationString );
@@ -21,5 +21,8 @@ private:
 	CSendAction& operator=(const CSendAction&);
 
 	std::string m_messageTag;
+	
+	bool m_sendLine;
+	
 };
 }

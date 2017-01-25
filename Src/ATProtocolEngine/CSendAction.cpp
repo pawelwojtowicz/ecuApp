@@ -1,10 +1,13 @@
 #include "CSendAction.h"
 
+static std::string sString_characterCR("\r");
+
 namespace ATProtocolEngine
 {
-CSendAction::CSendAction(IActionExecutionContext& actionExecutionContext)
+CSendAction::CSendAction(IActionExecutionContext& actionExecutionContext, bool sendLine )
 : CATProtocolAction(actionExecutionContext)
 , m_messageTag()
+, m_sendLine(sendLine)
 {
 }
 
@@ -25,6 +28,11 @@ void CSendAction::Execute()
 	if ( !GetExecutionContext().GetSerializationEngine().SerializeMsg( m_messageTag, GetExecutionContext().GetParameterBundle(), message ) )
 	{
 		message = m_messageTag;
+	}
+
+	if ( m_sendLine )
+	{
+		message += sString_characterCR;
 	}
 
 	GetExecutionContext().GetSerialPortHandler().SendCommand(message);

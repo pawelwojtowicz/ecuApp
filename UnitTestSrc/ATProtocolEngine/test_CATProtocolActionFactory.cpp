@@ -53,6 +53,35 @@ TEST( CATProtocolActionFactory, SendCommand_DynamicallySerialized )
 
 }
 
+TEST( CATProtocolActionFactory, SendLineCommand_DynamicallySerialized )
+{
+	CTimeoutHandlerMock timerHandlerMock;
+	CSerialPortHandlerMock serialPortMock;
+	ATProtocolEngine::CParameterBundle paramBundleInstance;
+	CSerializationEngineMock serializationEngineMock;
+	ActionContextMock actionExecutionContextForTest(timerHandlerMock,serialPortMock, paramBundleInstance, serializationEngineMock);
+
+	ATProtocolEngine::CATProtocolActionFactory actionFactory(actionExecutionContextForTest);
+	CSM::IActionFactory& CSM_ActionFactory(actionFactory);
+
+	CSM::IAction* pAction = CSM_ActionFactory.GetAction( "sendLine(AT+CALL)" );
+
+	// the action was created
+	ASSERT_TRUE( 0 != pAction );
+
+	// prepare the parameters for calling the execute
+	paramBundleInstance.Store("outputValue", "exampleTelegram");
+	paramBundleInstance.Store("status", "true");
+
+	EXPECT_CALL(serialPortMock, Test_SendCommand(	EndsWith("exampleTelegram\r") )).Times(1);
+
+	// fire the action
+	pAction->Execute();
+
+	EXPECT_EQ( serializationEngineMock.SerializeMsgID , std::string("AT+CALL"));
+
+}
+
 TEST( CATProtocolActionFactory, SendCommand_StaticMessage )
 {
 	CTimeoutHandlerMock timerHandlerMock;
@@ -81,6 +110,36 @@ TEST( CATProtocolActionFactory, SendCommand_StaticMessage )
 	EXPECT_EQ( serializationEngineMock.SerializeMsgID , std::string("AT+CALL"));
 
 }
+
+TEST( CATProtocolActionFactory, SendLineCommand_StaticMessage )
+{
+	CTimeoutHandlerMock timerHandlerMock;
+	CSerialPortHandlerMock serialPortMock;
+	ATProtocolEngine::CParameterBundle paramBundleInstance;
+	CSerializationEngineMock serializationEngineMock;
+	ActionContextMock actionExecutionContextForTest(timerHandlerMock,serialPortMock, paramBundleInstance, serializationEngineMock);
+
+	ATProtocolEngine::CATProtocolActionFactory actionFactory(actionExecutionContextForTest);
+	CSM::IActionFactory& CSM_ActionFactory(actionFactory);
+
+	CSM::IAction* pAction = CSM_ActionFactory.GetAction( "sendLine(AT+CALL)" );
+
+	// the action was created
+	ASSERT_TRUE( 0 != pAction );
+
+
+	// prepare the parameters for calling the execute
+	paramBundleInstance.Store("outputValue", "exampleTelegram");
+	paramBundleInstance.Store("status", "false");
+
+	EXPECT_CALL(serialPortMock, Test_SendCommand(	EndsWith("AT+CALL\r") )).Times(1);
+
+	pAction->Execute();
+
+	EXPECT_EQ( serializationEngineMock.SerializeMsgID , std::string("AT+CALL"));
+
+}
+
 
 TEST( CATProtocolActionFactory, CCompositeAction )
 {
