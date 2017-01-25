@@ -40,6 +40,10 @@ private:
 	virtual void UnregisterSMSServiceListener( GSMDaemon::ISMSServiceListener* pSMSServiceListener );
 	virtual void SendSMS ( const std::string& phoneNumber, const std::string& text );
 
+	virtual void NotifyATResponseReceived( const std::string& response );
+	virtual void NotifyATPromptReceived(const std::string& prompt );
+
+
 private:
 	// UCL::ITimerListener implementation
 	virtual void NotifyTimer( const Int32& timerId );

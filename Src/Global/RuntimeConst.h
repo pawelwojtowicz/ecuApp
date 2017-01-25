@@ -21,7 +21,9 @@ typedef enum
 	msgId_Controller_ShutdownRequest,
 	msgId_Controller_PendingShutdown,
 	msgId_Controller_Shutdown,
-	msgId_TTS_SayPhrase
+	msgId_TTS_SayPhrase,
+	msgId_GSM_NotifyResponse,
+	msgId_GSM_NotifyAsyncResponse
 } tMsgIds;
 
 #endif

@@ -16,6 +16,7 @@ public:
 	virtual ~CSerialPortHandler();
 
 	bool Initialize(const std::string& portName, std::string& portConfiguration);
+	void RegisterATLineConsumer( IATLineConsumer* pConsumer);
 	void Shutdown();
 
 private:
@@ -48,5 +49,7 @@ private:
 	UCL::CSerialPort m_serialPort;
 
 	CCircularATLineExtractor m_atLineExtrator;
+
+	IATLineConsumer* m_pATLineConsumer;
 };
 }

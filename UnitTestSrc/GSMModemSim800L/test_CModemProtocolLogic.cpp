@@ -22,7 +22,7 @@ public:
 	void SetUp()
 	{
 		EXPECT_CALL( mock_TimerManager , CreateTimer(NotNull()) ).Times(2).WillOnce(Return(1)).WillOnce(Return(2));
-		EXPECT_CALL( mock_TimerManager , SetTimer( 2, 0, 30 ) ).Times(1);
+		EXPECT_CALL( mock_TimerManager , SetTimer( 2, 0, 10 ) ).Times(1);
 		EXPECT_CALL( mock_TimerManager , StartTimer( 2 ) ).Times(1);
 		GSMSim800LService.RegisterModemListener(&mock_ModemListener);
 

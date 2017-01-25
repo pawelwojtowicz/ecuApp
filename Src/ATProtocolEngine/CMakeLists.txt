@@ -20,4 +20,7 @@ CStartAction.cpp
 CStopAction.cpp
 )
 
+target_link_libraries ( ${OUTPUT_NAME} pthread UCL Logger CSM ) 
+add_dependencies ( ${OUTPUT_NAME} UCL Logger CSM)
+
 install ( TARGETS ${OUTPUT_NAME} LIBRARY DESTINATION ${ECUAPP_LIBRARY_INSTALL_DIR} )

@@ -4,7 +4,7 @@ namespace GSMModemSim800L
 {
 CModemProtocolLogic::CModemProtocolLogic(ATProtocolEngine::ISerialPortHandler& rSerialPortHandler, Runtime::ITimerManager& rTimerManager)
 : ATProtocolEngine::CATProtocolEngine( m_serializationEngine, m_csmConfigurator ,rSerialPortHandler, rTimerManager)
-, m_pollingCyclePeriod(30)
+, m_pollingCyclePeriod(10)
 , m_serializationEngine()
 , m_csmConfigurator(std::string("${CONFIG_DIR}//GSMModemSim800L.xmi"), std::string("Sim800LLogic"))
 , m_pollingTimerId(-1)
@@ -26,7 +26,7 @@ bool CModemProtocolLogic::Initialize( GSMDaemon::IGSMDaemonConfiguration& config
 	GetTimerManager().SetTimer(m_pollingTimerId,0, m_pollingCyclePeriod );
 	GetTimerManager().StartTimer(m_pollingTimerId);
 
-	return false;
+	return true;
 }
 
 void CModemProtocolLogic::Shutdown()
@@ -106,6 +106,16 @@ void CModemProtocolLogic::NotifyTimer( const Int32& timerId )
 	{
 		ATProtocolEngine::CATProtocolEngine::NotifyTimer( timerId );
 	}
+}
+
+void CModemProtocolLogic::NotifyATResponseReceived( const std::string& response )
+{
+	ATProtocolEngine::CATProtocolEngine::NotifyResponseReceived( response);
+}
+
+void CModemProtocolLogic::NotifyATPromptReceived(const std::string& prompt )
+{
+	ATProtocolEngine::CATProtocolEngine::NotifyPromptReceived(prompt);
 }
 
 
