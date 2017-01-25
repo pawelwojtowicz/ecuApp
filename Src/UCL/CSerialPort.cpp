@@ -239,7 +239,8 @@ namespace UCL
 
     if ( retVal )
     {
-      portConfig.c_cflag = data | stop | parity | baudConstant | CLOCAL | CREAD ;  
+      portConfig.c_cflag = data | stop | parity | baudConstant | CLOCAL | CREAD ;
+			portConfig.c_iflag &= ~(INLCR | ICRNL | IGNCR);
     }
     return retVal;
   }
