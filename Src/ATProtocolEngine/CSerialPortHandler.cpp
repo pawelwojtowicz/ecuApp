@@ -99,9 +99,10 @@ void CSerialPortHandler::StopProcessing()
 }
 
 
-bool CSerialPortHandler::SendCommand( const std::string& serializeCommand )
+bool CSerialPortHandler::SendCommand( const std::string& serializedCommand )
 {
-	return true;
+	Int32 charactersToSend( serializedCommand.length() );
+	return ( charactersToSend == m_serialPort.Write( static_cast<const Int8*>(serializedCommand.c_str()) , charactersToSend ) );
 }
 
 void CSerialPortHandler::NotifyATResponseExtracted( const std::string line )

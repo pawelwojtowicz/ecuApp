@@ -31,6 +31,9 @@ void CGSMDaemon::Initialize()
 	if ( !m_daemonConfiguration.Initialize() )
 	{
 		bool initOK(false);
+		std::string portName("/dev/ttyUSB0");
+		std::string portConfiguration("baud=115200 data=8 parity=none stop=1");
+		m_serialPortHandler.Initialize( portName, portConfiguration );
 		m_pModemService = new GSMModemSim800L::CModemProtocolLogic(m_serialPortHandler, GetTimerManager());
 		initOK 	= m_pModemService->Initialize(m_daemonConfiguration);
 		initOK &= m_modemManager.Initialize( m_daemonConfiguration, m_pModemService);

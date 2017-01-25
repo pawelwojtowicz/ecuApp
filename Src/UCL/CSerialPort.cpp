@@ -97,7 +97,7 @@ namespace UCL
   }
 
 
-  Int32 CSerialPort::Write( Int8* txBuffer,const Int32& bytesToWrite )
+  Int32 CSerialPort::Write( const Int8* txBuffer,const Int32& bytesToWrite )
   {
     Int32 bytesWritten(-1);
 

@@ -22,7 +22,7 @@ class CSerialPort
   bool IsValid() { return ( -1 != m_portHandle );};
 
   Int32 Read( Int8* rxBuffer, const Int32& bytesToRead );
-  Int32 Write( Int8* ttxBuffer,const Int32& bytesToWrite );
+  Int32 Write( const Int8* ttxBuffer,const Int32& bytesToWrite );
 
   bool WaitTxEmpty();
 	bool WaitRxDataAvailable( UInt32 readTimeout );
