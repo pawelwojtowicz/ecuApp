@@ -284,7 +284,7 @@ namespace UCL
 		timeoutStructure.tv_sec = readTimeout;
 		timeoutStructure.tv_usec = 0;
 
-		return ( 0 < select(m_portHandle, &inputSet,NULL, NULL, &timeoutStructure ) );
+		return ( 0 < select(m_portHandle+1, &inputSet,NULL, NULL, &timeoutStructure ) );
 	}
 
 
