@@ -102,6 +102,7 @@ void CStateMachine::AddTransition(	const std::string& eventName,
 																		const std::string& conditionName, 
 																		const std::string& actionName)
 {
+	bool internalTransition(sourceStateName == targetStateName);
 	UInt32 eventNameHash(UCL::CFastHash::CalculateHash32(eventName, cUInt32_CSM_HashSeed));
 	UInt32 sourceNameHash(UCL::CFastHash::CalculateHash32(sourceStateName, cUInt32_CSM_HashSeed));
 	UInt32 targetNameHash(UCL::CFastHash::CalculateHash32(targetStateName, cUInt32_CSM_HashSeed));
@@ -117,13 +118,16 @@ void CStateMachine::AddTransition(	const std::string& eventName,
 		pSourceState = pSourceStateIter->second;
 	}
 	
-	tStateMapConstIterator pTargetStateIter(m_stateMap.find(targetNameHash));
-	if ( m_stateMap.end() != pTargetStateIter )
+	if (!internalTransition)
 	{
-		pTargetState = pTargetStateIter->second;
+		tStateMapConstIterator pTargetStateIter(m_stateMap.find(targetNameHash));
+		if ( m_stateMap.end() != pTargetStateIter )
+		{
+			pTargetState = pTargetStateIter->second;
+		}
 	}
 	
-	if ( 0 != pSourceState && 0 != pTargetState )
+	if ( 0 != pSourceState )
 	{
 		if ( 0 !=m_pActionFactory )
 		{
@@ -204,58 +208,66 @@ bool CStateMachine::ProcessEvent( const UInt32 eventNameHash )
 		{
 			CState* pTargetState( pTransition->GetTargetState() );
 			
-			tStateList sourceStates;
-			tStateList targetStates;
-			
-			//prepare the list of the parents of target and source states
-			//it will be used to evaluate the set of enter/exit actions to be exeuted
-			CState* pState(m_pCurrentState);
-			while ( 0 != pState )
+			if (0!= pTargetState)
 			{
-				sourceStates.push_back( pState );
-				pState = pState->GetParent();
-			}
+				tStateList sourceStates;
+				tStateList targetStates;
 			
-			pState = pTargetState;
-			while ( 0 != pState )
-			{
-				targetStates.push_back( pState );
-				pState = pState->GetParent();
-			}
-			
-			// iterate through all of the source states, starting from current state
-			// and execute the exit action for all of the states , that are not present
-			// in the target state list.
-			for ( tStateListIterator iter = sourceStates.begin() ; sourceStates.end() != iter ; ++iter)
-			{
-				tStateListIterator targetIter = std::find(targetStates.begin(), targetStates.end() , *iter );
-				if ( targetStates.end() == targetIter )
+				//prepare the list of the parents of target and source states
+				//it will be used to evaluate the set of enter/exit actions to be exeuted
+				CState* pState(m_pCurrentState);
+				while ( 0 != pState )
 				{
-					(*iter)->ExecuteExitAction();
+					sourceStates.push_back( pState );
+					pState = pState->GetParent();
+				}
+			
+				pState = pTargetState;
+				while ( 0 != pState )
+				{
+					targetStates.push_back( pState );
+					pState = pState->GetParent();
+				}
+			
+				// iterate through all of the source states, starting from current state
+				// and execute the exit action for all of the states , that are not present
+				// in the target state list.
+				for ( tStateListIterator iter = sourceStates.begin() ; sourceStates.end() != iter ; ++iter)
+				{
+					tStateListIterator targetIter = std::find(targetStates.begin(), targetStates.end() , *iter );
+					if ( targetStates.end() == targetIter )
+					{
+						(*iter)->ExecuteExitAction();
+					}
+				}
+			
+				// execute the transition action in the middle of the transition
+				pTransition->ExecuteAction();
+			
+				// execute the enter action on the state and all it's parens, which were not
+				// present in the origin state.
+				for ( tStateListReverseIterator iter = targetStates.rbegin() ; targetStates.rend() != iter ; ++iter)
+				{
+					tStateListIterator sourceIter = std::find(sourceStates.begin(), sourceStates.end() , *iter );
+					if ( sourceStates.end() == sourceIter )
+					{
+						(*iter)->ExecuteEnterAction();
+					}
+				}			
+			
+				if ( m_pCurrentState != pTargetState )
+				{
+					//change the current state to the target of the transition
+					m_pCurrentState = pTargetState;
+			
+					// Execute Leaf Action for the currentState in case it's different from previous one.
+					m_pCurrentState->ExecuteLeafAction();
 				}
 			}
-			
-			// execute the transition action in the middle of the transition
-			pTransition->ExecuteAction();
-			
-			// execute the enter action on the state and all it's parens, which were not
-			// present in the origin state.
-			for ( tStateListReverseIterator iter = targetStates.rbegin() ; targetStates.rend() != iter ; ++iter)
+			else
 			{
-				tStateListIterator sourceIter = std::find(sourceStates.begin(), sourceStates.end() , *iter );
-				if ( sourceStates.end() == sourceIter )
-				{
-					(*iter)->ExecuteEnterAction();
-				}
-			}			
-			
-			if ( m_pCurrentState != pTargetState )
-			{
-				//change the current state to the target of the transition
-				m_pCurrentState = pTargetState;
-			
-				// Execute Leaf Action for the currentState in case it's different from previous one.
-				m_pCurrentState->ExecuteLeafAction();
+				// it's an internal transition, just fire the transition action
+				pTransition->ExecuteAction();
 			}
 		}
 	
