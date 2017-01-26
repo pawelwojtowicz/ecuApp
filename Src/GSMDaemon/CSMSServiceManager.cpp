@@ -1,14 +1,17 @@
 #include "CSMSServiceManager.h"
 #include "IGSMDaemonConfiguration.h"
 #include "IGSMModemService.h"
+#include "Logger/Logger.h"
 
 
 namespace GSMDaemon
 {
 
 
-CSMSServiceManager::CSMSServiceManager()
+CSMSServiceManager::CSMSServiceManager(	TTS::CTTSProxy& rTTSProxy)
 : m_pModemService(0)
+, m_rTTSProxy(rTTSProxy)
+
 {
 }
 
@@ -49,6 +52,8 @@ void CSMSServiceManager::NotifySMSSendFailure()
 
 void CSMSServiceManager::NotifyIncomingSMS( const std::string& srcNumber, const std::string& timestamp, const std::string& messageText)
 {
+	RETAILMSG(INFO, ("CSMSServiceManager::NotifyIncomingSMS - [%s]", messageText.c_str()));
+	m_rTTSProxy.Say(messageText);
 }
 
 

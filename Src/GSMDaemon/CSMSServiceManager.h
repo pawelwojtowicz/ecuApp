@@ -1,6 +1,7 @@
 #pragma once
 #include <Global/GlobalTypes.h>
 #include "ISMSServiceListener.h"
+#include <TTSInterface/CTTSProxy.h>
 
 namespace GSMDaemon
 {
@@ -10,7 +11,7 @@ class IGSMModemService;
 class CSMSServiceManager : public ISMSServiceListener
 {
 public:
-	CSMSServiceManager();
+	CSMSServiceManager(TTS::CTTSProxy & rProxy);
 	virtual ~CSMSServiceManager();
 	bool Initialize( const IGSMDaemonConfiguration& configuration, IGSMModemService* pModemService);
 	void Shutdown();
@@ -25,5 +26,6 @@ private:
 private:
 	IGSMModemService* m_pModemService;
 
+	TTS::CTTSProxy& m_rTTSProxy;
 };
 }

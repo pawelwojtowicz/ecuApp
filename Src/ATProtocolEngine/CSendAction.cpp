@@ -1,4 +1,5 @@
 #include "CSendAction.h"
+#include <Logger/Logger.h>
 
 static std::string sString_characterCR("\r");
 
@@ -30,6 +31,7 @@ void CSendAction::Execute()
 		message = m_messageTag;
 	}
 
+	RETAILMSG(DATA, ("CSendAction::Execute() - %s", message.c_str()));
 	if ( m_sendLine )
 	{
 		message += sString_characterCR;

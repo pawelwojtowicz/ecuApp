@@ -75,9 +75,7 @@ void CSerialPortHandler::Run()
 		RETAILMSG(DATA, ("I will read %d", toRead));
 		if ( 	m_serialPort.WaitRxDataAvailable( 1 ) )
 		{
-			RETAILMSG(DATA, ("I will ready %d", toRead));
 			bytesRead = m_serialPort.Read(inputBuffer, toRead );
-			RETAILMSG(DATA, ("I've read %d", bytesRead));
 	
 			m_atLineExtrator.WriteBuffer( inputBuffer, bytesRead );
 		}

@@ -1,4 +1,5 @@
 #include "CStartAction.h"
+#include <Logger/Logger.h>
 
 namespace ATProtocolEngine
 {
@@ -13,6 +14,7 @@ CStartAction::~CStartAction()
 
 void CStartAction::Execute()
 {
+	RETAILMSG(INFO, ("CStartAction::Execute()"));
 	GetExecutionContext().GetSerialPortHandler().StartProcessing();
 }
 }

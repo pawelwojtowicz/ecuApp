@@ -38,7 +38,7 @@ void CExampleApp::Initialize()
 
   // prepare some test timer, ( started after 5 seconds, triggered every 2seconds afterwards
   m_timer1Id = GetTimerManager().CreateTimer(this);
-  GetTimerManager().SetTimer(m_timer1Id, 5, 2 );
+  GetTimerManager().SetTimer(m_timer1Id, 30, 2 );
   GetTimerManager().StartTimer(m_timer1Id);
 
   m_shutdownTimer = GetTimerManager().CreateTimer(this);
@@ -57,19 +57,19 @@ void CExampleApp::NotifyTimer( const Int32& timerId )
 {
   if (timerId == m_timer1Id)
   {
-    m_ttsProxy.Say("Test");
+//    m_ttsProxy.Say("Test");
   }
   else if ( timerId == m_shutdownTimer )
   {
     RETAILMSG(INFO, ("Requesting shutdown"));
-    GetControllerProxy().RequestShutdown();
-    m_ttsProxy.Say("Requesting Shutdown");
+  //  GetControllerProxy().RequestShutdown();
+   // m_ttsProxy.Say("Requesting Shutdown");
   }
   else if ( timerId ==m_iddleTimer )
   {
     RETAILMSG(INFO, ("ExampleApp iddle - system should be down in couple of seconds"));
-    m_ttsProxy.Say("Example application reports iddle - system should be down in couple of seconds");
-    SetIddle();
+    //m_ttsProxy.Say("Example application reports iddle - system should be down in couple of seconds");
+    //SetIddle();
   }
 }
 

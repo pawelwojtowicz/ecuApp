@@ -16,7 +16,8 @@ CGSMDaemon::CGSMDaemon()
 , m_pModemService(0)
 , m_modemManager()
 , m_voiceServiceManager()
-, m_smsServiceManager()
+, m_ttsProxy(GetMessenger())
+, m_smsServiceManager(m_ttsProxy)
 , m_gsmStub(GetMessenger())
 {
 }
@@ -30,6 +31,8 @@ void CGSMDaemon::Initialize()
   CRuntimeUnit::Initialize();
   InitializeTimerManager();
 	m_gsmStub.Initialize(this);
+  m_ttsProxy.Initialize();
+
 
 	if ( m_daemonConfiguration.Initialize() )
 	{

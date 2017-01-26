@@ -7,6 +7,7 @@
 #include "CVoiceServiceManager.h"
 #include  "CSMSServiceManager.h"
 #include <GSMDaemonInterface/CGSMDaemonStub.h>
+#include <TTSInterface/CTTSProxy.h>
 
 namespace GSMDaemon
 {
@@ -39,5 +40,8 @@ private:
 	CSMSServiceManager m_smsServiceManager;
 
 	CGSMDaemonStub m_gsmStub;
+
+	TTS::CTTSProxy m_ttsProxy;
+
 };
 }

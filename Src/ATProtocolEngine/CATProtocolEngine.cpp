@@ -4,6 +4,7 @@
 #include <CSM/ICSMConfigurator.h>
 #include <CSM/IActionFactory.h>
 #include "CATProtocolAction.h"
+#include <Logger/Logger.h>
 
 namespace ATProtocolEngine
 {
@@ -88,12 +89,18 @@ void CATProtocolEngine::NotifyResponseReceived( const std::string& response )
 	
 }
 
-void CATProtocolEngine::NotifyPromptReceived(const std::string& prompt )
+void CATProtocolEngine::NotifyPromptReceived(const std::string& response )
 {
+	std::string eventName(m_rSerializationEngine.Deserialize( response,  m_parameterBundle ) );
+	if ( !eventName.empty() )
+	{
+		m_stateMachine.DispatchEvent(eventName);
+	}
 }
 
 void CATProtocolEngine::DispatchEvent( const std::string& eventName )
 {
+	RETAILMSG(DATA, ("CATProtocolEngine::DispatchEvent(%s)", eventName.c_str()));
 	m_stateMachine.DispatchEvent(eventName);
 }
 

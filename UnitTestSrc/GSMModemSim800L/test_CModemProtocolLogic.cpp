@@ -25,6 +25,7 @@ public:
 		EXPECT_CALL( mock_TimerManager , SetTimer( 2, 0, 10 ) ).Times(1);
 		EXPECT_CALL( mock_TimerManager , StartTimer( 2 ) ).Times(1);
 		GSMSim800LService.RegisterModemListener(&mock_ModemListener);
+		GSMSim800LService.RegisterSMSServiceListener(&mock_SMSListener);
 
 		GSMSim800LService.Initialize(mock_configuration);
 	};
@@ -43,6 +44,8 @@ public:
 	GSMConfiguration mock_configuration;
 
 	ModemListenerMock mock_ModemListener;
+
+	SMSServiceListenerMock mock_SMSListener;
 };
 
 TEST_F( CModemProtocolLogicTest , Connect_ModemCheck_WithNoEcho )
@@ -109,6 +112,14 @@ TEST_F( CModemProtocolLogicTest , Connect_ModemCheck_WithEcho )
 	EXPECT_CALL( mock_ModemListener			, NotifyModemIMEIReceived("123456789") ).Times(1);
 	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+COPS?\r") ).Times(1).WillOnce(Return(true));
 	EXPECT_CALL( mock_ModemListener			, NotifyGSMProviderNameReceived("WojtechMobile") ).Times(1);
+	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+CSQ\r") ).Times(1).WillOnce(Return(true));
+	EXPECT_CALL( mock_ModemListener			, NotifySignalStrengthReceived(12) ).Times(1);
+
+	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+CMGL=\"REC UNREAD\"\r") ).Times(1).WillOnce(Return(true));
+	EXPECT_CALL(  mock_SMSListener, NotifyIncomingSMS( EndsWith("+69123456789"), EndsWith("2016-03-23"), EndsWith("ATOS PONTOS KAKA DEMONA") ) );
+
+	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+CSQ\r") ).Times(1).WillOnce(Return(true));
+	EXPECT_CALL( mock_ModemListener			, NotifySignalStrengthReceived(22) ).Times(1);
 	
 	GSMSim800LService.Connect();
 	//AT
@@ -135,6 +146,26 @@ TEST_F( CModemProtocolLogicTest , Connect_ModemCheck_WithEcho )
 
 	//AT+COPS?
 	ModemProtocolLogic.NotifyResponseReceived("+COPS: 1,2,\"WojtechMobile\"");
-	//ModemProtocolLogic.NotifyResponseReceived("OK");
+	ModemProtocolLogic.NotifyResponseReceived("OK");
+
+	//timer
+	static_cast<Runtime::ITimerListener&>(ModemProtocolLogic).NotifyTimer(2);
+
+	//AT+CSQ?
+	ModemProtocolLogic.NotifyResponseReceived("+CSQ: 12,2");
+
+	//Async
+	ModemProtocolLogic.NotifyResponseReceived("+CMTI: \"SM\",2");
+
+	//AT+CMGL="REC UNREAD"
+	ModemProtocolLogic.NotifyResponseReceived("+CMGL: 2,\"REC UNREAD\",\"+69123456789\",\"\",\"2016-03-23\"");
+	ModemProtocolLogic.NotifyResponseReceived("ATOS PONTOS KAKA DEMONA");
+	ModemProtocolLogic.NotifyResponseReceived("OK");
+
+	//timer
+	static_cast<Runtime::ITimerListener&>(ModemProtocolLogic).NotifyTimer(2);
+
+	//AT+CSQ?
+	ModemProtocolLogic.NotifyResponseReceived("+CSQ: 22,2");
 
 }
