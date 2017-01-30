@@ -57,14 +57,23 @@ TEST_F( CModemProtocolLogicTest , Connect_ModemCheck_WithNoEcho )
 	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+CMGF=1\r") ).Times(1).WillOnce(Return(true));
 	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+CSCS=\"GSM\"\r") ).Times(1).WillOnce(Return(true));
 	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+CREG=1\r") ).Times(1).WillOnce(Return(true));
+	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+DDET=1\r") ).Times(1).WillOnce(Return(true));
 	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+CGMI\r") ).Times(1).WillOnce(Return(true));
 	EXPECT_CALL( mock_ModemListener			, NotifyModemManufacturerReceived("Wojtech") ).Times(1);
 	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+CGMM\r") ).Times(1).WillOnce(Return(true));
 	EXPECT_CALL( mock_ModemListener			, NotifyModemTypeReceived("MIG29") ).Times(1);
 	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+CGSN\r") ).Times(1).WillOnce(Return(true));
 	EXPECT_CALL( mock_ModemListener			, NotifyModemIMEIReceived("123456789") ).Times(1);
+
+	//After timer
+	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+CSQ\r") ).Times(1).WillOnce(Return(true));
+	EXPECT_CALL( mock_ModemListener			, NotifySignalStrengthReceived(12) ).Times(1);
+
+	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+CREG?\r") ).Times(1).WillOnce(Return(true));
+	EXPECT_CALL( mock_ModemListener			, NotifyRegistrationStateReceived(GSMDaemon::gsmRegDenied) ).Times(1);
+
 	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+COPS?\r") ).Times(1).WillOnce(Return(true));
-	EXPECT_CALL( mock_ModemListener			, NotifyGSMProviderNameReceived("WojtechMobile") ).Times(1);
+	EXPECT_CALL( mock_ModemListener			, NotifyGSMProviderNameReceived("WojtechMobile") ).Times(1);	
 
 	GSMSim800LService.Connect();
 	//AT
@@ -75,7 +84,9 @@ TEST_F( CModemProtocolLogicTest , Connect_ModemCheck_WithNoEcho )
 	ModemProtocolLogic.NotifyResponseReceived("OK");
 	//AT+CSCS="GSM"	
 	ModemProtocolLogic.NotifyResponseReceived("OK");
-	//AT+CREG
+	//AT+CREG=1
+	ModemProtocolLogic.NotifyResponseReceived("OK");
+	//AT+DDET=1
 	ModemProtocolLogic.NotifyResponseReceived("OK");
 	//AT+CGMI
 	ModemProtocolLogic.NotifyResponseReceived("Wojtech");
@@ -87,10 +98,20 @@ TEST_F( CModemProtocolLogicTest , Connect_ModemCheck_WithNoEcho )
 	ModemProtocolLogic.NotifyResponseReceived("123456789");
 	ModemProtocolLogic.NotifyResponseReceived("OK");
 
+	//timer
+	static_cast<Runtime::ITimerListener&>(ModemProtocolLogic).NotifyTimer(2);
+
+	//AT+CSQ?
+	ModemProtocolLogic.NotifyResponseReceived("+CSQ: 12,2");
+	ModemProtocolLogic.NotifyResponseReceived("OK");
+
+	//AT+CREG?
+	ModemProtocolLogic.NotifyResponseReceived("+CREG: 2,3");
+	ModemProtocolLogic.NotifyResponseReceived("OK");
+
 	//AT+COPS?
 	ModemProtocolLogic.NotifyResponseReceived("+COPS: 1,2,\"WojtechMobile\"");
-
-	//ModemProtocolLogic.NotifyResponseReceived("OK");
+	ModemProtocolLogic.NotifyResponseReceived("OK");
 
 }
 
@@ -104,23 +125,24 @@ TEST_F( CModemProtocolLogicTest , Connect_ModemCheck_WithEcho )
 	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+CMGF=1\r") ).Times(1).WillOnce(Return(true));
 	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+CSCS=\"GSM\"\r") ).Times(1).WillOnce(Return(true));
 	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+CREG=1\r") ).Times(1).WillOnce(Return(true));
+	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+DDET=1\r") ).Times(1).WillOnce(Return(true));
 	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+CGMI\r") ).Times(1).WillOnce(Return(true));
 	EXPECT_CALL( mock_ModemListener			, NotifyModemManufacturerReceived("Wojtech") ).Times(1);
 	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+CGMM\r") ).Times(1).WillOnce(Return(true));
 	EXPECT_CALL( mock_ModemListener			, NotifyModemTypeReceived("MIG29") ).Times(1);
 	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+CGSN\r") ).Times(1).WillOnce(Return(true));
 	EXPECT_CALL( mock_ModemListener			, NotifyModemIMEIReceived("123456789") ).Times(1);
-	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+COPS?\r") ).Times(1).WillOnce(Return(true));
-	EXPECT_CALL( mock_ModemListener			, NotifyGSMProviderNameReceived("WojtechMobile") ).Times(1);
+
+	//After timer
 	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+CSQ\r") ).Times(1).WillOnce(Return(true));
 	EXPECT_CALL( mock_ModemListener			, NotifySignalStrengthReceived(12) ).Times(1);
 
-	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+CMGL=\"REC UNREAD\"\r") ).Times(1).WillOnce(Return(true));
-	EXPECT_CALL(  mock_SMSListener, NotifyIncomingSMS( EndsWith("+69123456789"), EndsWith("2016-03-23"), EndsWith("ATOS PONTOS KAKA DEMONA") ) );
+	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+CREG?\r") ).Times(1).WillOnce(Return(true));
+	EXPECT_CALL( mock_ModemListener			, NotifyRegistrationStateReceived(GSMDaemon::gsmRegDenied) ).Times(1);
 
-	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+CSQ\r") ).Times(1).WillOnce(Return(true));
-	EXPECT_CALL( mock_ModemListener			, NotifySignalStrengthReceived(22) ).Times(1);
-	
+	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+COPS?\r") ).Times(1).WillOnce(Return(true));
+	EXPECT_CALL( mock_ModemListener			, NotifyGSMProviderNameReceived("WojtechMobile") ).Times(1);
+
 	GSMSim800LService.Connect();
 	//AT
 	ModemProtocolLogic.NotifyResponseReceived("AT\rOK");
@@ -130,9 +152,11 @@ TEST_F( CModemProtocolLogicTest , Connect_ModemCheck_WithEcho )
 	ModemProtocolLogic.NotifyResponseReceived("OK");
 	//AT+CMGF=1
 	ModemProtocolLogic.NotifyResponseReceived("OK");
-	//AT+CSCS=1
+	//AT+CSCS="GSM"
 	ModemProtocolLogic.NotifyResponseReceived("OK");
 	//AT+CREG=1
+	ModemProtocolLogic.NotifyResponseReceived("OK");
+	//AT+DDET=1
 	ModemProtocolLogic.NotifyResponseReceived("OK");
 	//AT+CGMI
 	ModemProtocolLogic.NotifyResponseReceived("Wojtech");
@@ -144,28 +168,19 @@ TEST_F( CModemProtocolLogicTest , Connect_ModemCheck_WithEcho )
 	ModemProtocolLogic.NotifyResponseReceived("123456789");
 	ModemProtocolLogic.NotifyResponseReceived("OK");
 
-	//AT+COPS?
-	ModemProtocolLogic.NotifyResponseReceived("+COPS: 1,2,\"WojtechMobile\"");
-	ModemProtocolLogic.NotifyResponseReceived("OK");
-
 	//timer
 	static_cast<Runtime::ITimerListener&>(ModemProtocolLogic).NotifyTimer(2);
 
 	//AT+CSQ?
 	ModemProtocolLogic.NotifyResponseReceived("+CSQ: 12,2");
-
-	//Async
-	ModemProtocolLogic.NotifyResponseReceived("+CMTI: \"SM\",2");
-
-	//AT+CMGL="REC UNREAD"
-	ModemProtocolLogic.NotifyResponseReceived("+CMGL: 2,\"REC UNREAD\",\"+69123456789\",\"\",\"2016-03-23\"");
-	ModemProtocolLogic.NotifyResponseReceived("ATOS PONTOS KAKA DEMONA");
 	ModemProtocolLogic.NotifyResponseReceived("OK");
 
-	//timer
-	static_cast<Runtime::ITimerListener&>(ModemProtocolLogic).NotifyTimer(2);
+	//AT+CREG?
+	ModemProtocolLogic.NotifyResponseReceived("+CREG: 2,3");
+	ModemProtocolLogic.NotifyResponseReceived("OK");
 
-	//AT+CSQ?
-	ModemProtocolLogic.NotifyResponseReceived("+CSQ: 22,2");
+	//AT+COPS?
+	ModemProtocolLogic.NotifyResponseReceived("+COPS: 1,2,\"WojtechMobile\"");
+	ModemProtocolLogic.NotifyResponseReceived("OK");
 
 }

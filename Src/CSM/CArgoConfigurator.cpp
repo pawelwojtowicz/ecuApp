@@ -216,11 +216,12 @@ void CArgoConfigurator::ReadCompositeStateConfiguration ( const std::string& par
 	{
 		const XMLNode& internalTransitionNode = stateConfigNode.getChildNode(s_constUML_InternalTransition , i );
 
-		if ( 1 == internalTransitionNode.nChildNode( s_constUML_Transition ) )
+		UInt32 transitionCount(internalTransitionNode.nChildNode( s_constUML_Transition ));
+		for ( UInt32 ii = 0 ; ii < transitionCount ; ++ii)
 		{
 			std::string triggerName;
 
-			const XMLNode& transitionNode = internalTransitionNode.getChildNode(s_constUML_Transition , 0 );
+			const XMLNode& transitionNode = internalTransitionNode.getChildNode(s_constUML_Transition , ii );
 
 			std::string eventNameId( ReadNestedProperty(transitionNode, s_constUML_TransitionTrigger, s_constUML_SignalEvent, s_constUML_xmiIdRef));
 			tIdToNameMapConstIterator cIter = m_IdToNameMap.find(eventNameId);
