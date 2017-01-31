@@ -247,3 +247,16 @@ TEST_F( GSMMModemActionFactoryFixture, NotifyNumberCalling )
 	pAction->Execute();
 }
 
+TEST_F( GSMMModemActionFactoryFixture, NotifyDTMFCode )
+{
+	CSM::IAction* pAction = CSM_ActionFactory.GetAction( "NotifyDTMFCode" );
+
+	ASSERT_TRUE ( 0!= pAction );
+
+	EXPECT_CALL(  mock_VoiceServiceListener, NotifyDTMFCode( EndsWith("#")) );
+
+	paramBundleInstance.Store(GSMModemSim800L::sc_DTMF_code, "#");
+
+	pAction->Execute();
+}
+

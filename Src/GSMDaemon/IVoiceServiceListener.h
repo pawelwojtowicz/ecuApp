@@ -15,6 +15,8 @@ public:
 	virtual void NotifyIncomingCall() = 0;
 
 	virtual void NotifyIncomingCallNumber( const std::string& number) = 0;
+
+	virtual void NotifyDTMFCode( const std::string& code ) = 0 ;
 	
 private:
 	IVoiceServiceListener(IVoiceServiceListener&);

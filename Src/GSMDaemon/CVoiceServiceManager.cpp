@@ -27,6 +27,7 @@ bool CVoiceServiceManager::Initialize( const IGSMDaemonConfiguration& configurat
 		return false;
 	}
 
+
 	m_pModemService->RegisterVoiceServiceListener(this);
 
 	return true;
@@ -60,4 +61,7 @@ void CVoiceServiceManager::NotifyIncomingCallNumber( const std::string& number)
 {
 }
 
+void CVoiceServiceManager::NotifyDTMFCode( const std::string& code )
+{
+}
 }

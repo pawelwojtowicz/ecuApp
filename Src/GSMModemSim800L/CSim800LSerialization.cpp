@@ -13,6 +13,7 @@
 #include "CMGLResponse.h"
 #include "CMGLResponse.h"
 #include "CLIPResponse.h"
+#include "DTMFResponse.h"
 #include "CErrorResponse.h"
 #include "CMTIResponse.h"
 #include "CSQResponse.h"
@@ -43,6 +44,7 @@ CSim800LSerialization::CSim800LSerialization()
 	m_deserializers.insert(tMsgDeserializers::value_type(std::string("+CME ERROR"), new CErrorResponse() ) );
 	m_deserializers.insert(tMsgDeserializers::value_type(std::string("+CSQ"), new CSQResponse() ) );
 	m_deserializers.insert(tMsgDeserializers::value_type(std::string("+COPS"), new COPSResponse() ) );
+	m_deserializers.insert(tMsgDeserializers::value_type(std::string("+DTMF"), new DTMFResponse() ) );
 }
 
 CSim800LSerialization::~CSim800LSerialization()

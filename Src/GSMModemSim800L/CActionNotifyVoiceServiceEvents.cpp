@@ -48,6 +48,14 @@ void CActionNotifyVoiceServiceEvents::Execute()
 				m_rGSMActionContext.GetVoiceServiceListener()->NotifyIncomingCallNumber(GetExecutionContext().GetParameterBundle().GetParameter(sc_CLIP_number) );
 			}
 		};break;
+		case vcDTMFCode:
+		{
+			if (GetExecutionContext().GetParameterBundle().IsAvailable(sc_DTMF_code) )
+			{
+				m_rGSMActionContext.GetVoiceServiceListener()->NotifyDTMFCode(GetExecutionContext().GetParameterBundle().GetParameter(sc_DTMF_code) );
+			}
+
+		};break;
 		default:;
 		};
 	}

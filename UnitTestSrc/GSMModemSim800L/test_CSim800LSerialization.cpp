@@ -274,6 +274,22 @@ TEST( CSim800LSerialization, RX_CMTI )
 	serializationEngine.Shutdown();
 }
 
+TEST( CSim800LSerialization, RX_DTMF )
+{
+	ATProtocolEngine::CParameterBundle paramBundle;
+	GSMModemSim800L::CSim800LSerialization serializationEngine;
+	ASSERT_TRUE( serializationEngine.Initialize() );
+
+	ATProtocolEngine::ISerializationEngine& receiver(serializationEngine);
+
+	EXPECT_EQ (std::string("E_DTMF_CODE_DETECTED"), receiver.Deserialize(std::string("+DTMF: *"), paramBundle) );
+	ASSERT_TRUE ( paramBundle.IsAvailable(GSMModemSim800L::sc_DTMF_code) );
+	EXPECT_EQ (std::string("*"), paramBundle.GetParameter(GSMModemSim800L::sc_DTMF_code) );
+
+	serializationEngine.Shutdown();
+}
+
+
 TEST( CSim800LSerialization, TX_CMGS )
 {
 	ATProtocolEngine::CParameterBundle paramBundle;

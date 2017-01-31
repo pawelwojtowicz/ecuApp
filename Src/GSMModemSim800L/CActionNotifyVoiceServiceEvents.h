@@ -19,7 +19,8 @@ public:
 		vcConnectionEstablished,
 		vcConnectionTerminated,
 		vcIncommingCall,
-		vcIncommingCallWithNumber
+		vcIncommingCallWithNumber,
+		vcDTMFCode
 	} tVoiceEventType;
 	CActionNotifyVoiceServiceEvents( const tVoiceEventType type, IGSMActionContext& rGSMActionContext, ATProtocolEngine::IActionExecutionContext& rATPrtEngineContext);
 	virtual ~CActionNotifyVoiceServiceEvents();

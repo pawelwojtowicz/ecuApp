@@ -39,6 +39,7 @@ public:
 	MOCK_METHOD0( NotifyIncomingCall, void() );
 
 	MOCK_METHOD1( NotifyIncomingCallNumber, void( const std::string& number) );
+	MOCK_METHOD1( NotifyDTMFCode, void( const std::string& code ) );
 };
 
 class GSMConfiguration : public GSMDaemon::IGSMDaemonConfiguration

@@ -14,6 +14,7 @@ CSQResponse.cpp
 COPSResponse.cpp
 CErrorResponse.cpp
 CMTIResponse.cpp
+DTMFResponse.cpp
 CMGSSerializer.cpp
 ATDSerializer.cpp
 CPINSerializer.cpp

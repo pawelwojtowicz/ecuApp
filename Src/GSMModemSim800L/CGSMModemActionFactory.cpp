@@ -84,6 +84,10 @@ ATProtocolEngine::CATProtocolAction* CGSMModemActionFactory::CreateActionInstanc
 	{
 		pAction = new CActionNotifyVoiceServiceEvents(CActionNotifyVoiceServiceEvents::vcIncommingCallWithNumber, m_rGSMModemActionContext, m_rATProtocolEngineContext);
 	}
+	else if (!actionName.compare("NotifyDTMFCode"))
+	{
+		pAction = new CActionNotifyVoiceServiceEvents(CActionNotifyVoiceServiceEvents::vcDTMFCode, m_rGSMModemActionContext, m_rATProtocolEngineContext);
+	}
 
 	return pAction;
 }

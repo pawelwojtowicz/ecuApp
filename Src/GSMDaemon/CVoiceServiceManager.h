@@ -22,6 +22,7 @@ private:
 	virtual void NotifyConnectionEstablished();
 	virtual void NotifyIncomingCall();
 	virtual void NotifyIncomingCallNumber( const std::string& number);
+	virtual void NotifyDTMFCode( const std::string& code );
 
 
 private:
