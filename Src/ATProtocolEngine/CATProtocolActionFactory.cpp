@@ -15,6 +15,8 @@
 #include "CClosePortAction.h"
 #include "CStartAction.h"
 #include "CStopAction.h"
+#include "CResetParamAction.h"
+#include "CSetParamAction.h"
 
 namespace ATProtocolEngine
 {
@@ -125,6 +127,14 @@ CATProtocolAction* CATProtocolActionFactory::CreateActionInstance( const std::st
 	else if ( !actionName.compare("stop") )
 	{
 		pActionInstance = new CStopAction(m_rActionExecutionContext);
+	}
+	else if ( !actionName.compare("setParam"))
+	{
+		pActionInstance = new CSetParamAction(m_rActionExecutionContext);
+	}
+	else if ( !actionName.compare("resetParam"))
+	{
+		pActionInstance = new CResetParamAction( m_rActionExecutionContext);
 	}
 	else
 	{

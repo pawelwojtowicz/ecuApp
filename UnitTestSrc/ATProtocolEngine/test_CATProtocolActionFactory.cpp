@@ -333,3 +333,33 @@ TEST( CATProtocolActionFactory, StopProcessing )
 
 }
 
+TEST( CATProtocolActionFactory, setParam_resetParam )
+{
+	CTimeoutHandlerMock timerHandlerMock;
+	CSerialPortHandlerMock serialPortMock;
+	ATProtocolEngine::CParameterBundle paramBundleInstance;
+	CSerializationEngineMock serializationEngineMock;
+	ActionContextMock actionExecutionContextForTest(timerHandlerMock,serialPortMock, paramBundleInstance, serializationEngineMock);
+
+	ATProtocolEngine::CATProtocolActionFactory actionFactory(actionExecutionContextForTest);
+	CSM::IActionFactory& CSM_ActionFactory(actionFactory);
+
+	CSM::IAction* pSetAction = CSM_ActionFactory.GetAction( "setParam(param1,BigValue)" );
+	CSM::IAction* pResetAction = CSM_ActionFactory.GetAction( "resetParam(param1)" );
+	// the action was created
+	ASSERT_TRUE( 0 != pSetAction );
+	ASSERT_TRUE( 0 != pResetAction );
+
+
+	ASSERT_FALSE (  paramBundleInstance.IsAvailable("param1") );
+		
+	pSetAction->Execute();
+
+	ASSERT_TRUE (  paramBundleInstance.IsAvailable("param1") );
+	EXPECT_EQ ( std::string("BigValue") , paramBundleInstance.GetParameter("param1") );
+
+	pResetAction->Execute();
+
+	ASSERT_FALSE (  paramBundleInstance.IsAvailable("param1") );
+}
+

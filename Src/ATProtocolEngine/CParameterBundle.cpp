@@ -38,4 +38,9 @@ void CParameterBundle::ResetBundle()
 	m_parametersMap.clear();
 }
 
+void CParameterBundle::Reset( const std::string& paramName )
+{
+	m_parametersMap.erase( paramName );
+}
+
 }

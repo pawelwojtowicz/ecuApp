@@ -19,6 +19,8 @@ public:
 
 	void ResetBundle();
 
+	void Reset( const std::string& paramName );
+
 private:
 	tParametersMap m_parametersMap;
 

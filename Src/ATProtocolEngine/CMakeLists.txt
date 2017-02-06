@@ -18,6 +18,8 @@ COpenPortAction.cpp
 CClosePortAction.cpp
 CStartAction.cpp
 CStopAction.cpp
+CResetParamAction.cpp
+CSetParamAction.cpp
 )
 
 target_link_libraries ( ${OUTPUT_NAME} pthread UCL Logger CSM ) 
