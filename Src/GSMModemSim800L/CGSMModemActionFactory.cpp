@@ -10,6 +10,7 @@
 #include "CActionNotifySignalStrength.h"
 #include "CActionNotifyProviderName.h"
 #include "CActionNotifyVoiceServiceEvents.h"
+#include "CActionDetermineNextStep.h"
 
 namespace GSMModemSim800L
 {
@@ -87,6 +88,10 @@ ATProtocolEngine::CATProtocolAction* CGSMModemActionFactory::CreateActionInstanc
 	else if (!actionName.compare("NotifyDTMFCode"))
 	{
 		pAction = new CActionNotifyVoiceServiceEvents(CActionNotifyVoiceServiceEvents::vcDTMFCode, m_rGSMModemActionContext, m_rATProtocolEngineContext);
+	}
+	else if (!actionName.compare("DetermineNextStep"))
+	{
+		pAction = new CActionDetermineNextStep(m_rGSMModemActionContext, m_rATProtocolEngineContext);
 	}
 
 	return pAction;

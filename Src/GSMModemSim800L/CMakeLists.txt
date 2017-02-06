@@ -20,6 +20,8 @@ ATDSerializer.cpp
 CPINSerializer.cpp
 CGSMModemActionFactory.cpp
 CGSMActionContext.cpp
+CSMSOutbox.cpp
+CActionDetermineNextStep.cpp
 CActionNotifySMSSent.cpp
 CActionNotifySMSSendFailure.cpp
 CActionNotifyIncomingSMS.cpp

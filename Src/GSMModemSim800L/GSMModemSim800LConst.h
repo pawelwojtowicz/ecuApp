@@ -45,4 +45,6 @@ static const char sc_COPS_operatorFormat[]= {"OPERATOR_FORMAT"};
 static const char sc_COPS_operatorState[]	= {"OPERATOR_STAT"};
 
 static const char sc_DTMF_code[] = {"DTMF_CODE"};
+
+static const char sc_CMTI_Received[] = {"SMS_MSG_RECEIVED"};
 }
