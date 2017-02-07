@@ -65,12 +65,15 @@ TEST_F( CModemProtocolLogicTest , Connect_ModemCheck_WithNoEcho )
 	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+CGSN\r") ).Times(1).WillOnce(Return(true));
 	EXPECT_CALL( mock_ModemListener			, NotifyModemIMEIReceived("123456789") ).Times(1);
 
+	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+CMGL=\"REC UNREAD\"\r") ).Times(1).WillOnce(Return(true));
+	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+CMGDA=\"DEL READ\"\r") ).Times(1).WillOnce(Return(true));
+
 	//After timer
 	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+CSQ\r") ).Times(1).WillOnce(Return(true));
 	EXPECT_CALL( mock_ModemListener			, NotifySignalStrengthReceived(12) ).Times(1);
 
 	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+CREG?\r") ).Times(1).WillOnce(Return(true));
-	EXPECT_CALL( mock_ModemListener			, NotifyRegistrationStateReceived(GSMDaemon::gsmRegDenied) ).Times(1);
+  EXPECT_CALL( mock_ModemListener			, NotifyRegistrationStateReceived(GSMDaemon::gsmRegDenied) ).Times(1);
 
 	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+COPS?\r") ).Times(1).WillOnce(Return(true));
 	EXPECT_CALL( mock_ModemListener			, NotifyGSMProviderNameReceived("WojtechMobile") ).Times(1);	
@@ -96,6 +99,11 @@ TEST_F( CModemProtocolLogicTest , Connect_ModemCheck_WithNoEcho )
 	ModemProtocolLogic.NotifyResponseReceived("OK");
 	//imei
 	ModemProtocolLogic.NotifyResponseReceived("123456789");
+	ModemProtocolLogic.NotifyResponseReceived("OK");
+
+	//AT+CMGL="REC UNREAD"
+	ModemProtocolLogic.NotifyResponseReceived("OK");
+	//AT+CMGDA="DEL READ"
 	ModemProtocolLogic.NotifyResponseReceived("OK");
 
 	//timer
@@ -133,6 +141,9 @@ TEST_F( CModemProtocolLogicTest , Connect_ModemCheck_WithEcho )
 	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+CGSN\r") ).Times(1).WillOnce(Return(true));
 	EXPECT_CALL( mock_ModemListener			, NotifyModemIMEIReceived("123456789") ).Times(1);
 
+	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+CMGL=\"REC UNREAD\"\r") ).Times(1).WillOnce(Return(true));
+	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+CMGDA=\"DEL READ\"\r") ).Times(1).WillOnce(Return(true));
+
 	//After timer
 	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+CSQ\r") ).Times(1).WillOnce(Return(true));
 	EXPECT_CALL( mock_ModemListener			, NotifySignalStrengthReceived(12) ).Times(1);
@@ -166,6 +177,11 @@ TEST_F( CModemProtocolLogicTest , Connect_ModemCheck_WithEcho )
 	ModemProtocolLogic.NotifyResponseReceived("OK");
 	//imei
 	ModemProtocolLogic.NotifyResponseReceived("123456789");
+	ModemProtocolLogic.NotifyResponseReceived("OK");
+
+	//AT+CMGL="REC UNREAD"
+	ModemProtocolLogic.NotifyResponseReceived("OK");
+	//AT+CMGDA="DEL READ"
 	ModemProtocolLogic.NotifyResponseReceived("OK");
 
 	//timer
