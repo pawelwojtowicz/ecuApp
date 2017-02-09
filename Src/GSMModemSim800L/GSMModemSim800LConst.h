@@ -19,6 +19,7 @@ static const char sc_ATD_trgtNumber[]			= {"V_DST_NUMBER"};
 
 static const char sc_CMGS_trgtNumber[]		= {"T_DST_NUMBER"};
 static const char sc_CMGS_msgText[]				= {"O_SMS_TEXT"};
+static const char sc_CMGS_orderID[]				= {"O_SMS_ID"};
 
 static const char sc_CMTI_memoryKind[]		= {"MEMORY"};
 static const char sc_CMTI_index[]					= {"INDEX"};

@@ -10,9 +10,7 @@ bool CMGSSerializer::Serialize( const ATProtocolEngine::CParameterBundle& bundle
 	{
 		msgText = std::string("AT+CMGS=\"");
 		msgText += bundle.GetParameter(sc_CMGS_trgtNumber);
-		msgText += std::string("\"\r");
-		msgText += bundle.GetParameter(sc_CMGS_msgText);
-		msgText += std::string("\x1A");
+		msgText += std::string("\"");
 		return true;
 	}
 	return false;

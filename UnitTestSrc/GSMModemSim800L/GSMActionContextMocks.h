@@ -12,8 +12,8 @@ class SMSServiceListenerMock: public GSMDaemon::ISMSServiceListener
 {
 public:
 
-	MOCK_METHOD0( NotifySMSSendSuccess, void() );
-	MOCK_METHOD0( NotifySMSSendFailure, void() );
+	MOCK_METHOD1( NotifySMSSendSuccess, void( const UInt32 msgId ) );
+	MOCK_METHOD1( NotifySMSSendFailure, void( const UInt32 msgId ) );
 	MOCK_METHOD3( NotifyIncomingSMS, void ( const std::string& srcNumber, const std::string& timestamp, const std::string& messageText) );
 };
 

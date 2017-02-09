@@ -1,6 +1,7 @@
 #include "CActionDetermineNextStep.h"
 #include <ATProtocolEngine/IActionExecutionContext.h>
 #include "IGSMActionContext.h"
+#include "CSMSOutbox.h"
 #include "GSMModemSim800LConst.h"
 #include "GSMDaemon/IModemListener.h"
 namespace GSMModemSim800L
@@ -28,10 +29,22 @@ void CActionDetermineNextStep::Execute()
 		// get the SMSes
 		GetExecutionContext().DispatchEvent("E_FETCH_INCOMING_SMS");
 	}
-/**	else if ( 1)
+	else if ( m_rGSMActionContext.GetSMSOutbox().QueueNotEmpty() )
 	{
-		// send the SMS, in case the outbox is not empty
-	}*/
+		CSMSOutbox::tSMS sms;
+		if ( m_rGSMActionContext.GetSMSOutbox().GetNextMessage( sms ) )
+		{
+			GetExecutionContext().GetParameterBundle().Store( sc_CMGS_trgtNumber, sms.TrgtNumber);
+			GetExecutionContext().GetParameterBundle().Store( sc_CMGS_msgText, sms.MessageText+std::string("\x1A"));
+
+			char orderIDTxt[25];
+			sprintf(orderIDTxt, "%d", sms.MessageId);
+			GetExecutionContext().GetParameterBundle().Store(sc_CMGS_orderID, orderIDTxt);
+
+
+			GetExecutionContext().DispatchEvent("E_SEND_SMS");
+		}
+	}
 }
 
 }

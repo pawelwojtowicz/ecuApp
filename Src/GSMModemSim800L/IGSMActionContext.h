@@ -9,6 +9,7 @@ class ISMSServiceListener;
 
 namespace GSMModemSim800L
 {
+class CSMSOutbox;
 class IGSMActionContext
 {
 public:
@@ -21,6 +22,7 @@ public:
 
 	virtual GSMDaemon::ISMSServiceListener* GetSMSServiceListener() const = 0;
 
+	virtual CSMSOutbox& GetSMSOutbox() const = 0;
 private:
 	IGSMActionContext( const IGSMActionContext&);
 	IGSMActionContext& operator=(const IGSMActionContext&);

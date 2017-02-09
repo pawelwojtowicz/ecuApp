@@ -7,7 +7,7 @@ namespace GSMModemSim800L
 class CGSMActionContext : public IGSMActionContext
 {
 public:
-	CGSMActionContext();
+	CGSMActionContext(CSMSOutbox& smsOutbox);
 	virtual ~CGSMActionContext();
 
 	virtual void RegisterModemListener( GSMDaemon::IModemListener* pListener );
@@ -25,6 +25,9 @@ public:
 
 	GSMDaemon::ISMSServiceListener* GetSMSServiceListener() const;
 
+	virtual CSMSOutbox& GetSMSOutbox() const;
+
+
 private:
 	CGSMActionContext( const CGSMActionContext&);
 	CGSMActionContext& operator=(const CGSMActionContext&);
@@ -35,5 +38,7 @@ private:
 	GSMDaemon::IVoiceServiceListener* m_pVoiceServiceListener;
 
 	GSMDaemon::ISMSServiceListener* m_pSMSServiceListener;
+
+	CSMSOutbox& m_rSMSOutbox;
 };
 }

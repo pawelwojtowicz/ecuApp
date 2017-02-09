@@ -2,6 +2,7 @@
 #include <ATProtocolEngine/IActionExecutionContext.h>
 #include "IGSMActionContext.h"
 #include "GSMDaemon/ISMSServiceListener.h"
+#include "GSMModemSim800L/GSMModemSim800LConst.h"
 
 namespace GSMModemSim800L
 {
@@ -20,7 +21,13 @@ void CActionNotifySMSSendFailure::Execute()
 {
 	if ( 0 != m_rGSMActionContext.GetSMSServiceListener() )
 	{
-		m_rGSMActionContext.GetSMSServiceListener()->NotifySMSSendFailure();
+		std::string idString(GetExecutionContext().GetParameterBundle().GetParameter(sc_CMGS_orderID));
+		UInt32 messageId( atoi(idString.c_str()));
+
+		m_rGSMActionContext.GetSMSServiceListener()->NotifySMSSendFailure(messageId);
+
+
+		GetExecutionContext().DispatchEvent("E_SENDING_DONE");
 	}
 }
 

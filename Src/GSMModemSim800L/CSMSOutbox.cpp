@@ -45,7 +45,7 @@ void CSMSOutbox::ConfirmMsgSent( const UInt32 msgId )
 {
 	if ( !m_messageQueue.empty() )
 	{
-		if ( !m_messageQueue.front().MessageId == msgId )
+		if ( m_messageQueue.front().MessageId == msgId )
 		{
 			m_messageQueue.pop();
 		}

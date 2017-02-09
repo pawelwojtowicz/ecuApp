@@ -5,6 +5,7 @@
 #include "CSim800LSerialization.h"
 #include "CGSMActionContext.h"
 #include "CGSMModemActionFactory.h"
+#include "CSMSOutbox.h"
 
 namespace GSMModemSim800L
 {
@@ -38,7 +39,7 @@ private:
 	// SMS service
 	virtual void RegisterSMSServiceListener( GSMDaemon::ISMSServiceListener* pSMSServiceListener );
 	virtual void UnregisterSMSServiceListener( GSMDaemon::ISMSServiceListener* pSMSServiceListener );
-	virtual void SendSMS ( const std::string& phoneNumber, const std::string& text );
+	virtual UInt32 SendSMS ( const std::string& phoneNumber, const std::string& text );
 
 	virtual void NotifyATResponseReceived( const std::string& response );
 	virtual void NotifyATPromptReceived(const std::string& prompt );
@@ -62,6 +63,8 @@ private:
 	Int32 m_pollingTimerId;
 
 	CGSMActionContext m_actionExecutionContext;
+
+	CSMSOutbox m_outbox;
 
 	CGSMModemActionFactory m_actionFactory;
 };

@@ -20,6 +20,7 @@ CStartAction.cpp
 CStopAction.cpp
 CResetParamAction.cpp
 CSetParamAction.cpp
+CSendParamAction.cpp
 )
 
 target_link_libraries ( ${OUTPUT_NAME} pthread UCL Logger CSM ) 

@@ -2,14 +2,16 @@
 #include <GSMDaemon/IModemListener.h>
 #include <GSMDaemon/IVoiceServiceListener.h>
 #include <GSMDaemon/ISMSServiceListener.h>
+#include "CSMSOutbox.h"
 
 
 namespace GSMModemSim800L
 {
-CGSMActionContext::CGSMActionContext()
+CGSMActionContext::CGSMActionContext(CSMSOutbox& smsOutbox)
 : m_pModemListener(0)
 , m_pVoiceServiceListener(0)
 , m_pSMSServiceListener(0)
+, m_rSMSOutbox(smsOutbox)
 {
 }
 
@@ -61,5 +63,11 @@ GSMDaemon::ISMSServiceListener* CGSMActionContext::GetSMSServiceListener() const
 {
 	return m_pSMSServiceListener;
 }
+
+CSMSOutbox& CGSMActionContext::GetSMSOutbox() const
+{
+	return m_rSMSOutbox;
+}
+
 
 }

@@ -34,7 +34,7 @@ public:
 	// SMS service
 	virtual void RegisterSMSServiceListener( ISMSServiceListener* pSMSServiceListener ) = 0;
 	virtual void UnregisterSMSServiceListener( ISMSServiceListener* pSMSServiceListener ) = 0;
-	virtual void SendSMS ( const std::string& phoneNumber, const std::string& text )  = 0;
+	virtual UInt32 SendSMS ( const std::string& phoneNumber, const std::string& text )  = 0;
 
 	// technical for receiving the responsses from the serial port
 	virtual void NotifyATResponseReceived( const std::string& response ) = 0;

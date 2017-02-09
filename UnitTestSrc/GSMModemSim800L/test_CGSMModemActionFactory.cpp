@@ -2,6 +2,7 @@
 #include <gmock/gmock.h>
 
 #include <GSMModemSim800L/CGSMModemActionFactory.h>
+#include <GSMModemSim800L/CSMSOutbox.h>
 #include <GSMModemSim800L/CGSMActionContext.h>
 #include <ATProtocolEngine/CParameterBundle.h>
 #include "../ATProtocolEngine/ATProtocolEngineTestMocks.h"
@@ -22,7 +23,8 @@ public:
 	, actionExecutionContextForTest(timerHandlerMock,serialPortMock, paramBundleInstance, serializationEngineMock)
 	, ATProtocolActionFactory(actionExecutionContextForTest)
 	, CSM_ActionFactory(ATProtocolActionFactory)
-	, GSMActionContext()
+	, m_outbox()
+	, GSMActionContext(m_outbox)
 	, GSMActionFactory(GSMActionContext,actionExecutionContextForTest)
 	{
 	};
@@ -58,6 +60,8 @@ public:
 	
 	CSM::IActionFactory& CSM_ActionFactory;
 
+	GSMModemSim800L::CSMSOutbox m_outbox;
+
 	GSMModemSim800L::CGSMActionContext GSMActionContext;
 
 	GSMModemSim800L::CGSMModemActionFactory GSMActionFactory;
@@ -76,7 +80,9 @@ TEST_F( GSMMModemActionFactoryFixture, NotifySMSSendSuccess )
 
 	ASSERT_TRUE ( 0!= pAction );
 
-	EXPECT_CALL(  mock_SMSServiceListener, NotifySMSSendSuccess() );
+	EXPECT_CALL(  mock_SMSServiceListener, NotifySMSSendSuccess(123) );
+
+	paramBundleInstance.Store(GSMModemSim800L::sc_CMGS_orderID, "123");
 
 	pAction->Execute();
 }
@@ -87,7 +93,9 @@ TEST_F( GSMMModemActionFactoryFixture, NotifySMSSendFailure )
 
 	ASSERT_TRUE ( 0!= pAction );
 
-	EXPECT_CALL(  mock_SMSServiceListener, NotifySMSSendFailure() );
+	EXPECT_CALL(  mock_SMSServiceListener, NotifySMSSendFailure(321) );
+
+	paramBundleInstance.Store(GSMModemSim800L::sc_CMGS_orderID, "321");
 
 	pAction->Execute();
 }

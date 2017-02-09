@@ -8,7 +8,8 @@ CModemProtocolLogic::CModemProtocolLogic(ATProtocolEngine::ISerialPortHandler& r
 , m_serializationEngine()
 , m_csmConfigurator(std::string("${CONFIG_DIR}//GSMModemSim800L.xmi"), std::string("Sim800LLogic"))
 , m_pollingTimerId(-1)
-, m_actionExecutionContext()
+, m_outbox()
+, m_actionExecutionContext(m_outbox)
 , m_actionFactory(m_actionExecutionContext, *this)
 {
 	RegisterActionFactory( m_actionFactory );
@@ -92,8 +93,15 @@ void CModemProtocolLogic::UnregisterSMSServiceListener( GSMDaemon::ISMSServiceLi
 	m_actionExecutionContext.UnregisterSMSServiceListener(pSMSServiceListener);
 }
 
-void CModemProtocolLogic::SendSMS ( const std::string& phoneNumber, const std::string& text )
+UInt32 CModemProtocolLogic::SendSMS ( const std::string& phoneNumber, const std::string& text )
 {
+	UInt32 orderId(m_outbox.EnqueueSMS( phoneNumber, text ));
+
+
+	DispatchEvent( "E_POLLING_TIMEOUT" );
+
+	return orderId;
+
 }
 
 void CModemProtocolLogic::NotifyTimer( const Int32& timerId )

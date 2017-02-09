@@ -302,7 +302,7 @@ TEST( CSim800LSerialization, TX_CMGS )
 	std::string serializationOutput;
 
 	ASSERT_TRUE( transmitterSerialization.SerializeMsg("CMGS", paramBundle, serializationOutput ) );
-	EXPECT_EQ( std::string("AT+CMGS=\"+48796073785\"\rThis is an example of the SMS\x1A"), serializationOutput );
+	EXPECT_EQ( std::string("AT+CMGS=\"+48796073785\""), serializationOutput );
 }
 
 TEST( CSim800LSerialization, TX_ATD )

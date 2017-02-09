@@ -42,18 +42,27 @@ void CSMSServiceManager::Shutdown()
 	}
 }
 
-void CSMSServiceManager::NotifySMSSendSuccess()
+void CSMSServiceManager::NotifySMSSendSuccess( const UInt32 messageId )
 {
+	RETAILMSG(INFO, ("CSMSServiceManager::NotifySMSSendSuccess( %d )", messageId ) )	
 }
 
-void CSMSServiceManager::NotifySMSSendFailure()
+void CSMSServiceManager::NotifySMSSendFailure( const UInt32 messageId )
 {
+	RETAILMSG(INFO, ("CSMSServiceManager::NotifySMSSendFailure( %d )", messageId ) )	
 }
 
 void CSMSServiceManager::NotifyIncomingSMS( const std::string& srcNumber, const std::string& timestamp, const std::string& messageText)
 {
 	RETAILMSG(INFO, ("CSMSServiceManager::NotifyIncomingSMS - [%s]", messageText.c_str()));
 	m_rTTSProxy.Say(messageText);
+
+	std::string extendedSMS( messageText + std::string(" - addition from Raspberry"));
+	if (0!=m_pModemService)
+	{
+		m_pModemService->SendSMS(std::string("+48696073785"), messageText);
+	}
+
 }
 
 

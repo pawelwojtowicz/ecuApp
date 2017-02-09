@@ -32,6 +32,7 @@ void CSendAction::Execute()
 	}
 
 	RETAILMSG(DATA, ("CSendAction::Execute() - %s", message.c_str()));
+	printf("sendLine(%s)\n", message.c_str());
 	if ( m_sendLine )
 	{
 		message += sString_characterCR;

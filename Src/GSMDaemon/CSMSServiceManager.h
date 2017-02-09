@@ -18,8 +18,8 @@ public:
 
 private:
 	/** implementation of ISMSServiceListener*/
-	virtual void NotifySMSSendSuccess();
-	virtual void NotifySMSSendFailure();
+	virtual void NotifySMSSendSuccess( const UInt32 messageId );
+	virtual void NotifySMSSendFailure( const UInt32 messageId );
 
 	virtual void NotifyIncomingSMS( const std::string& srcNumber, const std::string& timestamp, const std::string& messageText);
 

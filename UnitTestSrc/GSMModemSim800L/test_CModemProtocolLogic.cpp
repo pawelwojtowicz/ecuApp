@@ -154,6 +154,9 @@ TEST_F( CModemProtocolLogicTest , Connect_ModemCheck_WithEcho )
 	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+COPS?\r") ).Times(1).WillOnce(Return(true));
 	EXPECT_CALL( mock_ModemListener			, NotifyGSMProviderNameReceived("WojtechMobile") ).Times(1);
 
+	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+CMGS=\"696073785\"\r") ).Times(1).WillOnce(Return(true));
+	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("temp - msg\x1A") ).Times(1).WillOnce(Return(true));
+
 	GSMSim800LService.Connect();
 	//AT
 	ModemProtocolLogic.NotifyResponseReceived("AT\rOK");
@@ -195,8 +198,13 @@ TEST_F( CModemProtocolLogicTest , Connect_ModemCheck_WithEcho )
 	ModemProtocolLogic.NotifyResponseReceived("+CREG: 2,3");
 	ModemProtocolLogic.NotifyResponseReceived("OK");
 
+	GSMSim800LService.SendSMS(std::string("696073785"), std::string("temp - msg") );
+
 	//AT+COPS?
 	ModemProtocolLogic.NotifyResponseReceived("+COPS: 1,2,\"WojtechMobile\"");
+	ModemProtocolLogic.NotifyResponseReceived("OK");
+
+	ModemProtocolLogic.NotifyResponseReceived(">");
 	ModemProtocolLogic.NotifyResponseReceived("OK");
 
 }

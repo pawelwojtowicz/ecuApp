@@ -17,6 +17,7 @@
 #include "CStopAction.h"
 #include "CResetParamAction.h"
 #include "CSetParamAction.h"
+#include "CSendParamAction.h"
 
 namespace ATProtocolEngine
 {
@@ -135,6 +136,14 @@ CATProtocolAction* CATProtocolActionFactory::CreateActionInstance( const std::st
 	else if ( !actionName.compare("resetParam"))
 	{
 		pActionInstance = new CResetParamAction( m_rActionExecutionContext);
+	}
+	else if ( !actionName.compare("sendParam") )
+	{
+		pActionInstance = new CSendParamAction( m_rActionExecutionContext, false);
+	}
+	else if ( !actionName.compare("sendParamLine") )
+	{
+		pActionInstance = new CSendParamAction( m_rActionExecutionContext, true);
 	}
 	else
 	{
