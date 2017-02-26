@@ -18,6 +18,7 @@
 #include "CResetParamAction.h"
 #include "CSetParamAction.h"
 #include "CSendParamAction.h"
+#include "CWaitAction.h"
 
 namespace ATProtocolEngine
 {
@@ -144,6 +145,10 @@ CATProtocolAction* CATProtocolActionFactory::CreateActionInstance( const std::st
 	else if ( !actionName.compare("sendParamLine") )
 	{
 		pActionInstance = new CSendParamAction( m_rActionExecutionContext, true);
+	}
+	else if ( !actionName.compare("wait") )
+	{
+		pActionInstance = new CWaitAction( m_rActionExecutionContext );
 	}
 	else
 	{

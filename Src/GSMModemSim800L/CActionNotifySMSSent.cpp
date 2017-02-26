@@ -28,8 +28,6 @@ void CActionNotifySMSSent::Execute()
 		m_rGSMActionContext.GetSMSOutbox().ConfirmMsgSent( messageId );
 		m_rGSMActionContext.GetSMSServiceListener()->NotifySMSSendSuccess(messageId);
 
-		
-
 		GetExecutionContext().DispatchEvent("E_SENDING_DONE");
 	}
 }

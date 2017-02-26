@@ -157,6 +157,8 @@ TEST_F( CModemProtocolLogicTest , Connect_ModemCheck_WithEcho )
 	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("AT+CMGS=\"696073785\"\r") ).Times(1).WillOnce(Return(true));
 	EXPECT_CALL( mock_SerialPortHandler , Test_SendCommand("temp - msg\x1A") ).Times(1).WillOnce(Return(true));
 
+	EXPECT_CALL( mock_SMSListener				, NotifySMSSendSuccess(1) ).Times(1);
+
 	GSMSim800LService.Connect();
 	//AT
 	ModemProtocolLogic.NotifyResponseReceived("AT\rOK");
@@ -204,7 +206,6 @@ TEST_F( CModemProtocolLogicTest , Connect_ModemCheck_WithEcho )
 	ModemProtocolLogic.NotifyResponseReceived("+COPS: 1,2,\"WojtechMobile\"");
 	ModemProtocolLogic.NotifyResponseReceived("OK");
 
-	ModemProtocolLogic.NotifyResponseReceived(">");
-	ModemProtocolLogic.NotifyResponseReceived("OK");
+	ModemProtocolLogic.NotifyResponseReceived("> OK");
 
 }

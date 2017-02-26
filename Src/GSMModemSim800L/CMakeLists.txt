@@ -21,6 +21,7 @@ CPINSerializer.cpp
 CGSMModemActionFactory.cpp
 CGSMActionContext.cpp
 CSMSOutbox.cpp
+CPDUMessage.cpp
 CActionDetermineNextStep.cpp
 CActionNotifySMSSent.cpp
 CActionNotifySMSSendFailure.cpp
