@@ -1,6 +1,7 @@
 #include "CState.h"
 #include "IAction.h"
 #include "CTransition.h"
+#include <Logger/Logger.h>
 
 
 namespace CSM
@@ -52,6 +53,7 @@ void CState::ExecuteEnterAction()
 {
 	if ( 0 != m_pEnterAction )
 	{
+		RETAILMSG(DATA, ("CSM[]: State:[%s] - Executing ENTER action [%s]", m_stateName.c_str(), m_pEnterAction->GetName().c_str()));
 		m_pEnterAction->Execute();
 	}
 }
@@ -60,6 +62,7 @@ void CState::ExecuteLeafAction()
 {
 	if ( 0 != m_pLeafAction )
 	{
+		RETAILMSG(DATA, ("CSM[]: State:[%s] - Executing LEAF action [%s]", m_stateName.c_str(), m_pLeafAction->GetName().c_str()));
 		m_pLeafAction->Execute();
 	}
 }
@@ -68,6 +71,7 @@ void CState::ExecuteExitAction()
 {
 	if ( 0 != m_pExitAction )
 	{
+		RETAILMSG(DATA, ("CSM[]: State:[%s] - Executing EXIT action [%s]", m_stateName.c_str(), m_pExitAction->GetName().c_str()));
 		m_pExitAction->Execute();
 	}
 }

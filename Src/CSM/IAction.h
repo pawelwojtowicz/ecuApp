@@ -1,5 +1,5 @@
-#ifndef CSM_IACTION_H
-#define CSM_IACTION_H
+#pragma once
+#include <Global/GlobalTypes.h>
 
 namespace CSM
 {
@@ -8,6 +8,9 @@ class IAction
 public:
 	IAction() {};
 	virtual ~IAction() {};
+
+	virtual void SetName( const std::string& name) = 0;
+	virtual const std::string& GetName() const = 0;
 	
 	virtual void Execute() = 0;
 	
@@ -16,4 +19,3 @@ private:
 	IAction& operator=(const IAction&);
 };
 }
-#endif

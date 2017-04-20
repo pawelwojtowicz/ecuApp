@@ -1,4 +1,5 @@
 #include "CStateMachine.h"
+#include <Logger/Logger.h>
 #include "IActionFactory.h"
 #include "ICSMConfigurator.h"
 #include "IAction.h"
@@ -55,16 +56,28 @@ void CStateMachine::AddState(	const std::string& parentName,
 		if ( !enterActionName.empty() )
 		{
 			pEnterAction = m_pActionFactory->GetAction(enterActionName);
+			if (0!=pEnterAction)
+			{
+				pEnterAction->SetName(enterActionName);
+			}
 		}
 		
 		if ( !leafActionName.empty() )
 		{
 			pLeafAction = m_pActionFactory->GetAction(leafActionName);
+			if (0!=pLeafAction)
+			{
+				pLeafAction->SetName(leafActionName);
+			}
 		}
 		
 		if ( !exitActionName.empty() )
 		{
 			pExitAction = m_pActionFactory->GetAction(exitActionName);
+			if (0!=pExitAction)
+			{
+				pExitAction->SetName(exitActionName);
+			}
 		}
 	}
 	
@@ -139,6 +152,10 @@ void CStateMachine::AddTransition(	const std::string& eventName,
 			if ( !actionName.empty() )
 			{
 				pTransitionAction = m_pActionFactory->GetAction(actionName);
+				if (0!=pTransitionAction)
+				{
+					pTransitionAction->SetName(actionName);
+				}
 			}
 		}
 		
@@ -165,15 +182,8 @@ void CStateMachine::SetInitialState( const std::string& initialState)
 
 bool CStateMachine::DispatchEvent( const std::string& eventName )
 {
-	UInt32 eventNameHash(UCL::CFastHash::CalculateHash32( eventName, cUInt32_CSM_HashSeed));
-
-	return DispatchEvent(eventNameHash);
-}
-
-bool CStateMachine::DispatchEvent( const UInt32 eventNameHash )
-{
 	bool returnValue(false);
-	m_eventsQueue.push(eventNameHash);
+	m_eventsQueue.push(eventName);
 
 	if (!m_transitionInProgress)
 	{
@@ -190,10 +200,13 @@ bool CStateMachine::DispatchEvent( const UInt32 eventNameHash )
 }
 
 
-bool CStateMachine::ProcessEvent( const UInt32 eventNameHash )
+bool CStateMachine::ProcessEvent( const std::string& eventName )
 {
+	UInt32 eventNameHash(UCL::CFastHash::CalculateHash32( eventName, cUInt32_CSM_HashSeed));
+
 	if ( 0 != m_pCurrentState )
 	{
+		RETAILMSG(DATA, ("CSM[]: ProcessEvent - eventName[%s] originState[%s]", eventName.c_str(),m_pCurrentState->GetName().c_str()));
 		CTransition* pTransition(0);
 		CState* pTransitionSrc(m_pCurrentState);
 		// search for the starting from the current state, up to the root parent
@@ -253,7 +266,7 @@ bool CStateMachine::ProcessEvent( const UInt32 eventNameHash )
 					{
 						(*iter)->ExecuteEnterAction();
 					}
-				}			
+				}
 			
 				if ( m_pCurrentState != pTargetState )
 				{
@@ -263,12 +276,18 @@ bool CStateMachine::ProcessEvent( const UInt32 eventNameHash )
 					// Execute Leaf Action for the currentState in case it's different from previous one.
 					m_pCurrentState->ExecuteLeafAction();
 				}
+
+				RETAILMSG(DATA, ("CSM[]: ProcessEvent - target state [%s]", m_pCurrentState->GetName().c_str()));
 			}
 			else
 			{
 				// it's an internal transition, just fire the transition action
 				pTransition->ExecuteAction();
 			}
+		}
+		else
+		{
+			RETAILMSG(DATA, ("CSM[]: State: [%s] - unhandled event:[%s]", m_pCurrentState->GetName().c_str(), eventName.c_str()));
 		}
 	
 		return true;

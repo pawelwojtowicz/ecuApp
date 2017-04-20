@@ -1,7 +1,8 @@
 #include "CTransition.h"
 #include "IAction.h"
 #include "ICondition.h"
-#include "CState.h" 
+#include "CState.h"
+#include <Logger/Logger.h>
 
 namespace CSM
 {
@@ -32,6 +33,17 @@ void CTransition::ExecuteAction()
 {
 	if ( 0 != m_pAction )
 	{
+		if (0!=m_pTargetState)
+		{
+			RETAILMSG(DATA, ("CSM[]: Transition to state:[%s]triggered by event:[%s] fires the action:[%s]", 	m_pTargetState->GetName().c_str(), 
+																																																				m_eventName.c_str(), 
+																																																				m_pAction->GetName().c_str()));
+		}
+		else
+		{
+			RETAILMSG(DATA, ("CSM[]: Internal transition triggered by event:[%s] fires the action:[%s]", m_eventName.c_str(), 
+																																																	 m_pAction->GetName().c_str()));
+		}
 		m_pAction->Execute();
 	}
 }

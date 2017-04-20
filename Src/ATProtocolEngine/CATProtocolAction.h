@@ -1,7 +1,7 @@
 #pragma once
 #include <Global/GlobalTypes.h>
 #include <CSM/IActionFactory.h>
-#include <CSM/IAction.h>
+#include <CSM/CAction.h>
 #include "IActionExecutionContext.h"
 
 
@@ -9,7 +9,7 @@
 namespace ATProtocolEngine
 {
 
-class CATProtocolAction: public CSM::IAction
+class CATProtocolAction: public CSM::CAction
 {
 public:
 	CATProtocolAction(IActionExecutionContext& executionContext)

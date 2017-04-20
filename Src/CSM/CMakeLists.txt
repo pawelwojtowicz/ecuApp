@@ -3,6 +3,7 @@ project (CSM )
 SET( OUTPUT_NAME CSM )
 
 add_library ( ${OUTPUT_NAME} SHARED
+CAction.cpp
 CState.cpp
 CTransition.cpp
 CArgoConfigurator.cpp 

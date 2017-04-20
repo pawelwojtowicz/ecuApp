@@ -21,7 +21,7 @@ class CStateMachine : public ICSMBuilder
 	typedef tStateList::iterator tStateListIterator;
 	typedef tStateList::reverse_iterator tStateListReverseIterator;
 
-	typedef std::queue<UInt32> tEventsHashQueue;
+	typedef std::queue<std::string> tEventsQueue;
 	
 	
 public:
@@ -50,9 +50,7 @@ private:
 	virtual void SetInitialState( const std::string& initialState);
 	
 private:
-	bool DispatchEvent( const UInt32 eventNameHash );
-
-	bool ProcessEvent( const UInt32 eventNameHash);
+	bool ProcessEvent( const std::string& eventName);
 
 	
 private:
@@ -67,7 +65,7 @@ private:
 
 	bool m_transitionInProgress;
 
-	tEventsHashQueue m_eventsQueue;
+	tEventsQueue m_eventsQueue;
 };
 }
 
