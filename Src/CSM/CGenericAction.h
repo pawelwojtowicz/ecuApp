@@ -1,12 +1,11 @@
-#ifndef CSM_CGENERICACTION_H
-#define CSM_CGENERICACTION_H
-#include "IAction.h"
+#pragma once
+#include "CAction.h"
 
 namespace CSM
 {
 
 template <class EXECUTE_CONTEXT>
-class CGenericAction : public IAction
+class CGenericAction : public CAction
 {
 	typedef void (EXECUTE_CONTEXT::*tFunctionPointer)(void);
 public:
@@ -34,4 +33,3 @@ private:
 	tFunctionPointer m_pFunction;
 };
 }
-#endif
