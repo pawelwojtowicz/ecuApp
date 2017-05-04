@@ -29,6 +29,17 @@ CCircularATLineExtractor::~CCircularATLineExtractor()
 	m_readPosition = 0;
 }
 
+void CCircularATLineExtractor::RegisterControlSequence( const std::string& sequence, bool valuePass, bool explicitPass)
+{
+	tPromptSequence newElement;
+	newElement.controlSequence 	= sequence;
+	newElement.sequenceLength 	= sequence.length();
+	newElement.explicitPass 		= explicitPass;
+	newElement.valuePass 				= valuePass;
+
+	m_sequences.push_back(newElement);
+}
+
 
 bool CCircularATLineExtractor::WriteBuffer(Int8* buffer, size_t chunkSize)
 {
@@ -47,57 +58,24 @@ bool CCircularATLineExtractor::WriteBuffer(Int8* buffer, size_t chunkSize)
 		size_t readPosition(m_readPosition);
 		for( size_t cnt= m_readContentSize; cnt > 1 ; --cnt )
 		{
-			if ( m_buffer[readPosition%m_bufferSize]== CR && m_buffer[(readPosition+1)%m_bufferSize]== LF )
+			for ( tControlSequencesList::iterator iter = m_sequences.begin() ; iter != m_sequences.end() ; ++iter)
 			{
-
-				if (readPosition!= m_readPosition)
+				if ( cnt >= iter->sequenceLength )
 				{
-					size_t fullLineLength(0);					
-					if ( readPosition > m_readPosition )
+					bool patternMatches(true);
+					for ( size_t idx = 0; idx < iter->sequenceLength && patternMatches ; ++idx)
 					{
-						fullLineLength = readPosition-m_readPosition;
-					}
-					else
-					{
-						fullLineLength = readPosition + m_bufferSize - m_readPosition;
-					}
-
-					size_t tokenSize(fullLineLength);
-					size_t readStartPosition(m_readPosition);
-
-					if (m_buffer[m_readPosition]=='<' && tokenSize > 2 && m_buffer[(m_readPosition+tokenSize-1)%m_bufferSize] == '>' )
-					{
-						tokenSize -=2;
-						readStartPosition +=1;
-					}
-					
-					std::string command(tokenSize,' ');										
-					for (size_t idx=0;idx<tokenSize;++idx)
-					{
-						command[idx]=m_buffer[(readStartPosition+idx)%m_bufferSize];
-					}
-
-					if (0 != m_pATLineConsumer)
-					{
-						if ( tokenSize == fullLineLength )
+						if (iter->controlSequence[idx] != m_buffer[(readPosition+idx)%m_bufferSize])
 						{
-							m_pATLineConsumer->NotifyATResponseExtracted(command);
-						}
-						else
-						{
-							m_pATLineConsumer->NotifyATPromptExtracted(command);
+							patternMatches = false;
 						}
 					}
-
-					m_readPosition = (m_readPosition+fullLineLength)%m_bufferSize;
-					m_writeBufferSpace += fullLineLength;
-  				m_readContentSize -= 	fullLineLength;
-
+					if (patternMatches)
+					{
+						ExtractItem(readPosition, *iter);
+						break;
+					}
 				}
-
-				m_readPosition = (m_readPosition +2)%m_bufferSize;
-				m_readContentSize -=2;
-				m_writeBufferSpace +=2;
 			}
 			readPosition = (readPosition+1)%m_bufferSize;		
 		}
@@ -125,6 +103,66 @@ void CCircularATLineExtractor::PrintHEX()
 		printf ("%02x ", m_buffer[i]);
 	}
 	printf("\n");
+}
+
+void CCircularATLineExtractor::ExtractItem( size_t readPosition, const tPromptSequence& controlSequence)
+{
+	if (readPosition!= m_readPosition)
+	{
+		size_t fullLineLength(0);					
+		if ( readPosition > m_readPosition )
+		{
+			fullLineLength = readPosition-m_readPosition;
+		}
+		else
+		{
+			fullLineLength = readPosition + m_bufferSize - m_readPosition;
+		}
+
+		size_t tokenSize(fullLineLength);
+		size_t readStartPosition(m_readPosition);
+
+		if (m_buffer[m_readPosition]=='<' && tokenSize > 2 && m_buffer[(m_readPosition+tokenSize-1)%m_bufferSize] == '>' )
+		{
+			tokenSize -=2;
+			readStartPosition +=1;
+		}
+	
+		std::string command(tokenSize,' ');										
+		for (size_t idx=0;idx<tokenSize;++idx)
+		{
+			command[idx]=m_buffer[(readStartPosition+idx)%m_bufferSize];
+		}
+
+		if (0 != m_pATLineConsumer)
+		{
+			if (controlSequence.valuePass)
+			{
+				if ( tokenSize == fullLineLength )
+				{
+					m_pATLineConsumer->NotifyATResponseExtracted(command);
+				}
+				else
+				{
+					m_pATLineConsumer->NotifyATPromptExtracted(command);
+				}
+			}
+
+			if (controlSequence.explicitPass)
+			{
+				m_pATLineConsumer->NotifyATPromptExtracted(controlSequence.controlSequence);
+			}
+		}
+
+		m_readPosition = (m_readPosition+fullLineLength)%m_bufferSize;
+		m_writeBufferSpace += fullLineLength;
+		m_readContentSize -= 	fullLineLength;
+
+	}
+
+	m_readPosition = (m_readPosition + controlSequence.sequenceLength )%m_bufferSize;
+	m_readContentSize -= controlSequence.sequenceLength;
+	m_writeBufferSpace += controlSequence.sequenceLength;
 }
 
 }

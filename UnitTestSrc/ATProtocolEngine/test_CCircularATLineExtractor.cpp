@@ -28,6 +28,7 @@ TEST( CCircularATLineExtractor, BufferSizeCalculation_Basic )
 	char test[] = {"1234567890"};
 
 	ATProtocolEngine::CCircularATLineExtractor extractor(30,0);
+	extractor.RegisterControlSequence( std::string("\r\n"), true, false);
 
 	ASSERT_TRUE(extractor.WriteBuffer(test,5) );
 	ASSERT_EQ(extractor.GetRemainingSpaceSize(), 25);
@@ -50,6 +51,7 @@ TEST( CCircularATLineExtractor, BufferSizeCalculation_ATCommandsReceived )
 	char test[] = {"\r\n12345\r\n67890"};
 
 	ATProtocolEngine::CCircularATLineExtractor extractor(30,0);
+	extractor.RegisterControlSequence( std::string("\r\n"), true, false);
 
 	ASSERT_TRUE(extractor.WriteBuffer(test,5) );
 	ASSERT_EQ(extractor.GetRemainingSpaceSize(), 27);
@@ -64,6 +66,7 @@ TEST( CCircularATLineExtractor, BufferSizeCalculation_ATCommandsReceived_BufferO
 	char test[] = {"\r\n12345\r\n6789019\r\n111"};
 
 	ATProtocolEngine::CCircularATLineExtractor extractor(cyclicBufferSize,0);
+	extractor.RegisterControlSequence( std::string("\r\n"), true, false);
 
 	ASSERT_TRUE(extractor.WriteBuffer(test,5) );
 	ASSERT_EQ(extractor.GetRemainingSpaceSize(), cyclicBufferSize-3);
@@ -86,6 +89,8 @@ TEST( CCircularATLineExtractor, LineExtraction_Basic )
 
 
 	ATProtocolEngine::CCircularATLineExtractor extractor(100,&atLineConsumerMock);
+	extractor.RegisterControlSequence( std::string("\r\n"), true, false);
+
 	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("Test1") )).Times(1);
 	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("Kaka1") )).Times(1);
 	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("12345678") )).Times(1);
@@ -106,6 +111,8 @@ TEST( CCircularATLineExtractor, LineExtraction_LongLine )
 
 
 	ATProtocolEngine::CCircularATLineExtractor extractor(11,&atLineConsumerMock);
+	extractor.RegisterControlSequence( std::string("\r\n"), true, false);
+
 	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("Test1") )).Times(1);
 	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("Kaka1") )).Times(1);
 	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("12345678") )).Times(1);
@@ -126,6 +133,8 @@ TEST( CCircularATLineExtractor, LineExtraction_TerminationSequenceOnBorder )
 
 
 	ATProtocolEngine::CCircularATLineExtractor extractor(15,&atLineConsumerMock);
+	extractor.RegisterControlSequence( std::string("\r\n"), true, false);
+
 	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("Test1") )).Times(1);
 	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("Kaka1") )).Times(1);
 	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("12345678") )).Times(1);
@@ -146,6 +155,8 @@ TEST( CCircularATLineExtractor, LineExtraction_TerminationSequenceRightBeforeBor
 
 
 	ATProtocolEngine::CCircularATLineExtractor extractor(16,&atLineConsumerMock);
+	extractor.RegisterControlSequence( std::string("\r\n"), true, false);
+
 	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("Test1") )).Times(1);
 	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("Kaka1") )).Times(1);
 	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("12345678") )).Times(1);
@@ -167,6 +178,8 @@ TEST( CCircularATLineExtractor, PromptExtraction_LongLine )
 
 
 	ATProtocolEngine::CCircularATLineExtractor extractor(16,&atLineConsumerMock);
+	extractor.RegisterControlSequence( std::string("\r\n"), true, false);
+
 	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("Test1") )).Times(1);
 	EXPECT_CALL(atLineConsumerMock, NotifyATPromptExtracted(	EndsWith("Kaka1") )).Times(1);
 	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("12345678") )).Times(1);
@@ -187,6 +200,8 @@ TEST( CCircularATLineExtractor, PromptExtraction_IgnoreNotTerminated )
 
 
 	ATProtocolEngine::CCircularATLineExtractor extractor(16,&atLineConsumerMock);
+	extractor.RegisterControlSequence( std::string("\r\n"), true, false);
+
 	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("Test1") )).Times(1);
 	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("<Kaka1") )).Times(1);
 	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("12345678") )).Times(1);
@@ -207,6 +222,8 @@ TEST( CCircularATLineExtractor, PromptExtraction_IgnoreNotStarted )
 
 
 	ATProtocolEngine::CCircularATLineExtractor extractor(16,&atLineConsumerMock);
+	extractor.RegisterControlSequence( std::string("\r\n"), true, false);
+
 	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("Test1") )).Times(1);
 	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("Kaka1>") )).Times(1);
 	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("12345678") )).Times(1);
@@ -228,6 +245,8 @@ TEST( CCircularATLineExtractor, PromptExtraction_IgnorePromptMarkupInTheMiddle )
 
 
 	ATProtocolEngine::CCircularATLineExtractor extractor(16,&atLineConsumerMock);
+	extractor.RegisterControlSequence( std::string("\r\n"), true, false);
+
 	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("Test1") )).Times(1);
 	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("K<aka>1") )).Times(1);
 	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("12345678") )).Times(1);
@@ -238,5 +257,31 @@ TEST( CCircularATLineExtractor, PromptExtraction_IgnorePromptMarkupInTheMiddle )
 	ASSERT_TRUE(extractor.WriteBuffer(test+15,5));
 	ASSERT_TRUE(extractor.WriteBuffer(test+20,5));
 	ASSERT_TRUE(extractor.WriteBuffer(test+25,5));
+}
+
+
+TEST( CCircularATLineExtractor, ImmediatePrompt )
+{
+	char test[] = {"\r\nTest1\r\nKaka1\r\n12345678\r\ndddd>ddd"};
+
+	ATLineConsumerMock atLineConsumerMock;
+
+
+	ATProtocolEngine::CCircularATLineExtractor extractor(16,&atLineConsumerMock);
+	extractor.RegisterControlSequence( std::string("\r\n"), true, false);
+	extractor.RegisterControlSequence( std::string(">"), false, true);
+
+	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("Test1") )).Times(1);
+	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("Kaka1") )).Times(1);
+	EXPECT_CALL(atLineConsumerMock, NotifyATResponseExtracted(	EndsWith("12345678") )).Times(1);
+	EXPECT_CALL(atLineConsumerMock, NotifyATPromptExtracted(	EndsWith(">") )).Times(1);
+
+	ASSERT_TRUE(extractor.WriteBuffer(test,5));
+	ASSERT_TRUE(extractor.WriteBuffer(test+5,5));
+	ASSERT_TRUE(extractor.WriteBuffer(test+10,5));
+	ASSERT_TRUE(extractor.WriteBuffer(test+15,5));
+	ASSERT_TRUE(extractor.WriteBuffer(test+20,5));
+	ASSERT_TRUE(extractor.WriteBuffer(test+25,5));
+	ASSERT_TRUE(extractor.WriteBuffer(test+30,5));
 }
 
